@@ -1,9 +1,9 @@
 package scalangband.model.level
 
+import scalangband.model.level.room.rectangle.*
+import scalangband.model.level.room.{Room, RoomGenerator}
 import scalangband.model.location.*
-import scalangband.model.rooms.*
-import scalangband.model.tile.{BrokenDoor, ClosedDoor, Floor, OpenDoor, RemovableWall, Tile}
-import scalangband.util.ArrayUtils.randomElement
+import scalangband.model.tile.*
 
 import scala.util.Random
 
@@ -22,7 +22,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   override def generateLevelWithoutStairs(random: Random, depth: Int): Level = {
     val level = LevelGenerator.generateRandomlySizedWallFilledLevel(random, depth)
 
-    val firstRoom = generateRoom(random, depth, random.nextInt(4) + 2, random.nextInt(8 + 2))
+    val firstRoom = generateRoom(random, depth, random.nextInt(4) + 2, random.nextInt(8) + 2)
     applyRoom(level, firstRoom)
     var rooms = List(firstRoom)
 
@@ -46,8 +46,8 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
 
   private def chooseDirectionAndStart(random: Random, room: Room): (Direction, Coordinates) = {
     random.nextInt(2) match {
-      case 0 => (Right, randomElement(random, room.rightWall))
-      case 1 => (Down, randomElement(random, room.bottomWall))
+      case 0 => (Right, room.getAttachmentPoint(random, Right))
+      case 1 => (Down, room.getAttachmentPoint(random, Down))
     }
   }
 
@@ -67,13 +67,13 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   }
 
   private def doesNotOverlap(room: Room, level: Level): Boolean = {
-    room.allTiles.map(_.coordinates).forall(coordinates => level(coordinates).isInstanceOf[RemovableWall])
+    room.tiles.flatten.map(_.coordinates).forall(coordinates => level(coordinates).isInstanceOf[RemovableWall])
   }
 
   private def applyRoom(level: Level, room: Room): Unit = {
     for (rowIdx <- 0 until room.height) {
       for (colIdx <- 0 until room.width) {
-        level.setTile(Coordinates(room.rowOffset + rowIdx, room.colOffset + colIdx), room.getTile(rowIdx, colIdx))
+        level.setTile(Coordinates(room.top + rowIdx, room.left + colIdx), room(rowIdx, colIdx))
       }
     }
   }
@@ -86,7 +86,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   }
 
   private def drawRight(random: Random, level: Level, room: Room, start: Coordinates): Unit = {
-    val end = randomElement(random, room.leftWall)
+    val end = room.getAttachmentPoint(random, Left)
     val dx = end.colIdx - start.colIdx
     val turnAt = start.colIdx + (dx / 2)
 
@@ -113,7 +113,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   }
 
   private def drawDown(random: Random, level: Level, room: Room, start: Coordinates): Unit = {
-    val end = randomElement(random, room.topWall)
+    val end = room.getAttachmentPoint(random, Up)
     val dy = end.rowIdx - start.rowIdx
     val turnAt = start.rowIdx + (dy / 2)
 
@@ -170,9 +170,10 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
 object RoomAndHallwayGenerator {
   def apply(): RoomAndHallwayGenerator = {
     new RoomAndHallwayGenerator(Seq(
-      (new RectangularRoomGenerator(), 100),
-      (new SurroundedByHallwayRoomGenerator(), 10),
-      (new CheckerboardRoomGenerator(), 2),
+      (RectangularRoomGenerator, 100),
+      (EmptyMoatedRoomGenerator, 10),
+      (CheckerboardMoatedRoomGenerator, 2),
+      (FourBoxesMoatedRoomGenerator, 2),
     ))
   }
 }
