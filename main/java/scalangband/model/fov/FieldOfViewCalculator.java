@@ -3,6 +3,9 @@ package scalangband.model.fov;
 import scalangband.model.level.Level;
 import scalangband.model.location.Coordinates;
 
+/**
+ * Translated from http://www.adammil.net/blog/v125_roguelike_vision_algorithms.html
+ */
 public class FieldOfViewCalculator {
     private final int range;
 
