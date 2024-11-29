@@ -1,7 +1,6 @@
 package scalangband
 
 import scalangband.model.Game
-import scalangband.model.level.{EmptyLevelGenerator, LevelGenerator, RandomWeightedLevelGenerator}
 import scalangband.ui.render.text.TextRenderer
 import scalangband.ui.{GameWindow, MainWindow}
 
@@ -9,7 +8,6 @@ import scala.swing.SwingApplication
 import scala.util.Random
 
 object Scalangband extends SwingApplication {
-  private val randomForLevelGeneration = new Random()
   private val mainWindow = new MainWindow()
   private var maybeGameWindow: Option[GameWindow] = None
 

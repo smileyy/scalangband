@@ -1,4 +1,4 @@
-package scalangband.model.rooms
+package scalangband.model.level.room
 
 import scala.util.Random
 
