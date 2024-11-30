@@ -10,7 +10,7 @@ object PendingDirectionCloseAction extends DirectionNeededAction {
 }
 
 class CloseAction(direction: Direction) extends GameAction {
-  override def apply(game: Game): ActionResult = {
+  override def apply(game: Game): Option[ActionResult] = {
 
     val targetCoordinates = game.playerCoordinates + direction
     val targetTile = game.level(targetCoordinates)
@@ -18,10 +18,10 @@ class CloseAction(direction: Direction) extends GameAction {
     targetTile match {
       case _: OpenDoor =>
         game.level.setTile(targetCoordinates, new ClosedDoor(targetCoordinates))
-        TrivialResult
-      case _: ClosedDoor => MessageResult("The door is already closed")
-      case _: BrokenDoor => MessageResult("The door is broken")
-      case _ => MessageResult("There is nothing to close there")
+        None
+      case _: ClosedDoor => Some(MessageResult("The door is already closed"))
+      case _: BrokenDoor => Some(MessageResult("The door is broken"))
+      case _ => Some(MessageResult("There is nothing to close there"))
     }
 
   }

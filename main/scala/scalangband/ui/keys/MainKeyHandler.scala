@@ -8,7 +8,6 @@ import scala.swing.event.{Key, KeyPressed}
 
 object MainKeyHandler extends KeyHandler {
   override def handleKeyPressed(event: KeyPressed, callback: GamePanelCallback): Option[GameAction] = event match {
-    case KeyPressed(_, Key.Space, _, _) => Some(NoGameAction)
     case KeyPressed(_, Key.Key1, _, _) => Some(MovementAction(DownLeft))
     case KeyPressed(_, Key.Key2, _, _) => Some(MovementAction(Down))
     case KeyPressed(_, Key.Key3, _, _) => Some(MovementAction(DownRight))

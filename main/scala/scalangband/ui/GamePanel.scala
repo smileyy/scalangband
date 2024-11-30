@@ -2,7 +2,7 @@ package scalangband.ui
 
 import scalangband.model.Game
 import scalangband.model.action.*
-import scalangband.model.action.result.{ActionResult, MessageResult, NextMessageResult, TrivialResult}
+import scalangband.model.action.result.{ActionResult, MessageResult, TrivialResult}
 import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
 import scalangband.ui.render.Renderer
 
@@ -22,8 +22,14 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
   listenTo(keys)
 
   reactions += {
-    case kp: KeyPressed =>
-      keyHandlers.head.handleKeyPressed(kp, callback).foreach(action => dispatchAction(action))
+    case kp: KeyPressed => {
+      if (messages.size > 1) {
+        messages = messages.tail
+        repaint()
+      } else {
+        keyHandlers.head.handleKeyPressed(kp, callback).foreach(action => dispatchAction(action))
+      }
+    }
   }
 
   private def dispatchAction(action: GameAction): Unit = {
@@ -80,10 +86,9 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     g.drawString(game.level.depthString, characterPaneWidth, game.level.tiles.length * renderer.tileHeight + lineHeight * 2)
   }
 
-  def applyResult(result: ActionResult): Unit = result match {
-    case TrivialResult => messages = Seq.empty
-    case MessageResult(messages) => this.messages = messages
-    case NextMessageResult => messages = messages.tail
+  def applyResult(result: Option[ActionResult]): Unit = result match {
+    case None => messages = Seq.empty
+    case Some(MessageResult(messages)) => this.messages = messages
   }
 }
 object GamePanel {

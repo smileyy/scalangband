@@ -4,5 +4,5 @@ import scalangband.model.Game
 import scalangband.model.action.result.{ActionResult, TrivialResult}
 
 object PassAction extends GameAction {
-  override def apply(game: Game): ActionResult = TrivialResult
+  override def apply(game: Game): Option[ActionResult] = None
 }

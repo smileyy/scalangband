@@ -13,14 +13,13 @@ import scala.util.Random
 class Game(seed: Long, val random: Random, var settings: Settings, val levelGenerator: LevelGenerator, val fov: FieldOfViewCalculator, val player: Player, var playerCoordinates: Coordinates, val town: Level, var level: Level) {
   def playerTile: OccupiableTile = level(playerCoordinates).asInstanceOf[OccupiableTile]
   
-  def takeAction(action: GameAction): ActionResult = {
+  def takeAction(action: GameAction): Option[ActionResult] = {
     println(s"Taking action $action")
     val result = action.apply(this)
     fov.recompute(playerCoordinates, level)
     result
   }
 }
-
 object Game {
   def newGame(seed: Long, random: Random, settings: Settings, player: Player): Game = {
     val levelGenerator = RandomWeightedLevelGenerator()

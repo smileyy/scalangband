@@ -7,5 +7,5 @@ import scalangband.model.location.Direction
 trait DirectionNeededAction extends GameAction {
   def withDirection(direction: Direction): GameAction
 
-  override def apply(game: Game): ActionResult = MessageResult("Choose a direction...")
+  override def apply(game: Game): Option[ActionResult] = Some(MessageResult("Choose a direction..."))
 }

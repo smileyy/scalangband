@@ -5,7 +5,7 @@ import scalangband.model.action.result.{ActionResult, MessageResult}
 import scalangband.model.tile.{DownStairs, UpStairs}
 
 object GoDownStairsAction extends GameAction {
-  override def apply(game: Game): ActionResult = {
+  override def apply(game: Game): Option[ActionResult] = {
     game.playerTile match {
       case _: DownStairs =>
         if (game.level.isTown) {
@@ -17,14 +17,14 @@ object GoDownStairsAction extends GameAction {
         startingTile.setOccupant(game.player)
         game.playerCoordinates = startingTile.coordinates
         game.level = newLevel
-        MessageResult(s"You descend to ${newLevel.depthString}")
-      case _ => MessageResult("There are no down stairs here")
+        Some(MessageResult(s"You descend to ${newLevel.depthString}"))
+      case _ => Some(MessageResult("There are no down stairs here"))
     }
   }
 }
 
 object GoUpStairsAction extends GameAction {
-  override def apply(game: Game): ActionResult = {
+  override def apply(game: Game): Option[ActionResult] = {
     game.playerTile match {
       case _: UpStairs =>
         val newLevel = if (game.level.depth == 1) {
@@ -37,8 +37,8 @@ object GoUpStairsAction extends GameAction {
         game.playerCoordinates = startingTile.coordinates
         game.level = newLevel
         val message = if (newLevel.isTown) "You return to town" else s"You ascend to ${newLevel.depthString}"
-        MessageResult(message)
-      case _ => MessageResult("There are no up stairs here")
+        Some(MessageResult(message))
+      case _ => Some(MessageResult("There are no up stairs here"))
     }
   }
 }
