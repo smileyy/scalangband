@@ -17,7 +17,7 @@ class CloseAction(direction: Direction) extends PhysicalAction {
 
     targetTile match {
       case _: OpenDoor =>
-        game.level.replaceTile(targetCoordinates, new ClosedDoor(targetCoordinates))
+        game.level.replaceTile(targetCoordinates, new ClosedDoor())
         None
       case _: ClosedDoor => Some(MessageResult("The door is already closed"))
       case _: BrokenDoor => Some(MessageResult("The door is broken"))

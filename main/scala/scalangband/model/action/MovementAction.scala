@@ -12,14 +12,14 @@ case class MovementAction(direction: Direction) extends PhysicalAction {
 
     targetTile match {
       case _: Wall => Some(MessageResult("There is a wall in the way"))
-      case cd: ClosedDoor => 
-        game.level.replaceTile(targetCoordinates, new OpenDoor(targetCoordinates, None))
+      case _: ClosedDoor => 
+        game.level.replaceTile(targetCoordinates, new OpenDoor())
         None
       case ot: OccupiableTile if ot.occupied => Some(MessageResult("Something's in the way?!"))
       case ot: OccupiableTile =>
         game.playerTile.clearOccupant()
         ot.setOccupant(game.player)
-        game.playerCoordinates = ot.coordinates
+        game.playerCoordinates = targetCoordinates
         None
     }
   }

@@ -82,7 +82,8 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
 
   private def paintDepth(g: Graphics2D, characterPaneWidth: Int, lineHeight: Int): Unit = {
     g.setColor(TextColors.White)
-    g.drawString(game.level.depthString, characterPaneWidth, game.level.tiles.length * renderer.tileHeight + lineHeight * 2)
+    val depth = if (game.level.depth == 0) "Town" else s"${game.level.depth * 50} feet"
+    g.drawString(depth, characterPaneWidth, game.level.tiles.length * renderer.tileHeight + lineHeight * 2)
   }
 
   def applyResult(result: Option[ActionResult]): Unit = result match {

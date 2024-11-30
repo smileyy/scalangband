@@ -1,9 +1,9 @@
 package scalangband.model.location
 
-case class Coordinates(rowIdx: Int, colIdx: Int) {
+case class Coordinates(row: Int, col: Int) {
   def +(direction: Direction): Coordinates = {
-    Coordinates(rowIdx + direction.dy, colIdx + direction.dx)
+    Coordinates(row + direction.dy, col + direction.dx)
   }
 
-  override def toString: String = s"($rowIdx, $colIdx)"
+  override def toString: String = s"($row, $col)"
 }

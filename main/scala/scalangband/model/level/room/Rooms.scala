@@ -12,9 +12,9 @@ trait Room {
   
   def apply(rowIdx: Int, colIdx: Int): Tile = tiles(rowIdx)(colIdx)
 
-  def top: Int = tiles(0)(0).coordinates.rowIdx
+  def top: Int
   def bottom: Int = top + height - 1
-  def left: Int = tiles(0)(0).coordinates.colIdx
+  def left: Int
   def right: Int = left + width - 1
 
   /** 
@@ -27,7 +27,7 @@ trait Room {
   /**
    * Replaces the tile at the given coordinates.
    */
-  def replaceTile(rowIdx: Int, colIdx: Int, replacement: Coordinates => Tile): Unit
+  def setTile(rowIdx: Int, colIdx: Int, tile: Tile): Unit
 
   /**
    * Whether this room should be attached to the rest of the level. If a room is to be attached, it must provide 
@@ -36,10 +36,10 @@ trait Room {
   def attached: Boolean = true
 }
 
-abstract class AbstractRoom(val tiles: Array[Array[Tile]]) extends Room {
-  override def replaceTile(rowIdx: Int, colIdx: Int, replace: Coordinates => Tile): Unit = {
+abstract class AbstractRoom(val tiles: Array[Array[Tile]], val top: Int, val left: Int) extends Room {
+  override def setTile(rowIdx: Int, colIdx: Int, tile: Tile): Unit = {
     val original = apply(rowIdx, colIdx)
     
-    tiles(rowIdx)(colIdx) = replace(original.coordinates)
+    tiles(rowIdx)(colIdx) = tile
   }
 }

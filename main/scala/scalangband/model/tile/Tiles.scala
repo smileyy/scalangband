@@ -1,9 +1,8 @@
 package scalangband.model.tile
 
 import scalangband.model.{Creature, Representable}
-import scalangband.model.location.Coordinates
 
-abstract class Tile(val coordinates: Coordinates) extends Representable {
+abstract class Tile extends Representable {
   private var visible: Boolean = false
   var seen: Boolean = false
 
@@ -22,11 +21,9 @@ abstract class Tile(val coordinates: Coordinates) extends Representable {
   def occupied: Boolean = occupant.isDefined
 
   def representation: Representable = if (occupant.isDefined) occupant.get else this
-
-  override def toString: String = s"${this.getClass.getSimpleName}$coordinates"
 }
 
-abstract class OccupiableTile(coordinates: Coordinates, var occupant: Option[Creature]) extends Tile(coordinates) {
+abstract class OccupiableTile(var occupant: Option[Creature]) extends Tile {
   def setOccupant(occupant: Creature): Unit = this.occupant = Some(occupant)
   def clearOccupant(): Unit = this.occupant = None
 }
