@@ -1,11 +1,11 @@
 package scalangband.model.action
 
 import scalangband.model.Game
-import scalangband.model.action.result.{ActionResult, MessageResult, TrivialResult}
+import scalangband.model.action.result.{ActionResult, MessageResult}
 import scalangband.model.location.Direction
 import scalangband.model.tile.{ClosedDoor, OccupiableTile, OpenDoor, Wall}
 
-case class MovementAction(direction: Direction) extends GameAction {
+case class MovementAction(direction: Direction) extends PhysicalAction {
   def apply(game: Game): Option[ActionResult] = {
     val targetCoordinates = game.playerCoordinates + direction
     val targetTile = game.level(targetCoordinates)
@@ -13,7 +13,7 @@ case class MovementAction(direction: Direction) extends GameAction {
     targetTile match {
       case _: Wall => Some(MessageResult("There is a wall in the way"))
       case cd: ClosedDoor => 
-        game.level.setTile(targetCoordinates, new OpenDoor(targetCoordinates, None))
+        game.level.replaceTile(targetCoordinates, new OpenDoor(targetCoordinates, None))
         None
       case ot: OccupiableTile if ot.occupied => Some(MessageResult("Something's in the way?!"))
       case ot: OccupiableTile =>
@@ -23,4 +23,6 @@ case class MovementAction(direction: Direction) extends GameAction {
         None
     }
   }
+
+  override def toString: String = s"${getClass.getSimpleName}($direction)"
 }

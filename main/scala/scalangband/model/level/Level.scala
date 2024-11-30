@@ -1,27 +1,18 @@
 package scalangband.model.level
 
+import scalangband.model.Creature
 import scalangband.model.location.Coordinates
 import scalangband.model.tile.{Floor, OccupiableTile, Stairs, Tile}
 import scalangband.util.ArrayUtils.randomElement
 
+import scala.collection.mutable
 import scala.reflect.ClassTag
 import scala.util.Random
 
 class Level(val tiles: Array[Array[Tile]], val depth: Int) {
-  val height: Int = tiles.length
-  val width: Int = tiles(0).length
+  def height: Int = tiles.length
+  def width: Int = tiles(0).length
   
-  val isTown: Boolean = depth == 0
-
-  /**
-   * The depth string to be displayed. It's a little weird to have a presentation-oriented value here, but the string
-   * is used by stairs actions to display the level depth being ascended/descended to.
-   */
-  val depthString: String = depth match {
-    case 0 => "Town"
-    case x => x * 50 + " feet"
-  }
-
   def apply(coordinates: Coordinates): Tile = tiles(coordinates.rowIdx)(coordinates.colIdx)
   def apply(rowIdx: Int, colIdx: Int): Tile = tiles(rowIdx)(colIdx)
 
@@ -46,10 +37,21 @@ class Level(val tiles: Array[Array[Tile]], val depth: Int) {
       stairs.setOccupant(originalTile.occupant.get)
     }
     
-    setTile(originalTile.coordinates, stairs)
+    replaceTile(originalTile.coordinates, stairs)
   }
   
-  def setTile(coordinates: Coordinates, tile: Tile): Unit = {
+  def replaceTile(coordinates: Coordinates, tile: Tile): Unit = {
     tiles(coordinates.rowIdx)(coordinates.colIdx) = tile
+  }
+
+  def isTown: Boolean = depth == 0
+
+  /**
+   * The depth string to be displayed. It's a little weird to have a presentation-oriented value here, but the string
+   * is used by stairs actions to display the level depth being ascended/descended to.
+   */
+  def depthString: String = depth match {
+    case 0 => "Town"
+    case x => x * 50 + " feet"
   }
 }

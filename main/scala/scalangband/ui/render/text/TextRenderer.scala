@@ -13,6 +13,8 @@ class TextRenderer(font: Font) extends Renderer {
   override def tileHeight: Int = 12
 
   override def render(level: Level): Array[Array[RenderableTile]] = {
+    
+    
     level.tiles.map(renderRow)
   }
 
@@ -21,12 +23,12 @@ class TextRenderer(font: Font) extends Renderer {
   }
 
   def render(tile: Tile): RenderableTile = {
-    if (tile.visible || tile.seen) {
+    if (tile.isVisible || tile.seen) {
       tile.representation match {
         case _: Player => TextTile('@', font.deriveFont(java.awt.Font.BOLD), White)
         case _: DownStairs => TextTile('>', font, VeryLightGrey)
         case _: UpStairs => TextTile('<', font, VeryLightGrey)
-        case floor: Floor if floor.visible => TextTile('.', font, VeryLightGrey)
+        case floor: Floor if floor.isVisible => TextTile('.', font, VeryLightGrey)
         case _: Floor => TextTile(' ', font, Black)
         case _: ClosedDoor => TextTile('+', font, Brown)
         case _: OpenDoor => TextTile('\'', font, Brown)

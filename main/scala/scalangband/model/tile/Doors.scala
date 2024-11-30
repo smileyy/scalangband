@@ -5,12 +5,7 @@ import scalangband.model.location.Coordinates
 
 class ClosedDoor(coordinates: Coordinates) extends Tile(coordinates) {
   override def opaque: Boolean = true
+  override def occupant: Option[Creature] = None
 }
-class OpenDoor(coordinates: Coordinates, var occupant: Option[Creature]) extends OccupiableTile(coordinates) {
-  override def setOccupant(occupant: Creature): Unit = this.occupant = Some(occupant)
-  override def clearOccupant(): Unit = occupant = None
-}
-class BrokenDoor(coordinates: Coordinates, var occupant: Option[Creature]) extends OccupiableTile(coordinates) {
-  override def setOccupant(occupant: Creature): Unit = this.occupant = Some(occupant)
-  override def clearOccupant(): Unit = occupant = None
-}
+class OpenDoor(coordinates: Coordinates, occupant: Option[Creature]) extends OccupiableTile(coordinates, occupant)
+class BrokenDoor(coordinates: Coordinates, occupant: Option[Creature]) extends OccupiableTile(coordinates, occupant)

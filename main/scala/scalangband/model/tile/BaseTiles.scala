@@ -3,33 +3,30 @@ package scalangband.model.tile
 import scalangband.model.{Creature, Representable}
 import scalangband.model.location.Coordinates
 
-abstract class Tile(val coordinates: Coordinates, var seen: Boolean = false, private var _visible: Boolean = false) extends Representable {
+abstract class Tile(val coordinates: Coordinates) extends Representable {
+  private var visible: Boolean = false
+  var seen: Boolean = false
+
   def opaque: Boolean = false
 
-  def representation: Representable = this
-
-  def visible: Boolean = _visible
+  def isVisible: Boolean = visible
 
   def setVisible(visible: Boolean): Unit = {
     if (visible) {
       seen = true
     }
-
-    _visible = visible
+    this.visible = visible
   }
 
-  override def toString: String = s"${this.getClass}$coordinates"
-}
-
-abstract class OccupiableTile(coordinates: Coordinates) extends Tile(coordinates) {
-  // This is a `def` because I had a lot of trouble getting `Floor` to work with occupant as an abstract class member :(
-  // It isn't too horrible because there's only a handful of occupiable tile types
   def occupant: Option[Creature]
-
-  def setOccupant(occupant: Creature): Unit
-  def clearOccupant(): Unit
-
   def occupied: Boolean = occupant.isDefined
 
-  override def representation: Representable = if (occupant.isDefined) occupant.get else this
+  def representation: Representable = if (occupant.isDefined) occupant.get else this
+
+  override def toString: String = s"${this.getClass.getSimpleName}$coordinates"
+}
+
+abstract class OccupiableTile(coordinates: Coordinates, var occupant: Option[Creature]) extends Tile(coordinates) {
+  def setOccupant(occupant: Creature): Unit = this.occupant = Some(occupant)
+  def clearOccupant(): Unit = this.occupant = None
 }

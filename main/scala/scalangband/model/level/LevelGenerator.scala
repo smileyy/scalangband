@@ -1,8 +1,10 @@
 package scalangband.model.level
 
+import scalangband.model.Creature
 import scalangband.model.location.Coordinates
-import scalangband.model.tile.{DownStairs, Floor, RemovableWall, PermanentWall, Tile, UpStairs}
+import scalangband.model.tile.{DownStairs, Floor, PermanentWall, RemovableWall, Tile, UpStairs}
 
+import scala.collection.mutable
 import scala.util.Random
 
 trait LevelGenerator {
@@ -72,7 +74,7 @@ object LevelGenerator {
   }
 
   /**
-   * Creates a randomly sized empty level surrounded by {@link PermanentWall}s.
+   * Creates a randomly sized empty level surrounded by [[PermanentWall]]s.
    */
   def generateRandomlySizedWallFilledLevel(random: Random, depth: Int): Level = {
     val (width, height) = randomLevelDimensions(random)

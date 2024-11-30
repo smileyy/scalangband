@@ -2,7 +2,7 @@ package scalangband.ui
 
 import scalangband.model.Game
 import scalangband.model.action.*
-import scalangband.model.action.result.{ActionResult, MessageResult, TrivialResult}
+import scalangband.model.action.result.{ActionResult, MessageResult}
 import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
 import scalangband.ui.render.Renderer
 
@@ -22,13 +22,12 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
   listenTo(keys)
 
   reactions += {
-    case kp: KeyPressed => {
+    case kp: KeyPressed =>
       if (messages.size > 1) {
         messages = messages.tail
         repaint()
       } else {
         keyHandlers.head.handleKeyPressed(kp, callback).foreach(action => dispatchAction(action))
-      }
     }
   }
 

@@ -6,18 +6,13 @@ import scalangband.model.location.Coordinates
 
 import scala.collection.mutable
 
-class Floor(coordinates: Coordinates, var occupant: Option[Creature] = None, val items: mutable.Seq[Item]) extends OccupiableTile(coordinates){
-  override def setOccupant(occupant: Creature): Unit = this.occupant = Some(occupant)
-  override def clearOccupant(): Unit = this.occupant = None
-
+class Floor(coordinates: Coordinates, occ: Option[Creature], val items: mutable.Seq[Item]) extends OccupiableTile(coordinates, occ){
   override def representation: Representable = {
-    //    super.representation
-    if (occupant.isDefined) occupant.get
+    if (occupied) occupant.get
     else if (items.nonEmpty) items.head
     else this
   }
-
 }
 object Floor {
-  def empty(coordinates: Coordinates) = new Floor(coordinates, items = mutable.Seq.empty)
+  def empty(coordinates: Coordinates) = new Floor(coordinates, None, mutable.Seq.empty)
 }

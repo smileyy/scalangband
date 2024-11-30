@@ -4,10 +4,11 @@ import scalangband.model.Game
 import scalangband.model.action.result.{ActionResult, MessageResult}
 import scalangband.model.tile.{DownStairs, UpStairs}
 
-object GoDownStairsAction extends GameAction {
+object GoDownStairsAction extends PhysicalAction {
   override def apply(game: Game): Option[ActionResult] = {
     game.playerTile match {
       case _: DownStairs =>
+        // this is a little wonky...
         if (game.level.isTown) {
           game.playerTile.clearOccupant()
         }
@@ -23,7 +24,7 @@ object GoDownStairsAction extends GameAction {
   }
 }
 
-object GoUpStairsAction extends GameAction {
+object GoUpStairsAction extends PhysicalAction {
   override def apply(game: Game): Option[ActionResult] = {
     game.playerTile match {
       case _: UpStairs =>

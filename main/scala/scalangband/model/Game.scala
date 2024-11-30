@@ -14,13 +14,15 @@ class Game(seed: Long, val random: Random, var settings: Settings, val levelGene
   def playerTile: OccupiableTile = level(playerCoordinates).asInstanceOf[OccupiableTile]
   
   def takeAction(action: GameAction): Option[ActionResult] = {
-    println(s"Taking action $action")
+    println(s"The player is taking $action")
     val result = action.apply(this)
     fov.recompute(playerCoordinates, level)
     result
   }
 }
 object Game {
+  val BaseEnergyUnit: Int = 20
+
   def newGame(seed: Long, random: Random, settings: Settings, player: Player): Game = {
     val levelGenerator = RandomWeightedLevelGenerator()
 

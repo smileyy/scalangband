@@ -73,7 +73,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   private def applyRoom(level: Level, room: Room): Unit = {
     for (rowIdx <- 0 until room.height) {
       for (colIdx <- 0 until room.width) {
-        level.setTile(Coordinates(room.top + rowIdx, room.left + colIdx), room(rowIdx, colIdx))
+        level.replaceTile(Coordinates(room.top + rowIdx, room.left + colIdx), room(rowIdx, colIdx))
       }
     }
   }
@@ -90,26 +90,26 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     val dx = end.colIdx - start.colIdx
     val turnAt = start.colIdx + (dx / 2)
 
-    level.setTile(start, randomDoorTile(random, start))
+    level.replaceTile(start, randomDoorTile(random, start))
 
     for (i <- start.colIdx + 1 to turnAt) {
       val coordinates = Coordinates(start.rowIdx, i)
-      level.setTile(coordinates, Floor.empty(coordinates))
+      level.replaceTile(coordinates, Floor.empty(coordinates))
     }
 
     val jogStart = if (start.rowIdx <= end.rowIdx) start.rowIdx else end.rowIdx
     val jogEnd = if (start.rowIdx <= end.rowIdx) end.rowIdx else start.rowIdx
     for (i <- jogStart to jogEnd) {
       val coordinates = Coordinates(i, turnAt)
-      level.setTile(coordinates, Floor.empty(coordinates))
+      level.replaceTile(coordinates, Floor.empty(coordinates))
     }
 
     for (i <- turnAt until end.colIdx) {
       val coordinates = Coordinates(end.rowIdx, i)
-      level.setTile(coordinates, Floor.empty(coordinates))
+      level.replaceTile(coordinates, Floor.empty(coordinates))
     }
 
-    level.setTile(end, randomDoorTile(random, end))
+    level.replaceTile(end, randomDoorTile(random, end))
   }
 
   private def drawDown(random: Random, level: Level, room: Room, start: Coordinates): Unit = {
@@ -117,26 +117,26 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     val dy = end.rowIdx - start.rowIdx
     val turnAt = start.rowIdx + (dy / 2)
 
-    level.setTile(start, randomDoorTile(random, start))
+    level.replaceTile(start, randomDoorTile(random, start))
 
     for (i <- start.rowIdx + 1 to turnAt) {
       val coordinates = Coordinates(i, start.colIdx)
-      level.setTile(coordinates, Floor.empty(coordinates))
+      level.replaceTile(coordinates, Floor.empty(coordinates))
     }
 
     val jogStart = if (start.colIdx <= end.colIdx) start.colIdx else end.colIdx
     val jogEnd = if (start.colIdx <= end.colIdx) end.colIdx else start.colIdx
     for (i <- jogStart to jogEnd) {
       val coordinates = Coordinates(turnAt, i)
-      level.setTile(coordinates, Floor.empty(coordinates))
+      level.replaceTile(coordinates, Floor.empty(coordinates))
     }
 
     for (i <- turnAt until end.rowIdx) {
       val coordinates = Coordinates(i, end.colIdx)
-      level.setTile(coordinates, Floor.empty(coordinates))
+      level.replaceTile(coordinates, Floor.empty(coordinates))
     }
 
-    level.setTile(end, randomDoorTile(random, end))
+    level.replaceTile(end, randomDoorTile(random, end))
   }
 
   def randomDoorTile(random: Random, coordinates: Coordinates): Tile = {
