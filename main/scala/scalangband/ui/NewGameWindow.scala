@@ -24,6 +24,8 @@ class NewGameWindow() extends Frame {
   fieldsPanel.contents += seedLabel
   fieldsPanel.contents += seedTextBox
 
+  private val logger = org.slf4j.LoggerFactory.getLogger(this.getClass)
+
 
   contents = new BoxPanel(Orientation.Vertical) {
     contents += fieldsPanel
@@ -46,8 +48,8 @@ class NewGameWindow() extends Frame {
         }
 
       val random = new Random(seed)
-      
-      println(s"Starting game with seed $seed")
+
+      logger.info(s"Starting game with seed $seed")
       
       val game = Game.newGame(seed, random, new Settings(), new Player(nameTextBox.text))
       Scalangband.startGame(game)
