@@ -1,9 +1,10 @@
 package scalangband.model.monster
 
-import scalangband.model.{Creature, Game}
 import scalangband.model.Game.BaseEnergyUnit
-import scalangband.model.action.GameAction
+import scalangband.model.action.{GameAction, PhysicalAction}
 import scalangband.model.level.Level
+import scalangband.model.util.Weighted
+import scalangband.model.{Creature, Game}
 
 import scala.util.Random
 
@@ -14,5 +15,7 @@ abstract class Monster(name: String, energy: Int = Random.nextInt(BaseEnergyUnit
     regenerateEnergy()
   }
 
-  def getAction(level: Level): GameAction 
+  def getAction(level: Level): GameAction = Weighted.select(weightedActions)
+  
+  def weightedActions: Seq[Weighted[GameAction]]
 }

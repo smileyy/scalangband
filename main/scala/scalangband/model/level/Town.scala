@@ -2,7 +2,7 @@ package scalangband.model.level
 
 import scalangband.model.level.Town.{TownHeight, TownWidth}
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.RandomlyMumblingTownsperson
+import scalangband.model.monster.person.RandomlyMumblingTownsperson
 import scalangband.model.tile.{Floor, PermanentWall, Tile}
 
 import scala.util.Random
