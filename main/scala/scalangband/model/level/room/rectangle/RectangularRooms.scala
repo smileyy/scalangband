@@ -3,17 +3,16 @@ package scalangband.model.level.room.rectangle
 import scalangband.model.level.room.{AbstractRoom, Room, RoomGenerator}
 import scalangband.model.location.*
 import scalangband.model.tile.{Floor, RemovableWall, Tile}
-import scalangband.util.ArrayUtils.randomElement
-import scalangband.util.RandomUtils.randomBetween
+import scalangband.model.util.RandomUtils.{randomBetween, randomElement}
 
 import scala.util.Random
 
 object RectangularRoomGenerator extends RoomGenerator {
-  val MinHeight = 5
-  val MaxHeight = 16
+  private val MinHeight = 5
+  private val MaxHeight = 16
 
-  val MinWidth = 5
-  val MaxWidth = 24
+  private val MinWidth = 5
+  private val MaxWidth = 24
   
   override def generateRoom(random: Random, depth: Int, rowOffset: Int, colOffset: Int): Room = {
     val height = randomBetween(random, MinHeight, MaxHeight)
@@ -21,15 +20,11 @@ object RectangularRoomGenerator extends RoomGenerator {
     RectangularRoom(rowOffset, colOffset, height, width)
   }
 }
-class RectangularRoom(tiles: Array[Array[Tile]]) extends AbstractRoom(tiles) {
-  def topWall: Array[Coordinates] = tiles.flatten.map(_.coordinates)
-    .filter { c => c.rowIdx == top && c.colIdx != left && c.colIdx != right }
-  def bottomWall: Array[Coordinates] = tiles.flatten.map(_.coordinates)
-    .filter { c => c.rowIdx == bottom && c.colIdx != left && c.colIdx != right }
-  def leftWall: Array[Coordinates] = tiles.flatten.map(_.coordinates)
-    .filter { c => c.colIdx == left && c.rowIdx != top && c.rowIdx != bottom }
-  def rightWall: Array[Coordinates] = tiles.flatten.map(_.coordinates)
-    .filter { c => c.colIdx == right && c.rowIdx != top && c.rowIdx != bottom }
+class RectangularRoom(tiles: Array[Array[Tile]], top: Int, left: Int) extends AbstractRoom(tiles, top, left) {
+  private def topWall: Array[Coordinates] = (left + 1 until left + width).map(col => Coordinates(top, col)).toArray
+  private def bottomWall: Array[Coordinates] = (left + 1 until left + width).map(col => Coordinates(bottom, col)).toArray
+  private def leftWall: Array[Coordinates] = (top + 1 until top + height).map(row => Coordinates(row, left)).toArray
+  private def rightWall: Array[Coordinates] = (top + 1 until top + height).map(row => Coordinates(row, right)).toArray
   
   override def getAttachmentPoint(random: Random, direction: Direction): Coordinates = direction match {
     case Up => randomElement(random, topWall)
@@ -39,19 +34,18 @@ class RectangularRoom(tiles: Array[Array[Tile]]) extends AbstractRoom(tiles) {
   }
 }
 object RectangularRoom {
-  def apply(rowOffset: Int, colOffset: Int, height: Int, width: Int): Room = {
+  def apply(top: Int, left: Int, height: Int, width: Int): Room = {
     val tiles = Array.ofDim[Tile](height, width)
 
     for (rowIdx <- 0 until height) {
       for (colIdx <- 0 until width) {
         tiles(rowIdx)(colIdx) = {
-          val coordinates = Coordinates(rowIdx + rowOffset, colIdx + colOffset)
-          if (rowIdx == 0 || rowIdx == height - 1 || colIdx == 0 || colIdx == width - 1) new RemovableWall(coordinates)
-          else Floor.empty(coordinates)
+          if (rowIdx == 0 || rowIdx == height - 1 || colIdx == 0 || colIdx == width - 1) new RemovableWall()
+          else Floor.empty()
         }
       }
     }
 
-    new RectangularRoom(tiles)
+    new RectangularRoom(tiles, top, left)
   }
 }

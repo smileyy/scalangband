@@ -2,14 +2,14 @@ package scalangband.ui
 
 import scalangband.model.Game
 import scalangband.model.action.*
-import scalangband.model.action.result.{ActionResult, MessageResult, NextMessageResult, TrivialResult}
+import scalangband.model.action.result.{ActionResult, MessageResult}
 import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
 import scalangband.ui.render.Renderer
 
 import scala.swing.*
 import scala.swing.event.KeyPressed
 
-class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHandler], var messages: Seq[String] = Seq.empty) extends Panel {
+class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHandler], var messages: List[String] = List.empty) extends Panel {
 
   private val callback = new GamePanelCallback(this)
   
@@ -23,12 +23,17 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
 
   reactions += {
     case kp: KeyPressed =>
-      keyHandlers.head.handleKeyPressed(kp, callback).foreach(action => dispatchAction(action))
+      if (messages.nonEmpty) {
+        messages = messages.tail
+        repaint()
+      } else {
+        keyHandlers.head.handleKeyPressed(kp, callback).foreach(action => dispatchAction(action))
+    }
   }
 
   private def dispatchAction(action: GameAction): Unit = {
-    val result = game.takeAction(action)
-    applyResult(result)
+    val results = game.takeTurn(action)
+    results.foreach(result => applyResult(result))
     repaint()
   }
 
@@ -77,18 +82,17 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
 
   private def paintDepth(g: Graphics2D, characterPaneWidth: Int, lineHeight: Int): Unit = {
     g.setColor(TextColors.White)
-    g.drawString(game.level.depthString, characterPaneWidth, game.level.tiles.length * renderer.tileHeight + lineHeight * 2)
+    val depth = if (game.level.depth == 0) "Town" else s"${game.level.depth * 50} feet"
+    g.drawString(depth, characterPaneWidth, game.level.tiles.length * renderer.tileHeight + lineHeight * 2)
   }
 
   def applyResult(result: ActionResult): Unit = result match {
-    case TrivialResult => messages = Seq.empty
-    case MessageResult(messages) => this.messages = messages
-    case NextMessageResult => messages = messages.tail
+    case MessageResult(messages) => this.messages = messages ::: this.messages
   }
 }
 object GamePanel {
   def apply(game: Game, renderer: Renderer): GamePanel = {
-    new GamePanel(game, renderer, List(MainKeyHandler), Seq.empty)
+    new GamePanel(game, renderer, List(MainKeyHandler), List.empty)
   }
 }
 

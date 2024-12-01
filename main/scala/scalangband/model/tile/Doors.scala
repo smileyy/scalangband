@@ -1,16 +1,10 @@
 package scalangband.model.tile
 
-import scalangband.model.{Creature, Representable}
-import scalangband.model.location.Coordinates
+import scalangband.model.Creature
 
-class ClosedDoor(coordinates: Coordinates) extends Tile(coordinates) {
+class ClosedDoor extends Tile {
   override def opaque: Boolean = true
+  override def occupant: Option[Creature] = None
 }
-class OpenDoor(coordinates: Coordinates, var occupant: Option[Creature]) extends OccupiableTile(coordinates) {
-  override def setOccupant(occupant: Creature): Unit = this.occupant = Some(occupant)
-  override def clearOccupant(): Unit = occupant = None
-}
-class BrokenDoor(coordinates: Coordinates, var occupant: Option[Creature]) extends OccupiableTile(coordinates) {
-  override def setOccupant(occupant: Creature): Unit = this.occupant = Some(occupant)
-  override def clearOccupant(): Unit = occupant = None
-}
+class OpenDoor(occupant: Option[Creature] = None) extends OccupiableTile(occupant)
+class BrokenDoor(occupant: Option[Creature] = None) extends OccupiableTile(occupant)

@@ -10,20 +10,21 @@ import scala.util.Random
 /**
  * Generates a dungeon based on rooms and hallways. The type of room generated is based on a set of generators with
  * weighted values. Basically, we want normal rooms to show up most of the time, and "special" rooms less frequently.
- * This probably ought to be updated to be weighted by depth as well as you don't want a Greater Checkerboard Value to
+ * This probably ought to be updated to be weighted by depth as well as you don't want a Greater Checkerboard Vault to
  * show up on level 1.
  *
  * The algorithm in use is inspired by https://roguebasin.com/index.php/Dungeon-Building_Algorithm, but starts in the
- * upper left hand corner of the map, generating successive rooms down and to the right.
+ * upper left hand corner of the map, generating successive rooms down and to the right. There's a bit of a "downward
+ * slope" bias, but if you try enough times, you'll eventually get something in that upper right corner.
  */
 class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) extends LevelGenerator {
   private val totalWeights = weightedGenerators.map(_._2).sum
 
-  override def generateLevelWithoutStairs(random: Random, depth: Int): Level = {
-    val level = LevelGenerator.generateRandomlySizedWallFilledLevel(random, depth)
+  override def generateLevel(random: Random, depth: Int): Level = {
+    val builder = LevelBuilder.randomSizedLevelBuilder(random, depth)
 
     val firstRoom = generateRoom(random, depth, random.nextInt(4) + 2, random.nextInt(8) + 2)
-    applyRoom(level, firstRoom)
+    applyRoom(builder, firstRoom)
     var rooms = List(firstRoom)
 
     var consecutiveFailures = 0
@@ -31,17 +32,17 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
       val startingRoom = rooms(random.nextInt(rooms.size))
       val (direction, start) = chooseDirectionAndStart(random, startingRoom)
 
-      tryToCreateRoom(random, level, start, direction) match {
+      tryToCreateRoom(random, builder, start, direction) match {
         case Some(room) =>
           rooms = room :: rooms
-          applyRoom(level, room)
-          attachRoom(random, level, room, start, direction)
+          applyRoom(builder, room)
+          attachRoom(random, builder, room, start, direction)
           consecutiveFailures = 0
         case None => consecutiveFailures = consecutiveFailures + 1
       }
     }
 
-    level
+    builder.build(random, (depth, tiles) => new Level(depth, tiles))
   }
 
   private def chooseDirectionAndStart(random: Random, room: Room): (Direction, Coordinates) = {
@@ -51,99 +52,103 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     }
   }
 
-  private def tryToCreateRoom(random: Random, level: Level, start: Coordinates, dir: Direction): Option[Room] = {
+  private def tryToCreateRoom(random: Random, builder: LevelBuilder, start: Coordinates, dir: Direction): Option[Room] = {
     val (rowOffset, colOffset) = dir match {
+      // TODO: Explain why these numbers lead to decent, if short, hallways
       case Right => (-(random.nextInt(4) + 1), random.nextInt(8) + 4)
       case Down => (random.nextInt(8) + 4, -(random.nextInt(4) + 1))
     }
 
-    val room = generateRoom(random, level.depth, start.rowIdx + rowOffset, start.colIdx + colOffset)
+    val room = generateRoom(random, builder.depth, start.row + rowOffset, start.col + colOffset)
 
-    if (inLevelBound(room, level) && doesNotOverlap(room, level)) Some(room) else None
+    if (inLevelBound(room, builder) && doesNotOverwriteAnything(room, builder)) Some(room) else None
   }
 
-  private def inLevelBound(room: Room, level: Level): Boolean = {
-    (room.top > 1) && (room.right < level.width - 1) && (room.bottom < level.height - 1) && (room.left > 1)
+  private def inLevelBound(room: Room, builder: LevelBuilder): Boolean = {
+    (room.top > 1) && (room.right < builder.width - 1) && (room.bottom < builder.height - 1) && (room.left > 1)
   }
 
-  private def doesNotOverlap(room: Room, level: Level): Boolean = {
-    room.tiles.flatten.map(_.coordinates).forall(coordinates => level(coordinates).isInstanceOf[RemovableWall])
+  private def doesNotOverwriteAnything(room: Room, builder: LevelBuilder): Boolean = {
+    // TODO: A more Scala-idiomatic way of writing this without `return`?
+    for (row <- room.top until room.bottom) {
+      for (col <- room.left until room.right) {
+        if (!builder(row, col).isInstanceOf[RemovableWall]) {
+          return false
+        }
+      }
+    }
+
+    true
   }
 
-  private def applyRoom(level: Level, room: Room): Unit = {
+  private def applyRoom(builder: LevelBuilder, room: Room): Unit = {
     for (rowIdx <- 0 until room.height) {
       for (colIdx <- 0 until room.width) {
-        level.setTile(Coordinates(room.top + rowIdx, room.left + colIdx), room(rowIdx, colIdx))
+        builder.setTile(room.top + rowIdx, room.left + colIdx, room(rowIdx, colIdx))
       }
     }
   }
 
-  private def attachRoom(random: Random, level: Level, room: Room, start: Coordinates, startingDirection: Direction): Unit = {
+  private def attachRoom(random: Random, builder: LevelBuilder, room: Room, start: Coordinates, startingDirection: Direction): Unit = {
     startingDirection match {
-      case Right => drawRight(random, level, room, start)
-      case Down => drawDown(random, level, room, start)
+      case Right => drawRight(random, builder, room, start)
+      case Down => drawDown(random, builder, room, start)
     }
   }
 
-  private def drawRight(random: Random, level: Level, room: Room, start: Coordinates): Unit = {
+  private def drawRight(random: Random, builder: LevelBuilder, room: Room, start: Coordinates): Unit = {
     val end = room.getAttachmentPoint(random, Left)
-    val dx = end.colIdx - start.colIdx
-    val turnAt = start.colIdx + (dx / 2)
+    val dx = end.col - start.col
+    val turnAt = start.col + (dx / 2)
 
-    level.setTile(start, randomDoorTile(random, start))
+    builder.setTile(start, randomDoorTile(random))
 
-    for (i <- start.colIdx + 1 to turnAt) {
-      val coordinates = Coordinates(start.rowIdx, i)
-      level.setTile(coordinates, Floor.empty(coordinates))
+    for (i <- start.col + 1 to turnAt) {
+      builder.setTile(start.row, i, Floor.empty())
     }
 
-    val jogStart = if (start.rowIdx <= end.rowIdx) start.rowIdx else end.rowIdx
-    val jogEnd = if (start.rowIdx <= end.rowIdx) end.rowIdx else start.rowIdx
+    val jogStart = if (start.row <= end.row) start.row else end.row
+    val jogEnd = if (start.row <= end.row) end.row else start.row
     for (i <- jogStart to jogEnd) {
-      val coordinates = Coordinates(i, turnAt)
-      level.setTile(coordinates, Floor.empty(coordinates))
+      builder.setTile(i, turnAt, Floor.empty())
     }
 
-    for (i <- turnAt until end.colIdx) {
-      val coordinates = Coordinates(end.rowIdx, i)
-      level.setTile(coordinates, Floor.empty(coordinates))
+    for (i <- turnAt until end.col) {
+      builder.setTile(end.row, i, Floor.empty())
     }
 
-    level.setTile(end, randomDoorTile(random, end))
+    builder.setTile(end, randomDoorTile(random))
   }
 
-  private def drawDown(random: Random, level: Level, room: Room, start: Coordinates): Unit = {
+  private def drawDown(random: Random, builder: LevelBuilder, room: Room, start: Coordinates): Unit = {
     val end = room.getAttachmentPoint(random, Up)
-    val dy = end.rowIdx - start.rowIdx
-    val turnAt = start.rowIdx + (dy / 2)
+    val dy = end.row - start.row
+    val turnAt = start.row + (dy / 2)
 
-    level.setTile(start, randomDoorTile(random, start))
+    builder.setTile(start, randomDoorTile(random))
 
-    for (i <- start.rowIdx + 1 to turnAt) {
-      val coordinates = Coordinates(i, start.colIdx)
-      level.setTile(coordinates, Floor.empty(coordinates))
+    for (i <- start.row + 1 to turnAt) {
+      builder.setTile(i, start.col, Floor.empty())
     }
 
-    val jogStart = if (start.colIdx <= end.colIdx) start.colIdx else end.colIdx
-    val jogEnd = if (start.colIdx <= end.colIdx) end.colIdx else start.colIdx
+    val jogStart = if (start.col <= end.col) start.col else end.col
+    val jogEnd = if (start.col <= end.col) end.col else start.col
     for (i <- jogStart to jogEnd) {
-      val coordinates = Coordinates(turnAt, i)
-      level.setTile(coordinates, Floor.empty(coordinates))
+      builder.setTile(turnAt, i, Floor.empty())
     }
 
-    for (i <- turnAt until end.rowIdx) {
-      val coordinates = Coordinates(i, end.colIdx)
-      level.setTile(coordinates, Floor.empty(coordinates))
+    for (i <- turnAt until end.row) {
+      builder.setTile(i, end.col, Floor.empty())
     }
 
-    level.setTile(end, randomDoorTile(random, end))
+    builder.setTile(end, randomDoorTile(random))
   }
 
-  def randomDoorTile(random: Random, coordinates: Coordinates): Tile = {
+  def randomDoorTile(random: Random): Tile = {
     random.nextInt(100) match {
-      case x if x < 75 => new ClosedDoor(coordinates)
-      case x if x < 95 => new OpenDoor(coordinates, None)
-      case _ => new BrokenDoor(coordinates, None)
+      case x if x < 75 => new ClosedDoor()
+      case x if x < 95 => new OpenDoor()
+      case _ => new BrokenDoor()
     }
   }
 

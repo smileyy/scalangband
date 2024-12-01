@@ -16,7 +16,7 @@ object MoatedRectangularRoom {
     for (rowIdx <- 2 until room.height - 2) {
       for (colIdx <- 2 until room.width - 2) {
         if (rowIdx == 2 || rowIdx == room.height - 3 || colIdx == 2 || colIdx == room.width - 3) {
-          room.replaceTile(rowIdx, colIdx, coords => new RemovableWall(coords))
+          room.setTile(rowIdx, colIdx, new RemovableWall())
         }
       }
     }
@@ -24,10 +24,10 @@ object MoatedRectangularRoom {
     if (centeredDoor) {
       // add a door in the center of one of the walls
       random.nextInt(4) match {
-        case 0 => room.replaceTile(2, 12, coords => new ClosedDoor(coords))  // top
-        case 1 => room.replaceTile(6, 22, coords => new ClosedDoor(coords))  // right
-        case 2 => room.replaceTile(10, 12, coords => new ClosedDoor(coords)) // bottom
-        case 3 => room.replaceTile(6, 2, coords => new ClosedDoor(coords))   // left
+        case 0 => room.setTile(2, 12, new ClosedDoor())  // top
+        case 1 => room.setTile(6, 22, new ClosedDoor())  // right
+        case 2 => room.setTile(10, 12, new ClosedDoor()) // bottom
+        case 3 => room.setTile(6, 2, new ClosedDoor())   // left
       }
     }
 
@@ -48,7 +48,7 @@ object CheckerboardMoatedRoomGenerator extends RoomGenerator {
     for (rowIdx <- 3 until room.height - 3) {
       for (colIdx <- 3 until room.width - 3) {
         if ((rowIdx % 2 == 1 && colIdx % 2 == 1) || (rowIdx % 2 == 0 && colIdx % 2 == 0)) {
-          room.replaceTile(rowIdx, colIdx, coords => new RemovableWall(coords))
+          room.setTile(rowIdx, colIdx, new RemovableWall())
         }
       }
     }
@@ -63,18 +63,18 @@ object FourBoxesMoatedRoomGenerator extends RoomGenerator {
 
     // draw vertical box dividing line
     for (rowIdx <- 3 until 10) {
-      room.replaceTile(rowIdx, 12, coords => new RemovableWall(coords))
+      room.setTile(rowIdx, 12, new RemovableWall())
     }
 
     // draw horizontal box dividing line
     for (colIdx <- 3 until 22) {
-      room.replaceTile(6, colIdx, coords => new RemovableWall(coords))
+      room.setTile(6, colIdx, new RemovableWall())
     }
 
-    room.replaceTile(2, 2, coords => new ClosedDoor(coords))  // upper left corner
-    room.replaceTile(2, 22, coords => new ClosedDoor(coords)) // upper right corner
-    room.replaceTile(10, 22, coords => new ClosedDoor(coords))  // lower right corner
-    room.replaceTile(10, 2, coords => new ClosedDoor(coords))  // lower left corner
+    room.setTile(2, 2, new ClosedDoor())  // upper left corner
+    room.setTile(2, 22, new ClosedDoor()) // upper right corner
+    room.setTile(10, 22, new ClosedDoor())  // lower right corner
+    room.setTile(10, 2, new ClosedDoor())  // lower left corner
 
     room
 

@@ -1,30 +1,28 @@
 package scalangband.model.level
 
+import scalangband.model.level.Town.{TownHeight, TownWidth}
 import scalangband.model.location.Coordinates
-import scalangband.model.tile.{DownStairs, Floor, PermanentWall, Tile}
+import scalangband.model.monster.RandomlyMumblingTownsperson
+import scalangband.model.tile.{Floor, PermanentWall, Tile}
 
 import scala.util.Random
 
-class TownLevel(tiles: Array[Array[Tile]]) extends Level(tiles, 0)
+class Town(tiles: Array[Array[Tile]]) extends Level(0, tiles)
+object Town {
+  private val TownHeight = 36
+  private val TownWidth = 60
 
-object TownGenerator extends LevelGenerator {
-  private val width = 60
-  private val height = 36
+  def apply(random: Random): Town = {
+    val builder = LevelBuilder(TownHeight, TownWidth, 0)
 
-  override def generateLevelWithoutStairs(random: Random, depth: Int): Level = {
-    val level = LevelGenerator.generateWallFilledLevel(60, 36, depth)
-
-    for (rowIdx <- 1 until level.height - 1) {
-      for (colIdx <- 1 until level.width - 1) {
-        val coordinates = Coordinates(rowIdx, colIdx)
-        val floor = Floor.empty(coordinates)
-        level.setTile(coordinates, floor)
+    for (row <- 1 until TownHeight - 1) {
+      for (col <- 1 until TownWidth - 1) {
+        builder.setTile(row, col, Floor.empty())
       }
     }
 
-    level
+    builder.setMonster(1, 1, new RandomlyMumblingTownsperson())
+    
+    builder.build(random, (depth, tiles) => new Town(tiles)).asInstanceOf[Town]
   }
-
-  override def numberOfDownStairsForIntermediateLevel(random: Random): Int = 1
-  override def numberOfUpStairsForIntermediateLevel(random: Random): Int = 1
 }

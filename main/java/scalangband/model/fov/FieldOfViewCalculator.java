@@ -14,7 +14,7 @@ public class FieldOfViewCalculator {
     }
 
     public void recompute(Coordinates origin, Level level) {
-        level.markTilesInvisible();
+        level.makeEverythingInvisible();
         level.apply(origin).setVisible(true);
         for (int octant = 0; octant < 8; octant++) {
             compute(octant, origin, 1, new Slope(1, 1), new Slope(0, 1), level);
@@ -113,8 +113,8 @@ public class FieldOfViewCalculator {
     }
 
     private static boolean blocksLight(int x, int y, int octant, Coordinates origin, Level level) {
-        int nx = origin.colIdx();
-        int ny = origin.rowIdx();
+        int nx = origin.col();
+        int ny = origin.row();
 
         switch (octant) {
             case 0:
@@ -158,8 +158,8 @@ public class FieldOfViewCalculator {
     }
 
     private static void setVisible(int x, int y, int octant, Coordinates origin, Level level) {
-        int nx = origin.colIdx();
-        int ny = origin.rowIdx();
+        int nx = origin.col();
+        int ny = origin.row();
         switch(octant) {
             case 0: nx += x; ny -= y; break;
             case 1: nx += y; ny -= x; break;

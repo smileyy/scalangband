@@ -1,6 +1,6 @@
 package scalangband.model.action.result
 
-case class MessageResult(messages: Seq[String]) extends ActionResult
+case class MessageResult(messages: List[String]) extends ActionResult
 object MessageResult {
-  def apply(message: String): MessageResult = MessageResult(Seq(message))
+  def apply(message: String): MessageResult = MessageResult(List(message))
 }

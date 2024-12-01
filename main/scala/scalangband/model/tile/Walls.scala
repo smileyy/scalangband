@@ -1,12 +1,11 @@
 package scalangband.model.tile
 
-import scalangband.model.Representable
-import scalangband.model.location.Coordinates
+import scalangband.model.Creature
 
-abstract class Wall(coordinates: Coordinates) extends Tile(coordinates), Representable {
+trait Wall extends Tile {
   override def opaque: Boolean = true
-  override def representation: Representable = this
+  override def occupant: Option[Creature] = None
 }
 
-class RemovableWall(coordinates: Coordinates) extends Wall(coordinates)
-class PermanentWall(coordinates: Coordinates) extends Wall(coordinates)
+class RemovableWall extends Wall
+class PermanentWall extends Wall
