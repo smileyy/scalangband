@@ -20,7 +20,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
 
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
 
-  var queue: SchedulerQueue = createSchedulerQueue(level)
+  var queue: SchedulerQueue = SchedulerQueue(level.creatures)
   
   def takeTurn(action: GameAction): Seq[ActionResult] = {
     // We know(?) that the player is at the head of the queue
@@ -64,14 +64,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     turn = turn + 1
     level.startNextTurn()
     
-    queue = createSchedulerQueue(level)
-  }
-  
-  def createSchedulerQueue(level: Level): SchedulerQueue = {
-    val queue = SchedulerQueue.empty()
-    level.creatures.foreach(creature => queue.insert(creature))
-    println(queue)
-    queue
+    queue = SchedulerQueue(level.creatures)
   }
 
   def playerTile: OccupiableTile = level(playerCoordinates).asInstanceOf[OccupiableTile]

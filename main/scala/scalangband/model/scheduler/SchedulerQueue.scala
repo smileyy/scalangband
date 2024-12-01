@@ -93,7 +93,11 @@ class SchedulerQueue(private var first: SchedulerNode = null, private var last: 
   }
 }
 object SchedulerQueue {
-  def empty(): SchedulerQueue = new SchedulerQueue(null, null)
+  def apply(creatures: Iterable[Creature]): SchedulerQueue = {
+    val queue = new SchedulerQueue(null, null)
+    creatures.foreach(creature => queue.insert(creature))
+    queue
+  }
 }
 
 private class SchedulerNode(var prev: SchedulerNode, var next: SchedulerNode, val creature: Creature) {
