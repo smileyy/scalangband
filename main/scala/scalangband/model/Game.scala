@@ -29,7 +29,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     val playerActionResult: Option[ActionResult] = action.apply(this)
     var results: List[Option[ActionResult]] = List(playerActionResult)
     
-    if (action.energyRequired != 0) {
+    if (action.energyRequired > 0) {
       val player = queue.poll()
       player.deductEnergy(action.energyRequired)
       queue.insert(player)
