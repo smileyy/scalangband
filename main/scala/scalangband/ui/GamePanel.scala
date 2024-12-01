@@ -9,7 +9,7 @@ import scalangband.ui.render.Renderer
 import scala.swing.*
 import scala.swing.event.KeyPressed
 
-class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHandler], var messages: Seq[String] = Seq.empty) extends Panel {
+class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHandler], var messages: List[String] = List.empty) extends Panel {
 
   private val callback = new GamePanelCallback(this)
   
@@ -23,7 +23,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
 
   reactions += {
     case kp: KeyPressed =>
-      if (messages.size > 1) {
+      if (messages.nonEmpty) {
         messages = messages.tail
         repaint()
       } else {
@@ -32,8 +32,8 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
   }
 
   private def dispatchAction(action: GameAction): Unit = {
-    val result = game.takeAction(action)
-    applyResult(result)
+    val results = game.takeTurn(action)
+    results.foreach(result => applyResult(result))
     repaint()
   }
 
@@ -86,14 +86,13 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     g.drawString(depth, characterPaneWidth, game.level.tiles.length * renderer.tileHeight + lineHeight * 2)
   }
 
-  def applyResult(result: Option[ActionResult]): Unit = result match {
-    case None => messages = Seq.empty
-    case Some(MessageResult(messages)) => this.messages = messages
+  def applyResult(result: ActionResult): Unit = result match {
+    case MessageResult(messages) => this.messages = messages ::: this.messages
   }
 }
 object GamePanel {
   def apply(game: Game, renderer: Renderer): GamePanel = {
-    new GamePanel(game, renderer, List(MainKeyHandler), Seq.empty)
+    new GamePanel(game, renderer, List(MainKeyHandler), List.empty)
   }
 }
 

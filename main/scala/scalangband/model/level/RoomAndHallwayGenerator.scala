@@ -42,7 +42,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
       }
     }
 
-    builder.build(random)
+    builder.build(random, (depth, tiles) => new Level(depth, tiles))
   }
 
   private def chooseDirectionAndStart(random: Random, room: Room): (Direction, Coordinates) = {

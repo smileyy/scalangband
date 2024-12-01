@@ -17,7 +17,7 @@ object GoDownStairsAction extends PhysicalAction {
 
         val newLevel = game.levelGenerator.generateLevel(game.random, game.level.depth + 1)
         val startingCoordinates = randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[UpStairs]))
-        newLevel(startingCoordinates).asInstanceOf[OccupiableTile].setOccupant(game.player)
+        newLevel.addCreature(startingCoordinates, game.player)
         game.playerCoordinates = startingCoordinates
         game.level = newLevel
         Some(MessageResult(s"You descend to ${newLevel.depth * 50} feet"))
@@ -36,7 +36,7 @@ object GoUpStairsAction extends PhysicalAction {
           game.levelGenerator.generateLevel(game.random, game.level.depth)
         }
         val startingCoordinates = randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[DownStairs]))
-        newLevel(startingCoordinates).asInstanceOf[OccupiableTile].setOccupant(game.player)
+        newLevel.addCreature(startingCoordinates, game.player)
         game.playerCoordinates = startingCoordinates
         game.level = newLevel
         val message = if (newLevel.depth == 0) "You return to town" else s"You ascend to ${newLevel.depth * 50} feet"

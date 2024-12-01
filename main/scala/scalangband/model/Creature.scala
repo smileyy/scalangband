@@ -1,8 +1,7 @@
 package scalangband.model
 
-import scalangband.model.Representable
-
 trait Creature extends Representable, Ordered[Creature] {
+  def name: String
   def energy: Int
   def regenerateEnergy(): Unit
 

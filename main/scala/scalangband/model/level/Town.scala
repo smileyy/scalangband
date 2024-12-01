@@ -2,6 +2,7 @@ package scalangband.model.level
 
 import scalangband.model.level.Town.{TownHeight, TownWidth}
 import scalangband.model.location.Coordinates
+import scalangband.model.monster.RandomlyMovingTownsperson
 import scalangband.model.tile.{Floor, PermanentWall, Tile}
 
 import scala.util.Random
@@ -20,6 +21,8 @@ object Town {
       }
     }
 
-    new Town(builder.build(random).tiles)
+    builder.setMonster(1, 1, new RandomlyMovingTownsperson())
+    
+    builder.build(random, (depth, tiles) => new Town(tiles)).asInstanceOf[Town]
   }
 }

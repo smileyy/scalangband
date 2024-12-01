@@ -12,16 +12,22 @@ import scalangband.model.util.TileUtils.allCoordinatesFor
 
 import scala.util.Random
 
-class Game(seed: Long, val random: Random, var settings: Settings, val fov: FieldOfViewCalculator, val player: Player, var playerCoordinates: Coordinates, val town: Level, var level: Level) {
+class Game(seed: Long, val random: Random, var settings: Settings, val player: Player, var playerCoordinates: Coordinates, val town: Level, var level: Level) {
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
-  
+  private val fov = new FieldOfViewCalculator(20)
+
+  fov.recompute(playerCoordinates, town)
+
   def playerTile: OccupiableTile = level(playerCoordinates).asInstanceOf[OccupiableTile]
-  
-  def takeAction(action: GameAction): Option[ActionResult] = {
+
+  def takeTurn(action: GameAction): Seq[ActionResult] = {
     println(s"The player is taking $action")
-    val result = action.apply(this)
+    
+    val results: List[Option[ActionResult]] = List(action.apply(this))
+    
     fov.recompute(playerCoordinates, level)
-    result
+
+    results.flatten
   }
 }
 object Game {
@@ -32,10 +38,8 @@ object Game {
     val town: Level = Town(random)
 
     val start = randomElement(random, allCoordinatesFor(town.tiles, tile => tile.isInstanceOf[DownStairs]))
-    town(start).asInstanceOf[OccupiableTile].setOccupant(player)
+    town.addCreature(start, player)
 
-    val fov = new FieldOfViewCalculator(20)
-    fov.recompute(start, town)
-    new Game(seed, random, settings, fov, player, start, town, town)
+    new Game(seed, random, settings, player, start, town, town)
   }
 }

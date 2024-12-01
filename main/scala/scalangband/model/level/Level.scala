@@ -1,14 +1,30 @@
 package scalangband.model.level
 
+import scalangband.model.Creature
 import scalangband.model.location.Coordinates
-import scalangband.model.tile.Tile
+import scalangband.model.scheduler.SchedulerQueue
+import scalangband.model.tile.{OccupiableTile, Tile}
 
 class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
   def height: Int = tiles.length
   def width: Int = tiles(0).length
-  
+
   def apply(coordinates: Coordinates): Tile = apply(coordinates.row, coordinates.col)
   def apply(row: Int, col: Int): Tile = tiles(row)(col)
+
+  val creatures: SchedulerQueue = {
+    val queue = SchedulerQueue.empty()
+    tiles.flatten.flatMap(_.occupant).foreach(creature => queue.insert(creature))
+    println(queue)
+    queue
+  }
+
+  def addCreature(coordinates: Coordinates, creature: Creature): Unit = {
+    // TODO: check that the space isn't already occupied
+    this(coordinates).asInstanceOf[OccupiableTile].setOccupant(creature)
+    creatures.insert(creature)
+    println(creatures)
+  }
   
   def makeEverythingInvisible(): Unit = {
     for (row <- 0 until height) {
