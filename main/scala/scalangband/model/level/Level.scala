@@ -12,18 +12,15 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
   def apply(coordinates: Coordinates): Tile = apply(coordinates.row, coordinates.col)
   def apply(row: Int, col: Int): Tile = tiles(row)(col)
 
-  val creatures: SchedulerQueue = {
-    val queue = SchedulerQueue.empty()
-    tiles.flatten.flatMap(_.occupant).foreach(creature => queue.insert(creature))
-    println(queue)
-    queue
+  def creatures: Seq[Creature] = tiles.flatten.flatMap(_.occupant)
+  
+  def startNextTurn(): Unit = {
+    creatures.foreach(_.startNextTurn())
   }
 
   def addCreature(coordinates: Coordinates, creature: Creature): Unit = {
     // TODO: check that the space isn't already occupied
     this(coordinates).asInstanceOf[OccupiableTile].setOccupant(creature)
-    creatures.insert(creature)
-    println(creatures)
   }
   
   def makeEverythingInvisible(): Unit = {

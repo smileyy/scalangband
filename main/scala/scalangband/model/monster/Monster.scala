@@ -1,14 +1,18 @@
 package scalangband.model.monster
 
-import scalangband.model.Creature
+import scalangband.model.{Creature, Game}
 import scalangband.model.Game.BaseEnergyUnit
+import scalangband.model.action.GameAction
+import scalangband.model.level.Level
 
 import scala.util.Random
 
-abstract class Monster(val name: String, var energy: Int = Random.nextInt(BaseEnergyUnit - 1) + 1) extends Creature {
-  override def regenerateEnergy(): Unit = energy = energy + speed
-  private def speed: Int = BaseEnergyUnit
+abstract class Monster(name: String, energy: Int = Random.nextInt(BaseEnergyUnit - 1) + 1) extends Creature(name, energy) {
+  def speed: Int = BaseEnergyUnit
 
+  override def startNextTurn(): Unit = {
+    regenerateEnergy()
+  }
 
-  def unique: Boolean = false
+  def getAction(level: Level): GameAction 
 }

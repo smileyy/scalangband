@@ -96,7 +96,7 @@ object SchedulerQueue {
   def empty(): SchedulerQueue = new SchedulerQueue(null, null)
 }
 
-class SchedulerNode(var prev: SchedulerNode, var next: SchedulerNode, val creature: Creature) {
+private class SchedulerNode(var prev: SchedulerNode, var next: SchedulerNode, val creature: Creature) {
   def energy: Int = creature.energy
   override def toString: String = s"${creature.name}(${creature.energy})"
 }

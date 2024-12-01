@@ -2,8 +2,10 @@ package scalangband.model
 
 import scalangband.model.Game.BaseEnergyUnit
 
-class Player(val name: String, var energy: Int = Game.BaseEnergyUnit) extends Creature {
-  override def regenerateEnergy(): Unit = energy = energy + speed
-  
+class Player(name: String, energy: Int = Game.BaseEnergyUnit) extends Creature(name, energy) {
   def speed: Int = BaseEnergyUnit
+
+  override def startNextTurn(): Unit = {
+    regenerateEnergy()
+  }
 }
