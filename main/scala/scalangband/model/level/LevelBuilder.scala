@@ -17,8 +17,8 @@ class LevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
   def setTile(coordinates: Coordinates, tile: Tile): Unit = setTile(coordinates.row, coordinates.col, tile)
   def setTile(row: Int, col: Int, tile: Tile): Unit = tiles(row)(col) = tile
 
-  def setMonster(row: Int, col: Int, monster: Monster): Unit = {
-    this(row, col).asInstanceOf[OccupiableTile].setOccupant(monster)
+  def setMonster(row: Int, col: Int, createMonster: Coordinates => Monster): Unit = {
+    this(row, col).asInstanceOf[OccupiableTile].setOccupant(createMonster(Coordinates(row, col)))
   }
   
   def build(random: Random, createTown: (Int, Array[Array[Tile]]) => Level): Level = {

@@ -1,7 +1,8 @@
 package scalangband.model.level
 
-import scalangband.model.Creature
-import scalangband.model.location.Coordinates
+import scalangband.model.{Creature, Player}
+import scalangband.model.location.{Coordinates, Direction}
+import scalangband.model.monster.Monster
 import scalangband.model.scheduler.SchedulerQueue
 import scalangband.model.tile.{OccupiableTile, Tile}
 
@@ -18,9 +19,24 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
     creatures.foreach(_.startNextTurn())
   }
 
-  def addCreature(coordinates: Coordinates, creature: Creature): Unit = {
+  def addPlayer(coordinates: Coordinates, player: Player): Unit = {
     // TODO: check that the space isn't already occupied
-    this(coordinates).asInstanceOf[OccupiableTile].setOccupant(creature)
+    this(coordinates).asInstanceOf[OccupiableTile].setOccupant(player)
+  }
+  
+  def addMonster(monster: Monster): Unit = {
+    this(monster.coordinates).asInstanceOf[OccupiableTile].setOccupant(monster)
+  }
+  
+  def moveMonster(monster: Monster, direction: Direction): Unit = {
+    val targetCoordinates: Coordinates = monster.coordinates + direction
+    this(targetCoordinates) match {
+      case ot: OccupiableTile if !ot.occupied => 
+        ot.setOccupant(monster)
+        this(monster.coordinates).asInstanceOf[OccupiableTile].clearOccupant()
+        monster.coordinates = targetCoordinates
+      case _ =>
+    }
   }
   
   def makeEverythingInvisible(): Unit = {

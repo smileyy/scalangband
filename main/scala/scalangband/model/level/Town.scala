@@ -1,9 +1,7 @@
 package scalangband.model.level
 
-import scalangband.model.level.Town.{TownHeight, TownWidth}
-import scalangband.model.location.Coordinates
 import scalangband.model.monster.person.RandomlyMumblingTownsperson
-import scalangband.model.tile.{Floor, PermanentWall, Tile}
+import scalangband.model.tile.{Floor, Tile}
 
 import scala.util.Random
 
@@ -21,7 +19,7 @@ object Town {
       }
     }
 
-    builder.setMonster(1, 1, new RandomlyMumblingTownsperson())
+    builder.setMonster(1, 1, coords => new RandomlyMumblingTownsperson(coords))
     
     builder.build(random, (depth, tiles) => new Town(tiles)).asInstanceOf[Town]
   }

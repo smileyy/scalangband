@@ -49,6 +49,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     while (queue.peek.isInstanceOf[Monster]) {
       val monster = queue.poll().asInstanceOf[Monster]
       val action: GameAction = monster.getAction(level)
+      println(s"${monster.name} is taking action $action")
       val result: Option[ActionResult] = action.apply(this)
       monster.deductEnergy(action.energyRequired)
       queue.insert(monster)
@@ -77,7 +78,7 @@ object Game {
     val town: Level = Town(random)
 
     val start = randomElement(random, allCoordinatesFor(town.tiles, tile => tile.isInstanceOf[DownStairs]))
-    town.addCreature(start, player)
+    town.addPlayer(start, player)
 
     new Game(seed, random, settings, player, start, town, town, 0)
   }

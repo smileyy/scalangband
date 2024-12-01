@@ -2,13 +2,15 @@ package scalangband.model.monster.person
 
 import scalangband.model.Game
 import scalangband.model.action.result.{ActionResult, MessageResult}
-import scalangband.model.action.{GameAction, PassAction, PhysicalAction, TauntAction}
+import scalangband.model.action.{GameAction, PassAction, PhysicalAction, RandomMovementAction, TauntAction}
+import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
 import scalangband.model.util.Weighted
 
-class RandomlyMumblingTownsperson extends Monster("Randomly Mumbling Townsperson") {
+class RandomlyMumblingTownsperson(coords: Coordinates) extends Monster("Randomly Mumbling Townsperson", coordinates = coords) {
   override def weightedActions: Seq[Weighted[GameAction]] = Seq(
     Weighted(PassAction, 90),
-    Weighted(TauntAction("The townsperson mumbles incoherently"), 10)
+    Weighted(RandomMovementAction(this), 9),
+    Weighted(TauntAction("The townsperson mumbles incoherently"), 1)
   )
 }
