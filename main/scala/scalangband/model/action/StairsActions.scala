@@ -8,11 +8,11 @@ import scalangband.model.util.TileUtils.allCoordinatesFor
 
 object GoDownStairsAction extends PhysicalAction {
   override def apply(game: Game): Option[ActionResult] = {
-    game.playerTile match {
+    game.level(game.player.coordinates) match {
       case _: DownStairs =>
         // this is a little wonky...
         if (game.level.depth == 0) {
-          game.playerTile.clearOccupant()
+          game.level(game.player.coordinates).asInstanceOf[OccupiableTile].clearOccupant()
         }
 
         val newLevel = game.levelGenerator.generateLevel(game.random, game.level.depth + 1)
@@ -27,7 +27,7 @@ object GoDownStairsAction extends PhysicalAction {
 
 object GoUpStairsAction extends PhysicalAction {
   override def apply(game: Game): Option[ActionResult] = {
-    game.playerTile match {
+    game.level(game.player.coordinates) match {
       case _: UpStairs =>
         val newLevel = if (game.level.depth == 1) {
           game.town

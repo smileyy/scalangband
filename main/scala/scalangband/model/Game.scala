@@ -5,7 +5,6 @@ import scalangband.model.action.GameAction
 import scalangband.model.action.result.ActionResult
 import scalangband.model.fov.FieldOfViewCalculator
 import scalangband.model.level.{Level, LevelGenerator, RandomWeightedLevelGenerator, Town}
-import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
 import scalangband.model.scheduler.SchedulerQueue
 import scalangband.model.settings.Settings
@@ -72,8 +71,6 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     
     queue = SchedulerQueue(level.creatures)
   }
-
-  def playerTile: OccupiableTile = level(player.coordinates).asInstanceOf[OccupiableTile]
 }
 object Game {
   val BaseEnergyUnit: Int = 20

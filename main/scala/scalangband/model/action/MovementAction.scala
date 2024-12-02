@@ -20,7 +20,7 @@ case class MovementAction(direction: Direction) extends PhysicalAction {
         val result = game.player.attack(ot.occupant.get.asInstanceOf[Monster], game.callback)
         Some(result)
       case ot: OccupiableTile =>
-        game.playerTile.clearOccupant()
+        game.level(game.player.coordinates).asInstanceOf[OccupiableTile].clearOccupant()
         ot.setOccupant(game.player)
         game.player.coordinates = targetCoordinates
         None
