@@ -7,7 +7,7 @@ import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
 import scalangband.model.util.Weighted
 
-class RandomlyMumblingTownsperson(coords: Coordinates) extends Monster("Randomly Mumbling Townsperson", coordinates = coords) {
+class RandomlyMumblingTownsperson(coords: Coordinates) extends Monster("Randomly Mumbling Townsperson", 2, coordinates = coords) {
   override def weightedActions: Seq[Weighted[GameAction]] = Seq(
     Weighted(PassAction, 90),
     Weighted(RandomMovementAction(this), 9),

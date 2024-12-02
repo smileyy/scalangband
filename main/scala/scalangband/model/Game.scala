@@ -23,8 +23,10 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
 
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
 
-  var queue: SchedulerQueue = SchedulerQueue(level.creatures)
-  
+  private var queue: SchedulerQueue = SchedulerQueue(level.creatures)
+
+  val callback: GameCallback = new GameCallback(this)
+
   def takeTurn(playerAction: GameAction): Seq[ActionResult] = {
     // We know(?) that the player is at the head of the queue
     logger.info(s"Player is taking  $playerAction")
@@ -84,5 +86,11 @@ object Game {
     town.addPlayer(start, player)
 
     new Game(seed, random, settings, player, start, town, town, 0)
+  }
+}
+
+class GameCallback(private val game: Game) {
+  def killMonster(monster: Monster): Unit = {
+    game.level(monster.coordinates).asInstanceOf[OccupiableTile].clearOccupant()
   }
 }
