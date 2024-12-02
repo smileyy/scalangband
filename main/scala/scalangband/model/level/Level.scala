@@ -25,17 +25,25 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
     player.coordinates = coordinates
   }
   
-  def addMonster(monster: Monster): Unit = {
-    this(monster.coordinates).asInstanceOf[OccupiableTile].setOccupant(monster)
+  def moveOccupant(from: Coordinates, to: Coordinates): Unit = {
+    val fromTile = apply(from).asInstanceOf[OccupiableTile]
+    val toTile = apply(to).asInstanceOf[OccupiableTile]
+
+    val occupant = fromTile.occupant.get
+
+    fromTile.clearOccupant()
+    toTile.setOccupant(occupant)
+
+    occupant.coordinates = to
   }
-  
-  def moveMonster(monster: Monster, direction: Direction): Unit = {
+
+  /**
+   * Tries to move the monster in the given direction. If the monster can't move in that direction, nothing happens
+   */
+  def tryToMoveMonster(monster: Monster, direction: Direction): Unit = {
     val targetCoordinates: Coordinates = monster.coordinates + direction
     this(targetCoordinates) match {
-      case ot: OccupiableTile if !ot.occupied => 
-        ot.setOccupant(monster)
-        this(monster.coordinates).asInstanceOf[OccupiableTile].clearOccupant()
-        monster.coordinates = targetCoordinates
+      case ot: OccupiableTile if !ot.occupied => moveOccupant(monster.coordinates, targetCoordinates)
       case _ =>
     }
   }
@@ -55,4 +63,14 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
   def replaceTile(coordinates: Coordinates, tile: Tile): Unit = {
     tiles(coordinates.row)(coordinates.col) = tile
   }
+}
+
+class LevelAccessor(private val level: Level) {
+  def depth: Int = level.depth
+  def tile(coordinates: Coordinates): Tile = level(coordinates)
+}
+
+class LevelCallback(private val level: Level) {
+  def replaceTile(coordinates: Coordinates, tile: Tile): Unit = level.replaceTile(coordinates, tile)
+  def tryToMoveMonster(monster: Monster, direction: Direction): Unit = level.tryToMoveMonster(monster, direction)
 }

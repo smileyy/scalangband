@@ -1,6 +1,6 @@
 package scalangband.model.action
 
-import scalangband.model.Game
+import scalangband.model.{Game, GameAccessor, GameCallback}
 import scalangband.model.action.result.{ActionResult, MessageResult}
 import scalangband.model.location.Direction
 import scalangband.model.tile.{BrokenDoor, ClosedDoor, OpenDoor}
@@ -10,14 +10,14 @@ object PendingDirectionOpenAction extends DirectionNeededAction {
 }
 
 class OpenAction(direction: Direction) extends PhysicalAction {
-  override def apply(game: Game): Option[ActionResult] = {
+  override def apply(accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = {
 
-    val targetCoordinates = game.player.coordinates + direction
-    val targetTile = game.level(targetCoordinates)
+    val targetCoordinates = accessor.player.coordinates + direction
+    val targetTile = accessor.level.tile(targetCoordinates)
 
     targetTile match {
       case _: ClosedDoor => 
-        game.level.replaceTile(targetCoordinates, new OpenDoor())
+        callback.level.replaceTile(targetCoordinates, new OpenDoor())
         None
       case _: BrokenDoor => Some(MessageResult("The door is broken"))
       case _ => Some(MessageResult("There is nothing to open there"))

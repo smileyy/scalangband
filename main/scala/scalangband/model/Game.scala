@@ -4,11 +4,12 @@ import org.slf4j.LoggerFactory
 import scalangband.model.action.GameAction
 import scalangband.model.action.result.ActionResult
 import scalangband.model.fov.FieldOfViewCalculator
-import scalangband.model.level.{Level, LevelGenerator, RandomWeightedLevelGenerator, Town}
+import scalangband.model.level.{Level, LevelAccessor, LevelCallback, LevelGenerator, RandomWeightedLevelGenerator, Town}
+import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
 import scalangband.model.scheduler.SchedulerQueue
 import scalangband.model.settings.Settings
-import scalangband.model.tile.{DownStairs, OccupiableTile}
+import scalangband.model.tile.{DownStairs, OccupiableTile, Tile, UpStairs}
 import scalangband.model.util.RandomUtils.randomElement
 import scalangband.model.util.TileUtils.allCoordinatesFor
 
@@ -24,13 +25,14 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
 
   private var queue: SchedulerQueue = SchedulerQueue(level.creatures)
 
+  val accessor: GameAccessor = new GameAccessor(this)
   val callback: GameCallback = new GameCallback(this)
 
   def takeTurn(playerAction: GameAction): Seq[ActionResult] = {
     // We know(?) that the player is at the head of the queue
     logger.info(s"Player is taking  $playerAction")
 
-    val playerActionResult: Option[ActionResult] = playerAction.apply(this)
+    val playerActionResult: Option[ActionResult] = playerAction.apply(accessor, callback)
     var results: List[Option[ActionResult]] = List(playerActionResult)
     
     if (playerAction.energyRequired > 0) {
@@ -54,7 +56,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
       val monster = queue.poll().asInstanceOf[Monster]
       val action: GameAction = monster.getAction(level)
       logger.info(s"${monster.name} is taking action $action")
-      val result: Option[ActionResult] = action.apply(this)
+      val result: Option[ActionResult] = action.apply(accessor, callback)
       monster.deductEnergy(action.energyRequired)
       queue.insert(monster)
 
@@ -86,8 +88,42 @@ object Game {
   }
 }
 
+class GameAccessor(private val game: Game) {
+  def level: LevelAccessor = new LevelAccessor(game.level)
+  val player: PlayerAccessor = new PlayerAccessor(game.player)
+
+  def playerTile: OccupiableTile = level.tile(player.coordinates).asInstanceOf[OccupiableTile]
+}
+
 class GameCallback(private val game: Game) {
+  def level: LevelCallback = new LevelCallback(game.level)
+  val player: PlayerCallback = new PlayerCallback(game.player)
+
+  def movePlayerTo(targetCoordinates: Coordinates): Unit = {
+    game.level.moveOccupant(game.player.coordinates, targetCoordinates)
+  }
+
   def killMonster(monster: Monster): Unit = {
     game.level(monster.coordinates).asInstanceOf[OccupiableTile].clearOccupant()
+  }
+
+  def moveDownTo(depth: Int): Unit = {
+    val newLevel = game.levelGenerator.generateLevel(game.random, game.level.depth + 1)
+    val startingCoordinates =
+      randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[UpStairs]))
+    newLevel.addPlayer(startingCoordinates, game.player)
+    game.level = newLevel
+  }
+
+  def moveUpTo(depth: Int): Unit = {
+    val newLevel = if (game.level.depth == 1) {
+      game.town
+    } else {
+      game.levelGenerator.generateLevel(game.random, game.level.depth)
+    }
+    val startingCoordinates =
+      randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[DownStairs]))
+    newLevel.addPlayer(startingCoordinates, game.player)
+    game.level = newLevel
   }
 }

@@ -1,6 +1,6 @@
 package scalangband.model.action
 
-import scalangband.model.Game
+import scalangband.model.{Game, GameAccessor, GameCallback}
 import scalangband.model.action.result.{ActionResult, MessageResult}
 import scalangband.model.location.*
 import scalangband.model.monster.Monster
@@ -8,7 +8,7 @@ import scalangband.model.monster.Monster
 import scala.util.Random
 
 class RandomMovementAction(monster: Monster) extends PhysicalAction {
-  override def apply(game: Game): Option[ActionResult] = {
+  override def apply(accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = {
     val direction: Direction = Random.nextInt(8) match {
       case 0 => Up
       case 1 => Down
@@ -20,7 +20,7 @@ class RandomMovementAction(monster: Monster) extends PhysicalAction {
       case 7 => DownRight
     }
     
-    game.level.moveMonster(monster, direction)
+    callback.level.tryToMoveMonster(monster, direction)
     
     None
   }
@@ -28,7 +28,7 @@ class RandomMovementAction(monster: Monster) extends PhysicalAction {
 }
 
 class TauntAction(taunt: String) extends PhysicalAction {
-  override def apply(game: Game): Option[ActionResult] = {
+  override def apply(accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = {
     Some(MessageResult(taunt))
   }
 }

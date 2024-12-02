@@ -1,6 +1,8 @@
 package scalangband.model
 
-abstract class Creature(val name: String, var energy: Int) extends Representable, Ordered[Creature] {
+import scalangband.model.location.Coordinates
+
+abstract class Creature(val name: String, var coordinates: Coordinates, var energy: Int) extends Representable, Ordered[Creature] {
   def speed: Int
   def deductEnergy(deduction: Int): Unit = energy = energy - deduction
   def regenerateEnergy(): Unit = energy = energy + speed

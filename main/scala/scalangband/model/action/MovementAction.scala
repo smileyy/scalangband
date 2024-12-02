@@ -1,28 +1,25 @@
 package scalangband.model.action
 
-import scalangband.model.Game
+import scalangband.model.{Game, GameAccessor, GameCallback}
 import scalangband.model.action.result.{ActionResult, MessageResult}
 import scalangband.model.location.Direction
 import scalangband.model.monster.Monster
 import scalangband.model.tile.{ClosedDoor, OccupiableTile, OpenDoor, Wall}
 
 case class MovementAction(direction: Direction) extends PhysicalAction {
-  def apply(game: Game): Option[ActionResult] = {
-    val targetCoordinates = game.player.coordinates + direction
-    val targetTile = game.level(targetCoordinates)
+  def apply(accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = {
+    val targetCoordinates = accessor.player.coordinates + direction
+    val targetTile = accessor.level.tile(targetCoordinates)
 
     targetTile match {
       case _: Wall => Some(MessageResult("There is a wall in the way"))
       case _: ClosedDoor => 
-        game.level.replaceTile(targetCoordinates, new OpenDoor())
+        callback.level.replaceTile(targetCoordinates, new OpenDoor())
         None
       case ot: OccupiableTile if ot.occupied =>
-        val result = game.player.attack(ot.occupant.get.asInstanceOf[Monster], game.callback)
-        Some(result)
+        Some(callback.player.attack(ot.occupant.get.asInstanceOf[Monster], callback))
       case ot: OccupiableTile =>
-        game.level(game.player.coordinates).asInstanceOf[OccupiableTile].clearOccupant()
-        ot.setOccupant(game.player)
-        game.player.coordinates = targetCoordinates
+        callback.movePlayerTo(targetCoordinates)
         None
     }
   }
