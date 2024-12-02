@@ -23,10 +23,11 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
 
   reactions += {
     case kp: KeyPressed =>
-      if (messages.nonEmpty) {
+      if (messages.size > 1) {
         messages = messages.tail
         repaint()
       } else {
+        messages = List.empty
         keyHandlers.head.handleKeyPressed(kp, callback).foreach(action => dispatchAction(action))
     }
   }
