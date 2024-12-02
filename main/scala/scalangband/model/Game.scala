@@ -21,10 +21,11 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
 
   var queue: SchedulerQueue = SchedulerQueue(level.creatures)
+  private val logger = org.slf4j.LoggerFactory.getLogger(this.getClass)
   
   def takeTurn(action: GameAction): Seq[ActionResult] = {
     // We know(?) that the player is at the head of the queue
-    println(s"The player is taking $action")
+    logger.info(s"Player is taking  $action")
 
     val playerActionResult: Option[ActionResult] = action.apply(this)
     var results: List[Option[ActionResult]] = List(playerActionResult)
@@ -49,7 +50,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     while (queue.peek.isInstanceOf[Monster]) {
       val monster = queue.poll().asInstanceOf[Monster]
       val action: GameAction = monster.getAction(level)
-      println(s"${monster.name} is taking action $action")
+      logger.info(s"${monster.name} is taking action $action")
       val result: Option[ActionResult] = action.apply(this)
       monster.deductEnergy(action.energyRequired)
       queue.insert(monster)
