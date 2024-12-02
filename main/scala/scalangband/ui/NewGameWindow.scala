@@ -2,6 +2,7 @@ package scalangband.ui
 
 import org.slf4j.LoggerFactory
 import scalangband.Scalangband
+import scalangband.model.location.Coordinates
 import scalangband.model.settings.Settings
 import scalangband.model.{Game, Player}
 
@@ -50,7 +51,8 @@ class NewGameWindow extends Frame {
 
       logger.info(s"Starting game with seed $seed")
       
-      val game = Game.newGame(seed, random, new Settings(), new Player(nameTextBox.text))
+      val placeholderCoordinates = Coordinates(-1, -1)
+      val game = Game.newGame(seed, random, new Settings(), new Player(nameTextBox.text, placeholderCoordinates))
       Scalangband.startGame(game)
   }
   

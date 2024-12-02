@@ -12,7 +12,7 @@ object PendingDirectionCloseAction extends DirectionNeededAction {
 class CloseAction(direction: Direction) extends PhysicalAction {
   override def apply(game: Game): Option[ActionResult] = {
 
-    val targetCoordinates = game.playerCoordinates + direction
+    val targetCoordinates = game.player.coordinates + direction
     val targetTile = game.level(targetCoordinates)
 
     targetTile match {

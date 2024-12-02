@@ -8,7 +8,7 @@ import scalangband.model.tile.{ClosedDoor, OccupiableTile, OpenDoor, Wall}
 
 case class MovementAction(direction: Direction) extends PhysicalAction {
   def apply(game: Game): Option[ActionResult] = {
-    val targetCoordinates = game.playerCoordinates + direction
+    val targetCoordinates = game.player.coordinates + direction
     val targetTile = game.level(targetCoordinates)
 
     targetTile match {
@@ -22,7 +22,7 @@ case class MovementAction(direction: Direction) extends PhysicalAction {
       case ot: OccupiableTile =>
         game.playerTile.clearOccupant()
         ot.setOccupant(game.player)
-        game.playerCoordinates = targetCoordinates
+        game.player.coordinates = targetCoordinates
         None
     }
   }

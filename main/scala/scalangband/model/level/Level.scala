@@ -22,6 +22,7 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
   def addPlayer(coordinates: Coordinates, player: Player): Unit = {
     // TODO: check that the space isn't already occupied
     this(coordinates).asInstanceOf[OccupiableTile].setOccupant(player)
+    player.coordinates = coordinates
   }
   
   def addMonster(monster: Monster): Unit = {

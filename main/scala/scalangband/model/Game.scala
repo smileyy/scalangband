@@ -15,11 +15,11 @@ import scalangband.model.util.TileUtils.allCoordinatesFor
 
 import scala.util.Random
 
-class Game(seed: Long, val random: Random, val settings: Settings, val player: Player, var playerCoordinates: Coordinates, val town: Level, var level: Level, var turn: Int) {
+class Game(seed: Long, val random: Random, val settings: Settings, val player: Player, val town: Level, var level: Level, var turn: Int) {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   private val fov = new FieldOfViewCalculator(20)
-  fov.recompute(playerCoordinates, town)
+  fov.recompute(player.coordinates, town)
 
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
 
@@ -42,7 +42,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
       results = takeMonsterActions() ::: results
     }
     
-    fov.recompute(playerCoordinates, level)
+    fov.recompute(player.coordinates, level)
 
     results.flatten.reverse
   }
@@ -73,7 +73,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     queue = SchedulerQueue(level.creatures)
   }
 
-  def playerTile: OccupiableTile = level(playerCoordinates).asInstanceOf[OccupiableTile]
+  def playerTile: OccupiableTile = level(player.coordinates).asInstanceOf[OccupiableTile]
 }
 object Game {
   val BaseEnergyUnit: Int = 20
@@ -85,7 +85,7 @@ object Game {
     val start = randomElement(random, allCoordinatesFor(town.tiles, tile => tile.isInstanceOf[DownStairs]))
     town.addPlayer(start, player)
 
-    new Game(seed, random, settings, player, start, town, town, 0)
+    new Game(seed, random, settings, player, town, town, 0)
   }
 }
 
