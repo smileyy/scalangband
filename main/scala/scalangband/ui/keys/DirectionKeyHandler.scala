@@ -1,6 +1,6 @@
 package scalangband.ui.keys
 
-import scalangband.model.action.{DirectionNeededAction, GameAction, MovementAction}
+import scalangband.model.action.{DirectionNeededAction, GameAction}
 import scalangband.model.location.*
 import scalangband.ui.GamePanelCallback
 

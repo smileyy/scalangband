@@ -1,5 +1,6 @@
 package scalangband.model
 
+import org.slf4j.LoggerFactory
 import scalangband.model.action.GameAction
 import scalangband.model.action.result.ActionResult
 import scalangband.model.fov.FieldOfViewCalculator
@@ -15,24 +16,25 @@ import scalangband.model.util.TileUtils.allCoordinatesFor
 import scala.util.Random
 
 class Game(seed: Long, val random: Random, val settings: Settings, val player: Player, var playerCoordinates: Coordinates, val town: Level, var level: Level, var turn: Int) {
+  private val logger = LoggerFactory.getLogger(this.getClass)
+
   private val fov = new FieldOfViewCalculator(20)
   fov.recompute(playerCoordinates, town)
 
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
 
   var queue: SchedulerQueue = SchedulerQueue(level.creatures)
-  private val logger = org.slf4j.LoggerFactory.getLogger(this.getClass)
   
-  def takeTurn(action: GameAction): Seq[ActionResult] = {
+  def takeTurn(playerAction: GameAction): Seq[ActionResult] = {
     // We know(?) that the player is at the head of the queue
-    logger.info(s"Player is taking  $action")
+    logger.info(s"Player is taking  $playerAction")
 
-    val playerActionResult: Option[ActionResult] = action.apply(this)
+    val playerActionResult: Option[ActionResult] = playerAction.apply(this)
     var results: List[Option[ActionResult]] = List(playerActionResult)
     
-    if (action.energyRequired > 0) {
+    if (playerAction.energyRequired > 0) {
       val player = queue.poll()
-      player.deductEnergy(action.energyRequired)
+      player.deductEnergy(playerAction.energyRequired)
       queue.insert(player)
       
       results = takeMonsterActions() ::: results
@@ -43,7 +45,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     results.flatten.reverse
   }
 
-  def takeMonsterActions(): List[Option[ActionResult]] = {
+  private def takeMonsterActions(): List[Option[ActionResult]] = {
     if (queue.peek.energy <= 0) startNextTurn()
     
     var results = List.empty[Option[ActionResult]]

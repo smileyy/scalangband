@@ -37,6 +37,10 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     repaint()
   }
 
+  private def applyResult(result: ActionResult): Unit = result match {
+    case MessageResult(messages) => this.messages = messages ::: this.messages
+  }
+
   override def paintComponent(g: Graphics2D): Unit = {
     super.paintComponent(g)
 
@@ -59,7 +63,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     }
   }
 
-  def paintPlayer(g: Graphics2D, lineHeight: Int): Unit = {
+  private def paintPlayer(g: Graphics2D, lineHeight: Int): Unit = {
     val displayName = if (game.player.name.length < 20) {
       game.player.name
     } else {
@@ -84,10 +88,6 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     g.setColor(TextColors.White)
     val depth = if (game.level.depth == 0) "Town" else s"${game.level.depth * 50} feet"
     g.drawString(depth, characterPaneWidth, game.level.tiles.length * renderer.tileHeight + lineHeight * 2)
-  }
-
-  def applyResult(result: ActionResult): Unit = result match {
-    case MessageResult(messages) => this.messages = messages ::: this.messages
   }
 }
 object GamePanel {

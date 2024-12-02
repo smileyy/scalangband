@@ -5,7 +5,6 @@ import scalangband.ui.render.text.TextRenderer
 import scalangband.ui.{GameWindow, MainWindow}
 
 import scala.swing.SwingApplication
-import scala.util.Random
 
 object Scalangband extends SwingApplication {
   private val mainWindow = new MainWindow()
@@ -17,7 +16,7 @@ object Scalangband extends SwingApplication {
   }
 
   def startGame(game: Game): Unit = {
-    maybeGameWindow = Option(GameWindow(game, TextRenderer.default))
+    maybeGameWindow = Some(GameWindow(game, TextRenderer.default))
     maybeGameWindow.get.pack()
     maybeGameWindow.get.visible = true
   }

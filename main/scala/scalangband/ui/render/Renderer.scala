@@ -1,6 +1,5 @@
 package scalangband.ui.render
 
-import scalangband.model.Game
 import scalangband.model.level.Level
 
 trait Renderer {
