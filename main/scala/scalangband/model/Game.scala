@@ -89,6 +89,7 @@ object Game {
 }
 
 class GameAccessor(private val game: Game) {
+  // this has to be a `def` since the current level of the game is mutable
   def level: LevelAccessor = new LevelAccessor(game.level)
   val player: PlayerAccessor = new PlayerAccessor(game.player)
 
@@ -96,6 +97,7 @@ class GameAccessor(private val game: Game) {
 }
 
 class GameCallback(private val game: Game) {
+  // this has to be a `def` since the current level of the game is mutable
   def level: LevelCallback = new LevelCallback(game.level)
   val player: PlayerCallback = new PlayerCallback(game.player)
 
