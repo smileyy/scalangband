@@ -1,7 +1,7 @@
 package scalangband.model
 
 import scalangband.model.Game.BaseEnergyUnit
-import scalangband.model.action.result.{ActionResult, MessageResult}
+import scalangband.model.action.result.{ActionResult, MessagesResult}
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
 
@@ -22,7 +22,7 @@ class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEner
       messages = s"The ${monster.name} dies" :: messages
     }
 
-    new MessageResult(messages.reverse)
+    MessagesResult(messages.reverse)
   }
 }
 
@@ -32,4 +32,5 @@ class PlayerAccessor(private val player: Player) {
 
 class PlayerCallback(private val player: Player) {
   def attack(monster: Monster, callback: GameCallback): ActionResult = player.attack(monster, callback)
+  def resetEnergy(): Unit = player.energy = player.speed
 }

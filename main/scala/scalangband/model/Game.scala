@@ -1,15 +1,15 @@
 package scalangband.model
 
 import org.slf4j.LoggerFactory
-import scalangband.model.action.GameAction
 import scalangband.model.action.result.ActionResult
+import scalangband.model.action.{GameAction, GoDownStairsAction, GoUpStairsAction}
 import scalangband.model.fov.FieldOfViewCalculator
-import scalangband.model.level.{Level, LevelAccessor, LevelCallback, LevelGenerator, RandomWeightedLevelGenerator, Town}
+import scalangband.model.level.*
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
 import scalangband.model.scheduler.SchedulerQueue
 import scalangband.model.settings.Settings
-import scalangband.model.tile.{DownStairs, OccupiableTile, Tile, UpStairs}
+import scalangband.model.tile.{DownStairs, OccupiableTile, UpStairs}
 import scalangband.model.util.RandomUtils.randomElement
 import scalangband.model.util.TileUtils.allCoordinatesFor
 
@@ -33,18 +33,28 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     logger.info(s"Player is taking  $playerAction")
 
     val playerActionResult: Option[ActionResult] = playerAction.apply(accessor, callback)
-    var results: List[Option[ActionResult]] = List(playerActionResult)
-    
-    if (playerAction.energyRequired > 0) {
-      val player = queue.poll()
-      player.deductEnergy(playerAction.energyRequired)
-      queue.insert(player)
-      
-      results = takeMonsterActions() ::: results
-    }
-    
-    fov.recompute(player.coordinates, level)
 
+    val results: List[Option[ActionResult]] = (playerAction, playerActionResult) match {
+      // We don't need / want the monster action loop if the player has successfully gone up or down stairs
+      case (GoUpStairsAction, Some(result)) if result.success =>
+        queue = SchedulerQueue(level.creatures)
+        List(playerActionResult)
+      case (GoDownStairsAction, Some(result)) if result.success =>
+        queue = SchedulerQueue(level.creatures)
+        List(playerActionResult)
+      case _ =>
+        if (playerAction.energyRequired > 0) {
+          val player = queue.poll()
+          player.deductEnergy(playerAction.energyRequired)
+          queue.insert(player)
+
+          takeMonsterActions() ::: List(playerActionResult)
+        } else {
+          List(playerActionResult)
+        }
+    }
+
+    fov.recompute(player.coordinates, level)
     results.flatten.reverse
   }
 
@@ -115,6 +125,7 @@ class GameCallback(private val game: Game) {
       randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[UpStairs]))
     newLevel.addPlayer(startingCoordinates, game.player)
     game.level = newLevel
+    player.resetEnergy()
   }
 
   def moveUpTo(depth: Int): Unit = {
@@ -127,5 +138,6 @@ class GameCallback(private val game: Game) {
       randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[DownStairs]))
     newLevel.addPlayer(startingCoordinates, game.player)
     game.level = newLevel
+    player.resetEnergy()
   }
 }

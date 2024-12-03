@@ -2,7 +2,7 @@ package scalangband.ui
 
 import scalangband.model.Game
 import scalangband.model.action.*
-import scalangband.model.action.result.{ActionResult, MessageResult}
+import scalangband.model.action.result.{ActionResult, MessagesResult}
 import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
 import scalangband.ui.render.Renderer
 
@@ -39,7 +39,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
   }
 
   private def applyResult(result: ActionResult): Unit = result match {
-    case MessageResult(messages) => this.messages = messages ::: this.messages
+    case MessagesResult(messages, _) => this.messages = messages ::: this.messages
   }
 
   override def paintComponent(g: Graphics2D): Unit = {
