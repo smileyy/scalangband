@@ -1,6 +1,7 @@
 package scalangband.model.level
 
 import scalangband.model.Game.MaxDungeonDepth
+import scalangband.model.item.Item
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
 import scalangband.model.tile.{DownStairs, Floor, OccupiableTile, PermanentWall, RemovableWall, Tile, UpStairs}
@@ -19,6 +20,10 @@ class LevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
 
   def setMonster(row: Int, col: Int, createMonster: Coordinates => Monster): Unit = {
     this(row, col).asInstanceOf[OccupiableTile].setOccupant(createMonster(Coordinates(row, col)))
+  }
+  
+  def addItem(row: Int, col: Int, item: Item): Unit = {
+    this(row, col).asInstanceOf[Floor].addItem(item)
   }
   
   def build(random: Random, createTown: (Int, Array[Array[Tile]]) => Level): Level = {

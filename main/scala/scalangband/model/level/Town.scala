@@ -1,5 +1,6 @@
 package scalangband.model.level
 
+import scalangband.model.item.garbage.PotteryShard
 import scalangband.model.monster.person.RandomlyMumblingTownsperson
 import scalangband.model.tile.{Floor, Tile}
 
@@ -20,6 +21,7 @@ object Town {
     }
 
     builder.setMonster(1, 1, coords => new RandomlyMumblingTownsperson(coords))
+    builder.addItem(1, 2, PotteryShard)
     
     builder.build(random, (depth, tiles) => new Town(tiles)).asInstanceOf[Town]
   }

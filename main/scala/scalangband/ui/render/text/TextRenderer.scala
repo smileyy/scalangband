@@ -1,8 +1,9 @@
 package scalangband.ui.render.text
 
 import scalangband.model.level.Level
-import scalangband.model.Player
+import scalangband.model.item.garbage.PotteryShard
 import scalangband.model.monster.person.RandomlyMumblingTownsperson
+import scalangband.model.player.Player
 import scalangband.model.tile.*
 import scalangband.ui.TextColors.*
 import scalangband.ui.render.{RenderableTile, Renderer}
@@ -24,6 +25,9 @@ class TextRenderer(font: Font) extends Renderer {
   def render(tile: Tile): RenderableTile = {
     if (tile.isVisible || tile.seen) {
       tile.representation match {
+        case _: Player => TextTile('@', font.deriveFont(java.awt.Font.BOLD), White)
+
+        // terrain
         case _: DownStairs => TextTile('>', font, VeryLightGrey)
         case _: UpStairs => TextTile('<', font, VeryLightGrey)
         case floor: Floor if floor.isVisible => TextTile('.', font, VeryLightGrey)
@@ -32,12 +36,16 @@ class TextRenderer(font: Font) extends Renderer {
         case _: OpenDoor => TextTile('\'', font, Brown)
         case _: BrokenDoor => TextTile('\'', font, Brown)
         case _: RemovableWall => TextTile('#', font, MediumGrey)
-        case _: PermanentWall => TextTile('#', font, Turquoise)
+        case _: PermanentWall => TextTile('#', font, DarkGrey)
 
-        case _: Player => TextTile('@', font.deriveFont(java.awt.Font.BOLD), White)
+        // monsters
+        case _: RandomlyMumblingTownsperson => TextTile('p', font, White)
 
-        case _: RandomlyMumblingTownsperson => new TextTile('p', font, White)
+        // items
+        case PileOfItems => TextTile('&', font, White)
+        case PotteryShard => TextTile('~', font, LightBeige)
 
+        // oops!
         case _ => TextTile('0', font, Red)
       }
     } else TextTile(' ', font, Black)

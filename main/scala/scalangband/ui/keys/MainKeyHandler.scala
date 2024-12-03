@@ -28,11 +28,13 @@ object MainKeyHandler extends KeyHandler {
       val action = PendingDirectionCloseAction
       callback.pushKeyHandler(new DirectionKeyHandler(action))
       Some(action)
+    case KeyPressed(_, Key.G, _, _) => Some(PickUpItemAction)
+    case KeyPressed(_, Key.I, _, _) => Some(ListInventoryAction)
     case KeyPressed(_, Key.O, _, _) =>
       val action = PendingDirectionOpenAction
       callback.pushKeyHandler(new DirectionKeyHandler(action))
       Some(action)
 
-    case KeyPressed(_, k, _, _) => None
+    case KeyPressed(_, _, _, _) => None
   }
 }
