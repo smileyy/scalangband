@@ -4,12 +4,14 @@ import org.slf4j.LoggerFactory
 import scalangband.model.action.result.ActionResult
 import scalangband.model.action.{GameAction, GoDownStairsAction, GoUpStairsAction}
 import scalangband.model.fov.FieldOfViewCalculator
+import scalangband.model.item.Item
 import scalangband.model.level.*
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
+import scalangband.model.player.{Player, PlayerAccessor, PlayerCallback}
 import scalangband.model.scheduler.SchedulerQueue
 import scalangband.model.settings.Settings
-import scalangband.model.tile.{DownStairs, OccupiableTile, UpStairs}
+import scalangband.model.tile.{DownStairs, Floor, OccupiableTile, UpStairs}
 import scalangband.model.util.RandomUtils.randomElement
 import scalangband.model.util.TileUtils.allCoordinatesFor
 
@@ -139,5 +141,10 @@ class GameCallback(private val game: Game) {
     newLevel.addPlayer(startingCoordinates, game.player)
     game.level = newLevel
     player.resetEnergy()
+  }
+  
+  def playerPickup(tile: Floor, item: Item): Unit = { 
+    game.player.inventory.addItem(item)
+    tile.removeItem(item)
   }
 }

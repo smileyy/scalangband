@@ -3,7 +3,8 @@ package scalangband.model.level
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.Monster
 import scalangband.model.tile.{OccupiableTile, Tile}
-import scalangband.model.{Creature, Player}
+import scalangband.model.Creature
+import scalangband.model.player.Player
 
 class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
   def height: Int = tiles.length
