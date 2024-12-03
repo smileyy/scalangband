@@ -1,7 +1,7 @@
 package scalangband.model.action
 
 import scalangband.model.{Game, GameAccessor, GameCallback}
-import scalangband.model.action.result.{ActionResult, MessageResult}
+import scalangband.model.action.result.{ActionResult, MessagesResult}
 import scalangband.model.location.*
 import scalangband.model.monster.Monster
 
@@ -29,6 +29,6 @@ class RandomMovementAction(monster: Monster) extends PhysicalAction {
 
 class TauntAction(taunt: String) extends PhysicalAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = {
-    Some(MessageResult(taunt))
+    Some(MessagesResult(List(taunt)))
   }
 }

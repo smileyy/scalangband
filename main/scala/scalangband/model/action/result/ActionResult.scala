@@ -1,3 +1,5 @@
 package scalangband.model.action.result
 
-trait ActionResult
+trait ActionResult {
+  def success = true
+}

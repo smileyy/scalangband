@@ -1,8 +1,6 @@
 package scalangband.model.monster.person
 
-import scalangband.model.Game
-import scalangband.model.action.result.{ActionResult, MessageResult}
-import scalangband.model.action.{GameAction, PassAction, PhysicalAction, RandomMovementAction, TauntAction}
+import scalangband.model.action.{GameAction, PassAction, RandomMovementAction, TauntAction}
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
 import scalangband.model.util.Weighted

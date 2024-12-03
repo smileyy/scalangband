@@ -1,7 +1,7 @@
 package scalangband.model.action
 
 import scalangband.model.{Game, GameAccessor, GameCallback}
-import scalangband.model.action.result.{ActionResult, MessageResult}
+import scalangband.model.action.result.{ActionResult, MessagesResult}
 import scalangband.model.location.Direction
 import scalangband.model.tile.{BrokenDoor, ClosedDoor, OpenDoor}
 
@@ -19,9 +19,9 @@ class CloseAction(direction: Direction) extends PhysicalAction {
       case _: OpenDoor =>
         callback.level.replaceTile(targetCoordinates, new ClosedDoor())
         None
-      case _: ClosedDoor => Some(MessageResult("The door is already closed"))
-      case _: BrokenDoor => Some(MessageResult("The door is broken"))
-      case _ => Some(MessageResult("There is nothing to close there"))
+      case _: ClosedDoor => Some(MessagesResult(List("The door is already closed"), false))
+      case _: BrokenDoor => Some(MessagesResult(List("The door is broken"), false))
+      case _ => Some(MessagesResult(List("There is nothing to close there"), false))
     }
 
   }
