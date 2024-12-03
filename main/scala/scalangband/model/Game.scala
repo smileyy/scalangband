@@ -30,7 +30,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
 
   def takeTurn(playerAction: GameAction): Seq[ActionResult] = {
     // We know(?) that the player is at the head of the queue
-    logger.info(s"Player is taking  $playerAction")
+    logger.info(s"Player is taking $playerAction")
 
     val playerActionResult: Option[ActionResult] = playerAction.apply(accessor, callback)
 

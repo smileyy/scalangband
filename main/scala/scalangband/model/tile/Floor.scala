@@ -1,8 +1,7 @@
 package scalangband.model.tile
 
-import scalangband.model.{Creature, Representable}
 import scalangband.model.item.Item
-import scalangband.model.location.Coordinates
+import scalangband.model.{Creature, Representable}
 
 import scala.collection.mutable
 

@@ -1,10 +1,5 @@
 package scalangband.model.level
 
-import scalangband.model.Creature
-import scalangband.model.location.Coordinates
-import scalangband.model.tile.{DownStairs, Floor, PermanentWall, RemovableWall, Tile, UpStairs}
-
-import scala.collection.mutable
 import scala.util.Random
 
 trait LevelGenerator {

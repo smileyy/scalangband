@@ -13,7 +13,7 @@ import scalangband.model.Creature
  *
  * @param first the node containing the creature with the most energy. In general, this should not be read directly
  *              when returning results; instead use `getFirst`
- * @param last the
+ * @param last the node containing the creature with the least energy
  */
 class SchedulerQueue(private var first: SchedulerNode = null, private var last: SchedulerNode = null) {
   def peek: Creature = firstNode.creature
@@ -79,7 +79,7 @@ class SchedulerQueue(private var first: SchedulerNode = null, private var last: 
   override def toString: String = {
     if (first == null) "[]"
     else {
-      var result = new StringBuilder("[")
+      val result = new StringBuilder("[")
       var node = first
       while (node != null) {
         result.append(node)
