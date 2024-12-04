@@ -12,7 +12,7 @@ case class MovementAction(direction: Direction) extends PhysicalAction {
     val targetTile = accessor.level.tile(targetCoordinates)
 
     targetTile match {
-      case _: Wall => Some(MessagesResult(List("There is a wall in the way"), false))
+      case _: Wall => Some(MessagesResult(List("There is a wall in the way!"), false))
       case _: ClosedDoor => 
         callback.level.replaceTile(targetCoordinates, new OpenDoor())
         None
@@ -20,7 +20,7 @@ case class MovementAction(direction: Direction) extends PhysicalAction {
         Some(callback.player.attack(ot.occupant.get.asInstanceOf[Monster], callback))
       case floor: Floor if floor.items.nonEmpty =>
         callback.movePlayerTo(targetCoordinates)
-        val message = if (floor.items.size == 1) s"You see a ${floor.items.head.name}" else "You see a pile of items"
+        val message = if (floor.items.size == 1) s"You see a ${floor.items.head.name}." else "You see a pile of items"
         Some(MessagesResult(List(message)))
       case ot: OccupiableTile =>
         callback.movePlayerTo(targetCoordinates)

@@ -19,9 +19,8 @@ class CloseAction(direction: Direction) extends PhysicalAction {
       case _: OpenDoor =>
         callback.level.replaceTile(targetCoordinates, new ClosedDoor())
         None
-      case _: ClosedDoor => Some(MessagesResult(List("The door is already closed"), false))
-      case _: BrokenDoor => Some(MessagesResult(List("The door is broken"), false))
-      case _ => Some(MessagesResult(List("There is nothing to close there"), false))
+      case _: BrokenDoor => Some(MessagesResult(List("The door appears to be broken."), false))
+      case _ => Some(MessagesResult(List("You see nothing there to close"), false))
     }
 
   }

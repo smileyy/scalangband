@@ -9,8 +9,8 @@ object GoDownStairsAction extends PhysicalAction {
     accessor.playerTile match {
       case _: DownStairs =>
         callback.moveDownTo(accessor.level.depth + 1)
-        Some(MessagesResult(List(s"You descend to ${accessor.level.depth * 50} feet")))
-      case _ => Some(MessagesResult(List("There are no down stairs here"), false))
+        Some(MessagesResult(List(s"You enter a maze of down staircases.")))
+      case _ => Some(MessagesResult(List("I see no down staircase here."), false))
     }
   }
 }
@@ -21,9 +21,9 @@ object GoUpStairsAction extends PhysicalAction {
       case _: UpStairs =>
         callback.moveUpTo(accessor.level.depth - 1)
         val message = 
-          if (accessor.level.depth == 0) "You return to town" else s"You ascend to ${accessor.level.depth * 50} feet"
+          if (accessor.level.depth == 0) "You enter a maze of up staircases."
         Some(MessagesResult(List(message)))
-      case _ => Some(MessagesResult(List("There are no up stairs here"), false))
+      case _ => Some(MessagesResult(List("I see no up staircase here."), false))
     }
   }
 }
