@@ -20,8 +20,8 @@ object Town {
       }
     }
 
-    builder.setMonster(1, 1, coords => new RandomlyMumblingTownsperson(coords))
-    builder.addItem(1, 2, PotteryShard)
+    val mumbler = builder.addMonster(1, 1, coords => new RandomlyMumblingTownsperson(coords))
+    mumbler.addItem(PotteryShard)
     
     builder.build(random, (depth, tiles) => new Town(tiles)).asInstanceOf[Town]
   }

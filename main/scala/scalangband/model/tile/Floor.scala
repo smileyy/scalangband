@@ -3,12 +3,15 @@ package scalangband.model.tile
 import scalangband.model.item.Item
 import scalangband.model.{Creature, Representable}
 
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class Floor(occ: Option[Creature], val items: mutable.ListBuffer[Item]) extends OccupiableTile(occ) {
+class Floor(occ: Option[Creature], val items: ListBuffer[Item]) extends OccupiableTile(occ) {
   def addItem(item: Item): Unit = {
-    items += item
+    this.items += item
+  }
+
+  def addItems(items: List[Item]): Unit = {
+    this.items ++= items
   }
   
   def removeItem(item: Item): Unit = {
