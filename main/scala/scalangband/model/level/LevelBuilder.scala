@@ -18,12 +18,14 @@ class LevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
   def setTile(coordinates: Coordinates, tile: Tile): Unit = setTile(coordinates.row, coordinates.col, tile)
   def setTile(row: Int, col: Int, tile: Tile): Unit = tiles(row)(col) = tile
 
-  def setMonster(row: Int, col: Int, createMonster: Coordinates => Monster): Unit = {
-    this(row, col).asInstanceOf[OccupiableTile].setOccupant(createMonster(Coordinates(row, col)))
+  def addMonster(row: Int, col: Int, createMonster: Coordinates => Monster): Monster = {
+    val monster = createMonster(Coordinates(row, col))
+    this(row, col).asInstanceOf[OccupiableTile].setOccupant(monster)
+    monster
   }
   
   def addItem(row: Int, col: Int, item: Item): Unit = {
-    this(row, col).asInstanceOf[Floor].addItem(item)
+    this(row, col).asInstanceOf[Floor].addItems(List(item))
   }
   
   def build(random: Random, createTown: (Int, Array[Array[Tile]]) => Level): Level = {

@@ -109,6 +109,8 @@ class GameAccessor(private val game: Game) {
 }
 
 class GameCallback(private val game: Game) {
+  private val logger = LoggerFactory.getLogger(getClass)
+  
   // this has to be a `def` since the current level of the game is mutable
   def level: LevelCallback = new LevelCallback(game.level)
   val player: PlayerCallback = new PlayerCallback(game.player)
@@ -118,7 +120,16 @@ class GameCallback(private val game: Game) {
   }
 
   def killMonster(monster: Monster): Unit = {
-    game.level(monster.coordinates).asInstanceOf[OccupiableTile].clearOccupant()
+    val coordinates = monster.coordinates
+    val tile = game.level(coordinates).asInstanceOf[OccupiableTile]
+    
+    tile match {
+      case floor: Floor => floor.addItems(monster.inventory.toList)
+      // TODO: scatter the item nearby if it lands on the stairs
+      case _ => logger.info("Oops, an item disappeared into the aether")
+    }
+    
+    game.level(coordinates).asInstanceOf[OccupiableTile].clearOccupant()
   }
 
   def moveDownTo(depth: Int): Unit = {
