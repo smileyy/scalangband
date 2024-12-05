@@ -66,7 +66,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     var results = List.empty[Option[ActionResult]]
     while (queue.peek.isInstanceOf[Monster]) {
       val monster = queue.poll().asInstanceOf[Monster]
-      val action: GameAction = monster.getAction(level)
+      val action: GameAction = monster.getAction(accessor)
       logger.info(s"${monster.name} is taking action $action")
       val result: Option[ActionResult] = action.apply(accessor, callback)
       monster.deductEnergy(action.energyRequired)

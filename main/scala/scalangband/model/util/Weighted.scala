@@ -5,7 +5,7 @@ import scala.util.Random
 case class Weighted[T](item: T, weight: Int)
 object Weighted {
 
-  def select[T](items: Seq[Weighted[T]]): T = select(new Random, items)
+  def selectFrom[T](items: Seq[Weighted[T]]): T = select(new Random, items)
   
   def select[T](random: Random, items: Seq[Weighted[T]]): T = {
     val totalWeights = items.map(_.weight).sum
