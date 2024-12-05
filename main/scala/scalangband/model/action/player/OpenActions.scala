@@ -1,12 +1,13 @@
-package scalangband.model.action
+package scalangband.model.action.player
 
-import scalangband.model.{Game, GameAccessor, GameCallback}
+import scalangband.model.action.player.{DirectionNeededAction, PlayerAction}
 import scalangband.model.action.result.{ActionResult, MessagesResult}
 import scalangband.model.location.Direction
 import scalangband.model.tile.{BrokenDoor, ClosedDoor, OpenDoor}
+import scalangband.model.{Game, GameAccessor, GameCallback}
 
 object PendingDirectionOpenAction extends DirectionNeededAction {
-  override def withDirection(direction: Direction): GameAction = new OpenAction(direction)
+  override def withDirection(direction: Direction): PlayerAction = new OpenAction(direction)
 }
 
 class OpenAction(direction: Direction) extends PhysicalAction {

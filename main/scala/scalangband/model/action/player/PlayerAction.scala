@@ -1,9 +1,9 @@
-package scalangband.model.action
+package scalangband.model.action.player
 
-import scalangband.model.{Game, GameAccessor, GameCallback}
 import scalangband.model.action.result.ActionResult
+import scalangband.model.{Game, GameAccessor, GameCallback}
 
-trait GameAction {
+trait PlayerAction {
   def energyRequired: Int
   def apply(accessor: GameAccessor, callback: GameCallback): Option[ActionResult]
 

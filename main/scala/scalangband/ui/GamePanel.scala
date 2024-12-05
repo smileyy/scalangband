@@ -2,6 +2,7 @@ package scalangband.ui
 
 import scalangband.model.Game
 import scalangband.model.action.*
+import scalangband.model.action.player.PlayerAction
 import scalangband.model.action.result.{ActionResult, MessagesResult}
 import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
 import scalangband.ui.render.Renderer
@@ -32,7 +33,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     }
   }
 
-  private def dispatchAction(action: GameAction): Unit = {
+  private def dispatchAction(action: PlayerAction): Unit = {
     val results = game.takeTurn(action)
     results.foreach(result => applyResult(result))
     repaint()

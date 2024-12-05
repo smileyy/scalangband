@@ -1,8 +1,8 @@
 package scalangband.model
 
 import org.slf4j.LoggerFactory
+import scalangband.model.action.player.{GoDownStairsAction, GoUpStairsAction, PlayerAction}
 import scalangband.model.action.result.ActionResult
-import scalangband.model.action.{GameAction, GoDownStairsAction, GoUpStairsAction}
 import scalangband.model.fov.FieldOfViewCalculator
 import scalangband.model.item.Item
 import scalangband.model.level.*
@@ -30,7 +30,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
   val accessor: GameAccessor = new GameAccessor(this)
   val callback: GameCallback = new GameCallback(this)
 
-  def takeTurn(playerAction: GameAction): Seq[ActionResult] = {
+  def takeTurn(playerAction: PlayerAction): Seq[ActionResult] = {
     // We know(?) that the player is at the head of the queue
     logger.info(s"Player is taking $playerAction")
 
@@ -66,9 +66,9 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     var results = List.empty[Option[ActionResult]]
     while (queue.peek.isInstanceOf[Monster]) {
       val monster = queue.poll().asInstanceOf[Monster]
-      val action: GameAction = monster.getAction(accessor)
+      val action = monster.getAction(accessor)
       logger.info(s"${monster.name} is taking action $action")
-      val result: Option[ActionResult] = action.apply(accessor, callback)
+      val result: Option[ActionResult] = action.apply(monster, accessor, callback)
       monster.deductEnergy(action.energyRequired)
       queue.insert(monster)
 

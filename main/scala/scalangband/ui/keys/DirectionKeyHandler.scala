@@ -1,13 +1,13 @@
 package scalangband.ui.keys
 
-import scalangband.model.action.{DirectionNeededAction, GameAction}
+import scalangband.model.action.player.{DirectionNeededAction, PlayerAction}
 import scalangband.model.location.*
 import scalangband.ui.GamePanelCallback
 
 import scala.swing.event.{Key, KeyPressed}
 
 class DirectionKeyHandler(action: DirectionNeededAction) extends KeyHandler {
-  override def handleKeyPressed(event: KeyPressed, callback: GamePanelCallback): Option[GameAction] = {
+  override def handleKeyPressed(event: KeyPressed, callback: GamePanelCallback): Option[PlayerAction] = {
     val result = event match {
       case KeyPressed(_, Key.Key1, _, _) => Some(action.withDirection(DownLeft))
       case KeyPressed(_, Key.Key2, _, _) => Some(action.withDirection(Down))
