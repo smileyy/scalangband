@@ -1,25 +1,30 @@
 package scalangband.model.monster.person
 
-import scalangband.model.action.{GameAction, PassAction, RandomMovementAction, TauntAction}
+import scalangband.model.action.player.{PlayerAction, PlayerPassAction}
+import scalangband.model.action.monster.{MonsterAction, MonsterPassAction, RandomMovementAction, TauntAction}
 import scalangband.model.item.Item
-import scalangband.model.item.garbage.PotteryShard
+import scalangband.model.item.garbage.{GarbageGenerator, PotteryShard}
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.{Monster, MonsterFactory}
-import scalangband.model.util.Weighted
+import scalangband.model.monster.{Monster, MonsterFactory, MonsterInventoryGenerator, MonsterSpec, Person}
+import scalangband.model.util.{DiceRoll, Weighted}
 
 import scala.collection.mutable.ListBuffer
 
-class RandomlyMumblingTownsperson(coords: Coordinates, inventory: Seq[Item]) extends Monster("Randomly Mumbling Townsperson", coords, health = 2, ListBuffer.from(inventory)) {
-  override def actions: Seq[Weighted[GameAction]] = Seq(
-    Weighted(PassAction, 90),
-    Weighted(RandomMovementAction(this), 9),
+object RandomlyMumblingTownsperson extends MonsterFactory {
+  override def spec: MonsterSpec = new MonsterSpec(
+    name = "Randomly Mumbling Townsperson",
+    level = 0,
+    archetype = Person,
+    health = DiceRoll("1d4"),
+    actions = actions,
+    inventory = inventory
+  )
+  
+  def actions: Seq[Weighted[MonsterAction]] = Seq(
+    Weighted(MonsterPassAction, 90),
+    Weighted(RandomMovementAction, 9),
     Weighted(TauntAction("The townsperson mumbles incoherently"), 1)
   )
-}
-object RandomlyMumblingTownsperson extends MonsterFactory {
-  def apply(coordinates: Coordinates): Monster = {
-    createMonster(coordinates, (coordinates, inventory) => new RandomlyMumblingTownsperson(coordinates, inventory))
-  }
   
-  override def startingInventory: Seq[Item] = Seq(PotteryShard)
+  def inventory: MonsterInventoryGenerator = new MonsterInventoryGenerator(1, Seq(Weighted(GarbageGenerator, 1)))
 }

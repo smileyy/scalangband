@@ -1,7 +1,8 @@
 package scalangband.model.monster
 
 import scalangband.model.Game.BaseEnergyUnit
-import scalangband.model.action.GameAction
+import scalangband.model.action.monster.MonsterAction
+import scalangband.model.action.player.PlayerAction
 import scalangband.model.item.Item
 import scalangband.model.level.Level
 import scalangband.model.location.Coordinates
@@ -13,8 +14,10 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
-abstract class Monster(name: String, coordinates: Coordinates, energy: Int = startingEnergy(), var health: Int, val inventory: mutable.ListBuffer[Item] = ListBuffer.empty) extends Creature(name, coordinates, energy) {
-  def speed: Int = BaseEnergyUnit
+class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, val inventory: mutable.ListBuffer[Item] = ListBuffer.empty) extends Creature(spec.name, coordinates, Monster.startingEnergy()) {
+  def archetype: MonsterArchetype = spec.archetype
+
+  def speed: Int = spec.baseSpeed
 
   def addItem(item: Item): Unit = {
     inventory += item
@@ -24,11 +27,13 @@ abstract class Monster(name: String, coordinates: Coordinates, energy: Int = sta
     regenerateEnergy()
   }
 
-  def getAction(game: GameAccessor): GameAction = Weighted.selectFrom(actions)
-  
-  def actions: Seq[Weighted[GameAction]]
+  def getAction(game: GameAccessor): MonsterAction = Weighted.selectFrom(spec.actions)
 }
 object Monster {
+  def apply(spec: MonsterSpec, coordinates: Coordinates): Monster = {
+    new Monster(spec, coordinates, spec.health.roll, mutable.ListBuffer.from(spec.generateStartingInventory()))
+  }
+
   /**
    * All monsters start with some energy, but always less than the player enters a level with.
    */

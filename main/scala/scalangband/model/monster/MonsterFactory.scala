@@ -6,9 +6,9 @@ import scalangband.model.item.Item
 import scalangband.model.location.Coordinates
 
 trait MonsterFactory {
-  def createMonster(start: Coordinates, create: (Coordinates, Seq[Item]) => Monster): Monster = {
-    create(start, startingInventory)
+  def apply(coordinates: Coordinates): Monster = {
+    Monster(spec, coordinates)
   }
   
-  def startingInventory: Seq[Item]
+  def spec: MonsterSpec
 }

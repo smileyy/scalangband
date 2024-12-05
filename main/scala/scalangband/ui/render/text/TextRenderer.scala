@@ -2,6 +2,7 @@ package scalangband.ui.render.text
 
 import scalangband.model.level.Level
 import scalangband.model.item.garbage.PotteryShard
+import scalangband.model.monster.{Monster, Person}
 import scalangband.model.monster.person.RandomlyMumblingTownsperson
 import scalangband.model.player.Player
 import scalangband.model.tile.*
@@ -39,7 +40,7 @@ class TextRenderer(font: Font) extends Renderer {
         case _: PermanentWall => TextTile('#', font, DarkGrey)
 
         // monsters
-        case _: RandomlyMumblingTownsperson => TextTile('p', font, White)
+        case monster: Monster => renderMonster(monster, font)
 
         // items
         case PileOfItems => TextTile('&', font, White)
@@ -50,7 +51,11 @@ class TextRenderer(font: Font) extends Renderer {
       }
     } else TextTile(' ', font, Black)
   }
-}
+  
+  def renderMonster(monster: Monster, font: Font): TextTile = monster.archetype match {
+    case Person => new TextTile('p', font, White)
+  }
+} 
 object TextRenderer {
-  def default: Renderer = new TextRenderer(Font.apply(Font.Monospaced, Font.Plain, 12))
+  def default: Renderer = new TextRenderer(Font(Font.Monospaced, Font.Plain, 12))
 }
