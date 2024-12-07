@@ -2,7 +2,7 @@ package scalangband.ui.render.text
 
 import scalangband.model.level.Level
 import scalangband.model.item.garbage.PotteryShard
-import scalangband.model.monster.{Monster, Person}
+import scalangband.model.monster.{Mold, Monster, Person}
 import scalangband.model.monster.person.RandomlyMumblingTownsperson
 import scalangband.model.player.Player
 import scalangband.model.tile.*
@@ -53,6 +53,7 @@ class TextRenderer(font: Font) extends Renderer {
   }
   
   def renderMonster(monster: Monster, font: Font): TextTile = monster.archetype match {
+    case Mold => TextTile('m', font, monster.color)
     case Person => TextTile('p', font, monster.color)
   }
 } 

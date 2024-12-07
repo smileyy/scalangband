@@ -3,6 +3,7 @@ package scalangband.model.level
 import scalangband.model.level.room.rectangle.*
 import scalangband.model.level.room.{Room, RoomGenerator}
 import scalangband.model.location.*
+import scalangband.model.monster.Bestiary
 import scalangband.model.tile.*
 
 import scala.util.Random
@@ -20,7 +21,7 @@ import scala.util.Random
 class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) extends LevelGenerator {
   private val totalWeights = weightedGenerators.map(_._2).sum
 
-  override def generateLevel(random: Random, depth: Int): Level = {
+  override def generateLevel(random: Random, depth: Int, bestiary: Bestiary): Level = {
     val builder = LevelBuilder.randomSizedLevelBuilder(random, depth)
 
     val firstRoom = generateRoom(random, depth, random.nextInt(4) + 2, random.nextInt(8) + 2)
@@ -37,6 +38,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
           rooms = room :: rooms
           applyRoom(builder, room)
           attachRoom(random, builder, room, start, direction)
+          room.addMonsters(random, bestiary)
           consecutiveFailures = 0
         case None => consecutiveFailures = consecutiveFailures + 1
       }
@@ -52,8 +54,8 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     }
   }
 
-  private def tryToCreateRoom(random: Random, builder: LevelBuilder, start: Coordinates, dir: Direction): Option[Room] = {
-    val (rowOffset, colOffset) = dir match {
+  private def tryToCreateRoom(random: Random, builder: LevelBuilder, start: Coordinates, offsetDir: Direction): Option[Room] = {
+    val (rowOffset, colOffset) = offsetDir match {
       // TODO: Explain why these numbers lead to decent, if short, hallways
       case Right => (-(random.nextInt(4) + 1), random.nextInt(8) + 4)
       case Down => (random.nextInt(8) + 4, -(random.nextInt(4) + 1))
@@ -144,7 +146,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     builder.setTile(end, randomDoorTile(random))
   }
 
-  def randomDoorTile(random: Random): Tile = {
+  private def randomDoorTile(random: Random): Tile = {
     random.nextInt(100) match {
       case x if x < 75 => new ClosedDoor()
       case x if x < 95 => new OpenDoor()

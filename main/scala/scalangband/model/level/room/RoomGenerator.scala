@@ -1,5 +1,7 @@
 package scalangband.model.level.room
 
+import scalangband.model.monster.Bestiary
+
 import scala.util.Random
 
 trait RoomGenerator {

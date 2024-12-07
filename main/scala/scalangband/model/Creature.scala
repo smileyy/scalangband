@@ -8,4 +8,6 @@ abstract class Creature(val name: String, var coordinates: Coordinates, var ener
   def regenerateEnergy(): Unit = energy = energy + speed
   
   def startNextTurn(): Unit
+
+  override def toString: String = s"$name($energy)"
 }

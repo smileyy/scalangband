@@ -1,13 +1,15 @@
 package scalangband.model.level
 
+import scalangband.model.monster.Bestiary
+
 import scala.util.Random
 
 class RandomWeightedLevelGenerator(weightedGenerators: Seq[(LevelGenerator, Int)]) extends LevelGenerator {
 
   private val totalWeights = weightedGenerators.map((_, weight) => weight).sum
 
-  override def generateLevel(random: Random, depth: Int): Level = {
-    selectLevelGenerator(random).generateLevel(random, depth)
+  override def generateLevel(random: Random, depth: Int, bestiary: Bestiary): Level = {
+    selectLevelGenerator(random).generateLevel(random, depth, bestiary)
   }
   
   private def selectLevelGenerator(random: Random): LevelGenerator = {

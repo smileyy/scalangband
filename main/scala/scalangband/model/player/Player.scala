@@ -8,9 +8,9 @@ import scalangband.model.{Creature, Game, GameCallback}
 
 class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEnergyUnit, val inventory: Inventory) extends Creature(name, coordinates, energy) {
   def speed: Int = BaseEnergyUnit
-  
+
   def light: Int = 3
-  
+
   override def startNextTurn(): Unit = {
     regenerateEnergy()
   }

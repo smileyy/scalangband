@@ -21,7 +21,7 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
 
   def addPlayer(coordinates: Coordinates, player: Player): Unit = {
     // TODO: check that the space isn't already occupied
-    this(coordinates).asInstanceOf[OccupiableTile].setOccupant(player)
+    apply(coordinates).asInstanceOf[OccupiableTile].setOccupant(player)
     player.coordinates = coordinates
   }
   
@@ -47,7 +47,7 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
       case _ =>
     }
   }
-  
+
   /**
    * Replaces the tile at the given coordinates. Thus far used when opening / closing / breaking a door. Be careful if
    * used to replace a tile that a monster is standing on (or worse, the player!)
@@ -55,7 +55,7 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
   def replaceTile(coordinates: Coordinates, tile: Tile): Unit = {
     tiles(coordinates.row)(coordinates.col) = tile
   }
-  
+
   def setAllTilesVisible(): Unit = {
     for (row <- 0 until height) {
       for (col <- 0 until width) {

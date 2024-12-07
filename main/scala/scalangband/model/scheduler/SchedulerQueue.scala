@@ -27,11 +27,18 @@ class SchedulerQueue(private var head: SchedulerNode = null, private var last: S
 
     result.creature
   }
-  
+
+  /**
+   * Pushes the player back to the head of the queue
+   */
   def push(player: Player): Unit = {
-    val newHead = SchedulerNode(player)
-    newHead.next = head
-    head = newHead
+    val newNode = SchedulerNode(player)
+    val prevHead = head
+    newNode.next = prevHead
+    if (prevHead != null) {
+      prevHead.prev = newNode
+    }
+    head = newNode
   }
   
   def insert(creature: Creature): Unit = {
@@ -45,27 +52,31 @@ class SchedulerQueue(private var head: SchedulerNode = null, private var last: S
       last.next = newNode
       newNode.prev = last
       last = newNode
+    }
 
-      // bubble up
-      while (newNode.prev != null && newNode.energy > newNode.prev.energy) {
-        // swap
-        val prev = newNode.prev
-        val next = newNode.next
+    // bubble up
+    while (newNode.prev != null && newNode.energy > newNode.prev.energy) {
+      val prev = newNode.prev
+      val prevprev = prev.prev
+      val next = newNode.next
 
-        if (next == null) {
-          // node was at the end, need to reset last
-          last = prev
-        }
+      if (next == null) {
+        last = prev
+      }
 
-        prev.next = newNode.next
-        newNode.prev = prev.prev
-        newNode.next = prev
+      if (prevprev != null) {
+        prevprev.next = newNode
+      } else {
+        head = newNode
+      }
 
-        if (prev.prev == null) {
-          head = newNode
-        } else {
-          prev.prev.next = newNode
-        }
+      newNode.prev = prevprev
+      newNode.next = prev
+      prev.prev = newNode
+      prev.next = next
+
+      if (next != null) {
+        next.prev = prev
       }
     }
   }
@@ -119,10 +130,10 @@ object SchedulerQueue {
   }
 }
 
-private class SchedulerNode(var prev: SchedulerNode, var next: SchedulerNode, val creature: Creature) {
+private class SchedulerNode(val creature: Creature, var prev: SchedulerNode, var next: SchedulerNode) {
   def energy: Int = creature.energy
   override def toString: String = s"${creature.name}(${creature.energy})"
 }
 object SchedulerNode {
-  def apply(creature: Creature): SchedulerNode = new SchedulerNode(null, null, creature)
+  def apply(creature: Creature): SchedulerNode = new SchedulerNode(creature, null, null)
 }
