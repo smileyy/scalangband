@@ -12,6 +12,7 @@ import scalangband.model.{Creature, Game, GameAccessor}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
+import scala.swing.Color
 import scala.util.Random
 
 class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, val inventory: mutable.ListBuffer[Item] = ListBuffer.empty) extends Creature(spec.name, coordinates, Monster.startingEnergy()) {
@@ -28,6 +29,8 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
   }
 
   def getAction(game: GameAccessor): MonsterAction = Weighted.selectFrom(spec.actions)
+  
+  def color: Color = spec.color
 }
 object Monster {
   def apply(spec: MonsterSpec, coordinates: Coordinates): Monster = {

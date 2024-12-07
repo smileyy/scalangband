@@ -53,7 +53,7 @@ class TextRenderer(font: Font) extends Renderer {
   }
   
   def renderMonster(monster: Monster, font: Font): TextTile = monster.archetype match {
-    case Person => new TextTile('p', font, White)
+    case Person => TextTile('p', font, monster.color)
   }
 } 
 object TextRenderer {
