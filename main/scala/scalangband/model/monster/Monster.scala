@@ -31,6 +31,10 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
   def getAction(game: GameAccessor): MonsterAction = Weighted.selectFrom(spec.actions)
   
   def color: Color = spec.color
+
+  override def toString: String = {
+    s"$name($health, ${inventory.mkString("[", ",", "]")})"
+  }
 }
 object Monster {
   def apply(spec: MonsterSpec, coordinates: Coordinates): Monster = {
