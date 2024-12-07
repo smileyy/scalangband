@@ -21,8 +21,8 @@ import scala.util.Random
 class Game(seed: Long, val random: Random, val settings: Settings, val player: Player, val town: Level, var level: Level, var turn: Int) {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  private val fov = new FieldOfViewCalculator(20)
-  fov.recompute(player.coordinates, town)
+  private val fov = new FieldOfViewCalculator()
+  fov.recompute(player.coordinates, town, player.light)
 
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
 
@@ -57,7 +57,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
         }
     }
 
-    fov.recompute(player.coordinates, level)
+    fov.recompute(player.coordinates, level, player.light)
     results.flatten.reverse
   }
 

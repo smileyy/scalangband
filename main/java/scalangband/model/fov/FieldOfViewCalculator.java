@@ -7,21 +7,15 @@ import scalangband.model.location.Coordinates;
  * Translated from http://www.adammil.net/blog/v125_roguelike_vision_algorithms.html
  */
 public class FieldOfViewCalculator {
-    private final int range;
 
-    public FieldOfViewCalculator(int range) {
-        this.range = range;
-    }
-
-    public void recompute(Coordinates origin, Level level) {
-        level.makeEverythingInvisible();
+    public void recompute(Coordinates origin, Level level, int range) {
         level.apply(origin).setVisible(true);
         for (int octant = 0; octant < 8; octant++) {
-            compute(octant, origin, 1, new Slope(1, 1), new Slope(0, 1), level);
+            compute(octant, origin, 1, new Slope(1, 1), new Slope(0, 1), level, range);
         }
     }
 
-    private void compute(int octant, Coordinates origin, int x, Slope top, Slope bottom, Level level) {
+    private void compute(int octant, Coordinates origin, int x, Slope top, Slope bottom, Level level, int range) {
         for (; x <= range; x++) {
             int topY;
             if (top.x() == 1) {
@@ -77,7 +71,7 @@ public class FieldOfViewCalculator {
                                         bottom = new Slope(ny, nx);
                                         break;
                                     } // don't recurse unless necessary
-                                    else compute(octant, origin, x+1, top, new Slope(ny, nx), level);
+                                    else compute(octant, origin, x+1, top, new Slope(ny, nx), level, range);
                                 }
                                 else {
                                     if(y == bottomY) return;
