@@ -1,6 +1,5 @@
 package scalangband.model.level
 
-import scalangband.model.item.garbage.PotteryShard
 import scalangband.model.monster.person.RandomlyMumblingTownsperson
 import scalangband.model.tile.{Floor, Tile}
 

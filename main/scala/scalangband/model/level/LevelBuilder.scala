@@ -4,7 +4,7 @@ import scalangband.model.Game.MaxDungeonDepth
 import scalangband.model.item.Item
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
-import scalangband.model.tile.{DownStairs, Floor, OccupiableTile, PermanentWall, RemovableWall, Tile, UpStairs}
+import scalangband.model.tile.*
 import scalangband.model.util.RandomUtils.randomElement
 import scalangband.model.util.TileUtils.allCoordinatesFor
 

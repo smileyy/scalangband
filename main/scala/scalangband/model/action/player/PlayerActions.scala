@@ -1,13 +1,10 @@
 package scalangband.model.action.player
 
-import scalangband.model.action.player.{InterfaceAction, PhysicalAction}
 import scalangband.model.action.result.{ActionResult, MessagesResult}
 import scalangband.model.location.Direction
 import scalangband.model.monster.Monster
-import scalangband.model.tile.{ClosedDoor, DownStairs, Floor, OccupiableTile, OpenDoor, UpStairs, Wall}
+import scalangband.model.tile.*
 import scalangband.model.{GameAccessor, GameCallback}
-
-import scala.::
 
 object PlayerPassAction extends PhysicalAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = None

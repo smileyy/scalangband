@@ -3,11 +3,8 @@ package scalangband.model.monster
 import scalangband.model.Creature.NormalSpeed
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.action.monster.MonsterAction
-import scalangband.model.action.player.PlayerAction
 import scalangband.model.item.Item
-import scalangband.model.level.Level
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.Monster.startingEnergy
 import scalangband.model.util.Weighted
 import scalangband.model.{Creature, Game, GameAccessor}
 

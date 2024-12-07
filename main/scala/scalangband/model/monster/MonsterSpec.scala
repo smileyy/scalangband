@@ -1,9 +1,7 @@
 package scalangband.model.monster
 
 import scalangband.model.Creature
-import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.action.monster.MonsterAction
-import scalangband.model.action.player.PlayerAction
 import scalangband.model.item.Item
 import scalangband.model.util.{DiceRoll, Weighted}
 

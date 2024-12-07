@@ -1,10 +1,9 @@
 package scalangband.ui.render.text
 
-import scalangband.model.level.Level
 import scalangband.model.item.garbage.PotteryShard
 import scalangband.model.item.money.CopperCoins
-import scalangband.model.monster.{Ant, Centipede, Mold, Monster, Person}
-import scalangband.model.monster.person.RandomlyMumblingTownsperson
+import scalangband.model.level.Level
+import scalangband.model.monster.*
 import scalangband.model.player.Player
 import scalangband.model.tile.*
 import scalangband.ui.TextColors.*
