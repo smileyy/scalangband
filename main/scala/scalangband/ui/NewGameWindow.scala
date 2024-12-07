@@ -67,7 +67,7 @@ class NewGameWindow extends Frame {
       logger.info(s"Starting game with seed $seed")
 
       val placeholderCoordinates = Coordinates(-1, -1)
-      val player = new Player(nameTextBox.text, placeholderCoordinates, inventory = Inventory.empty())
+      val player = new Player(nameTextBox.text, placeholderCoordinates, money = 0, inventory = Inventory.empty())
       val game = Game.newGame(seed, random, new Settings(), player)
       Scalangband.startGame(game)
   }

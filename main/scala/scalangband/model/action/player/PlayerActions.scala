@@ -7,6 +7,8 @@ import scalangband.model.monster.Monster
 import scalangband.model.tile.{ClosedDoor, DownStairs, Floor, OccupiableTile, OpenDoor, UpStairs, Wall}
 import scalangband.model.{GameAccessor, GameCallback}
 
+import scala.::
+
 object PlayerPassAction extends PhysicalAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = None
 }
@@ -24,9 +26,20 @@ case class MovementAction(direction: Direction) extends PhysicalAction {
       case ot: OccupiableTile if ot.occupied =>
         Some(callback.player.attack(ot.occupant.get.asInstanceOf[Monster], callback))
       case floor: Floor if floor.items.nonEmpty =>
+        var messages: List[String] = List.empty
         callback.movePlayerTo(targetCoordinates)
-        val message = if (floor.items.size == 1) s"You see a ${floor.items.head.name}." else "You see a pile of items"
-        Some(MessagesResult(List(message)))
+
+        floor.money.foreach(money => {
+          floor.removeItem(money)
+          callback.player.addMoney(money.amount)
+          messages = s"You pick up ${money.displayName} worth ${money.amount} gold." :: messages
+        })
+
+        if (floor.items.isEmpty) {} // it is possible that the floor only had money in it, and now it is all gone
+          else if (floor.items.size == 1) messages = s"You see ${floor.items.head.displayName}." :: messages
+          else messages = "You see a pile of items." :: messages
+
+        Some(MessagesResult(messages.reverse))
       case ot: OccupiableTile =>
         callback.movePlayerTo(targetCoordinates)
         None

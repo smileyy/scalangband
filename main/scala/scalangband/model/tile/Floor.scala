@@ -1,8 +1,10 @@
 package scalangband.model.tile
 
 import scalangband.model.item.Item
+import scalangband.model.item.money.Money
 import scalangband.model.{Creature, Representable}
 
+import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 
 class Floor(occ: Option[Creature], val items: ListBuffer[Item]) extends OccupiableTile(occ) {
@@ -23,6 +25,21 @@ class Floor(occ: Option[Creature], val items: ListBuffer[Item]) extends Occupiab
     else if (items.size == 1) items.head
     else if (items.size > 1) PileOfItems
     else this
+  }
+  
+  def money: Seq[Money] = {
+    @tailrec
+    def selectMoney(items: List[Item], accumulator: List[Money] = List.empty): List[Money] = {
+      items match {
+        case x :: xs => x match {
+            case m: Money => selectMoney(xs, m :: accumulator)
+            case _ =>  selectMoney(xs, accumulator)
+          }
+        case Nil => accumulator
+      }
+    }
+  
+    selectMoney(items.toList)
   }
 }
 object Floor {

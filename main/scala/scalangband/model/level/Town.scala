@@ -20,7 +20,7 @@ object Town {
       }
     }
 
-    builder.addMonster(1, 1, coords => RandomlyMumblingTownsperson(coords))
+    builder.addMonster(1, 1, coords => RandomlyMumblingTownsperson(coords, random))
     
     builder.build(random, (depth, tiles) => new Town(tiles)).asInstanceOf[Town]
   }

@@ -140,7 +140,7 @@ class GameCallback(private val game: Game) {
     
     tile match {
       case floor: Floor => floor.addItems(monster.inventory.toList)
-      // TODO: scatter the item nearby if it lands on the stairs
+      // TODO #25: scatter the item nearby if it lands on the stairs
       case _ => logger.info("Oops, an item disappeared into the aether")
     }
 

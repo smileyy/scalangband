@@ -7,7 +7,7 @@ import scalangband.model.util.Weighted.selectFrom
 import scala.util.Random
 
 class MonsterInventoryGenerator(val minNumberOfItems: Int, val maxNumberOfItems: Int, val generators: Seq[Weighted[ItemGenerator]]) {
-  def generate(depth: Int): Seq[Item] = {
-    (0 until Random.nextInt(maxNumberOfItems - minNumberOfItems + 1) + minNumberOfItems).map(_ => selectFrom(generators).generate(depth))
+  def generate(random: Random, depth: Int): Seq[Item] = {
+    (0 until random.nextInt(maxNumberOfItems - minNumberOfItems + 1) + minNumberOfItems).map(_ => selectFrom(generators).generate(random, depth))
   }
 }

@@ -12,7 +12,7 @@ class Bestiary(
   def generateMonster(random: Random, depth: Int, coordinates: Coordinates): Option[Monster] = {
     factoriesByLevel.get(depth)
       .map(factories => factories(random.nextInt(factories.size)))
-      .map(factory => factory(coordinates))
+      .map(factory => factory(coordinates, random))
   }
 }
 object Bestiary {
@@ -20,10 +20,10 @@ object Bestiary {
     // Level 1
     GiantYellowCentipede,
     GreyMold,
-    
+
     // Level 2
     GiantWhiteAnt,
-    
+
     // Level 3
     MetallicRedCentipede,
  ))
@@ -34,6 +34,6 @@ object Bestiary {
       .map((level, seq) => (level, seq.map((_, factory) => factory).toIndexedSeq))
     new Bestiary(map)
   }
-  
-  
+
+
 }

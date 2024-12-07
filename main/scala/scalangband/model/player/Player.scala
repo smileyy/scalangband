@@ -8,7 +8,7 @@ import scalangband.model.monster.Monster
 import scalangband.model.player.PlayerCallback.Logger
 import scalangband.model.{Creature, Game, GameCallback}
 
-class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEnergyUnit, val inventory: Inventory) extends Creature(name, coordinates, energy) {
+class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEnergyUnit, var money: Int, val inventory: Inventory) extends Creature(name, coordinates, energy) {
   def speed: Int = BaseEnergyUnit
 
   def light: Int = 3
@@ -39,6 +39,9 @@ class PlayerCallback(private val player: Player) {
   def attack(monster: Monster, callback: GameCallback): ActionResult = player.attack(monster, callback)
   def resetEnergy(): Unit = player.energy = player.speed
 
+  def addMoney(amount: Int): Unit = {
+    player.money = player.money + amount
+  }
   def logInventory(): Unit = Logger.info(s"Inventory: ${player.inventory.items.map(_.name).mkString("(", ",", ")")}")
 }
 object PlayerCallback {

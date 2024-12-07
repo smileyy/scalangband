@@ -4,7 +4,7 @@ import scalangband.model.Game
 import scalangband.model.action.*
 import scalangband.model.action.player.PlayerAction
 import scalangband.model.action.result.{ActionResult, MessagesResult}
-import scalangband.ui.GamePanel.MaxMessageLineLength
+import scalangband.ui.GamePanel.{MaxMessageLineLength, PlayerPaneWidth}
 import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
 import scalangband.ui.render.Renderer
 
@@ -47,10 +47,10 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     super.paintComponent(g)
 
     val lineHeight = g.getFontMetrics(font).getHeight
-    val characterPaneWidth = g.getFontMetrics(font).charWidth(' ') * 20
+    val characterPaneWidth = g.getFontMetrics(font).charWidth(' ') * PlayerPaneWidth
 
     paintMessages(g, lineHeight)
-    paintPlayer(g, lineHeight)
+    paintPlayer(g, lineHeight, lineHeight)
     paintLevel(g, lineHeight, characterPaneWidth)
     paintDepth(g, characterPaneWidth, lineHeight)
   }
@@ -70,15 +70,28 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     }
   }
 
-  private def paintPlayer(g: Graphics2D, lineHeight: Int): Unit = {
-    val displayName = if (game.player.name.length < 20) {
+  private def paintPlayer(g: Graphics2D, yOffset: Int, lineHeight: Int): Unit = {
+    g.setColor(TextColors.White)
+
+    val playerNameDisplay = if (game.player.name.length < PlayerPaneWidth) {
       game.player.name
     } else {
-      game.player.name.substring(0, 19)
+      game.player.name.substring(0, PlayerPaneWidth - 1)
     }
 
-    g.setColor(TextColors.White)
-    g.drawString(displayName, 0, lineHeight * 2)
+    g.drawString(playerNameDisplay, 0, yOffset + lineHeight)
+
+    val moneyDisplay = {
+      val displayString = StringBuilder("AU")
+      val rawMoneyString = game.player.money.toString
+      val padding = PlayerPaneWidth - displayString.length() - rawMoneyString.length
+      displayString.append("".padTo(padding, ' '))
+      displayString.append(rawMoneyString)
+
+      displayString.toString()
+    }
+
+    g.drawString(moneyDisplay, 0, yOffset + lineHeight * 2)
   }
 
   private def paintLevel(g: Graphics2D, messageLineHeight: Int, characterPaneWidth: Int): Unit = {
@@ -98,7 +111,8 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
   }
 }
 object GamePanel {
-  val MaxMessageLineLength = 96
+  private val MaxMessageLineLength = 96
+  private val PlayerPaneWidth = 12
 
   def apply(game: Game, renderer: Renderer): GamePanel = {
     new GamePanel(game, renderer, List(MainKeyHandler), List.empty)
