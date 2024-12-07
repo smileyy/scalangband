@@ -10,5 +10,6 @@ object TextColors {
   val MediumGrey = new Color(95, 95, 95)
   val Red = new Color(255, 0, 0)
   val VeryLightGrey = new Color(239, 239, 239)
+  val Yellow = new Color(255, 255, 0)
   val White = new Color(255, 255, 255)
 }
