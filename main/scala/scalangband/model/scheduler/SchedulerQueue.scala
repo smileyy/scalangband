@@ -86,7 +86,6 @@ class SchedulerQueue(private var head: SchedulerNode = null, private var last: S
     
     var done = false
     while (node != null && done) {
-      println(node.creature)
       if (node.creature == monster) {
         
         val prev = node.prev

@@ -11,7 +11,7 @@ object GiantYellowCentipede extends MonsterFactory {
     archetype = Centipede,
     depth = 1,
     health = DiceRoll("2d6"),
-    actions = Seq(Weighted(RandomMovementAction, 1)),
+    actions = Seq(Weighted(RandomMovementAction, 100)),
     color = TextColors.Yellow
   )
 }

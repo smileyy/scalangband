@@ -1,10 +1,12 @@
 package scalangband.model.level
 
+import org.slf4j.LoggerFactory
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.Monster
 import scalangband.model.tile.{OccupiableTile, Tile}
 import scalangband.model.Creature
 import scalangband.model.player.Player
+import scalangband.model.util.CenteredRange
 
 class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
   def height: Int = tiles.length
@@ -64,6 +66,9 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
     }
   }
 }
+object Level {
+  private val Logger = LoggerFactory.getLogger(classOf[Level])
+}
 
 class LevelAccessor(private val level: Level) {
   def depth: Int = level.depth
@@ -73,4 +78,11 @@ class LevelAccessor(private val level: Level) {
 class LevelCallback(private val level: Level) {
   def replaceTile(coordinates: Coordinates, tile: Tile): Unit = level.replaceTile(coordinates, tile)
   def tryToMoveMonster(monster: Monster, direction: Direction): Unit = level.tryToMoveMonster(monster, direction)
+}
+
+object LevelRanges {
+  val ranges: Map[Int, CenteredRange] = Map(
+    1 -> CenteredRange(1, 1 to 3),
+    2 -> CenteredRange(2, 1 to 5)
+  )
 }

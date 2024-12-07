@@ -1,9 +1,11 @@
 package scalangband.model.player
 
+import org.slf4j.LoggerFactory
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.action.result.{ActionResult, MessagesResult}
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
+import scalangband.model.player.PlayerCallback.Logger
 import scalangband.model.{Creature, Game, GameCallback}
 
 class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEnergyUnit, val inventory: Inventory) extends Creature(name, coordinates, energy) {
@@ -37,5 +39,8 @@ class PlayerCallback(private val player: Player) {
   def attack(monster: Monster, callback: GameCallback): ActionResult = player.attack(monster, callback)
   def resetEnergy(): Unit = player.energy = player.speed
 
-  def logInventory(): Unit = println(s"Inventory: ${player.inventory.items.map(_.name).mkString("(", ",", ")")}")
+  def logInventory(): Unit = Logger.info(s"Inventory: ${player.inventory.items.map(_.name).mkString("(", ",", ")")}")
+}
+object PlayerCallback {
+  private val Logger = LoggerFactory.getLogger(classOf[PlayerCallback])
 }
