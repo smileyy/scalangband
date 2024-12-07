@@ -1,6 +1,7 @@
 package scalangband.model.monster
 
 import scalangband.model.location.Coordinates
+import scalangband.model.monster.centipede.GiantYellowCentipede
 import scalangband.model.monster.mold.GreyMold
 
 import scala.util.Random
@@ -15,6 +16,7 @@ class Bestiary(factoriesByLevel: Map[Int, IndexedSeq[MonsterFactory]]) {
 object Bestiary {
   def apply(): Bestiary = apply(Seq(
     // Level 1
+    GiantYellowCentipede,
     GreyMold
   ))
 

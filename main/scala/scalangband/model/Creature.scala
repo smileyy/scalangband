@@ -11,3 +11,6 @@ abstract class Creature(val name: String, var coordinates: Coordinates, var ener
 
   override def toString: String = s"$name($energy)"
 }
+object Creature {
+  val NormalSpeed = 20
+}

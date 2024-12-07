@@ -12,9 +12,7 @@ object GreyMold extends MonsterFactory {
     archetype = Mold,
     depth = 1,
     health = DiceRoll("1d3"),
-    speed = Game.BaseEnergyUnit,
     actions = Seq(Weighted(MonsterPassAction, 1)),
-    inventory = None,
     color = TextColors.MediumGrey
   )
 }
