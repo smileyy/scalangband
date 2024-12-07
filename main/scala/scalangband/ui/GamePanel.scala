@@ -4,6 +4,7 @@ import scalangband.model.Game
 import scalangband.model.action.*
 import scalangband.model.action.player.PlayerAction
 import scalangband.model.action.result.{ActionResult, MessagesResult}
+import scalangband.ui.GamePanel.MaxMessageLineLength
 import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
 import scalangband.ui.render.Renderer
 
@@ -24,8 +25,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
 
   reactions += {
     case kp: KeyPressed =>
-      if (messages.size > 1) {
-        messages = messages.tail
+      if (messages.nonEmpty) {
         repaint()
       } else {
         messages = List.empty
@@ -59,9 +59,14 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     if (messages.nonEmpty) {
       g.setColor(TextColors.White)
 
-      val line = if (messages.size == 1) messages.head else messages.head + " (more)"
+      val line = StringBuilder()
+      while (messages.nonEmpty && line.length() + 1 + messages.head.length <= MaxMessageLineLength) {
+        if (line.nonEmpty) line.append(' ')
+        line.append(messages.head)
+        messages = messages.tail
+      }
 
-      g.drawString(line, 0, messageLineYOffset)
+      g.drawString(line.toString, 0, messageLineYOffset)
     }
   }
 
@@ -93,6 +98,8 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
   }
 }
 object GamePanel {
+  val MaxMessageLineLength = 96
+
   def apply(game: Game, renderer: Renderer): GamePanel = {
     new GamePanel(game, renderer, List(MainKeyHandler), List.empty)
   }

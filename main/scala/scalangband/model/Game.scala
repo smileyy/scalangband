@@ -50,7 +50,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
           player.deductEnergy(playerAction.energyRequired)
           queue.insert(player)
 
-          takeMonsterActions() ::: List(playerActionResult)
+          (takeMonsterActions() ::: List(playerActionResult)).reverse
         } else {
           List(playerActionResult)
         }
@@ -76,6 +76,9 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
 
       if (queue.peek.energy <= 0) startNextTurn()
     }
+
+    // this will be in reverse order (most recent action first), but we reverse everything at the end of all the
+    // in order to put the player's action result first
     results
   }
   
