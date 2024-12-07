@@ -2,6 +2,7 @@ package scalangband.model.scheduler
 
 import scalangband.model.Creature
 import scalangband.model.monster.Monster
+import scalangband.model.player.Player
 
 /**
  * A doubly linked list of creatures, used for the scheduling system. This acts like a priority queue, with the head of
@@ -25,6 +26,12 @@ class SchedulerQueue(private var head: SchedulerNode = null, private var last: S
     this.head = result.next
 
     result.creature
+  }
+  
+  def push(player: Player): Unit = {
+    val newHead = SchedulerNode(player)
+    newHead.next = head
+    head = newHead
   }
   
   def insert(creature: Creature): Unit = {

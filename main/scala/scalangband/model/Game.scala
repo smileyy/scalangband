@@ -15,6 +15,7 @@ import scalangband.model.tile.{DownStairs, Floor, OccupiableTile, UpStairs}
 import scalangband.model.util.RandomUtils.randomElement
 import scalangband.model.util.TileUtils.allCoordinatesFor
 
+import scala.annotation.tailrec
 import scala.util.Random
 
 class Game(seed: Long, val random: Random, val settings: Settings, val player: Player, val town: Level, var level: Level, var turn: Int) {
@@ -62,24 +63,29 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
 
   private def takeMonsterActions(): List[Option[ActionResult]] = {
     if (queue.peek.energy <= 0) startNextTurn()
-    
-    var results = List.empty[Option[ActionResult]]
-    while (queue.peek.isInstanceOf[Monster]) {
-      val monster = queue.poll().asInstanceOf[Monster]
-      val action = monster.getAction(accessor)
-      logger.info(s"${monster.name} is taking action $action")
-      val result: Option[ActionResult] = action.apply(monster, accessor, callback)
-      monster.deductEnergy(action.energyRequired)
-      queue.insert(monster)
 
-      results = result :: results
+    @tailrec
+    def loopUntilPlayerIsAtHeadOfQueue(results: List[Option[ActionResult]]): List[Option[ActionResult]] = {
+      queue.poll() match {
+        case p: Player =>
+          queue.push(p)
+          results
+        case monster: Monster =>
+          val action = monster.getAction(accessor)
+          logger.info(s"${monster.name} is taking action $action")
+          val result: Option[ActionResult] = action.apply(monster, accessor, callback)
+          monster.deductEnergy(action.energyRequired)
+          queue.insert(monster)
 
-      if (queue.peek.energy <= 0) startNextTurn()
+          if (queue.peek.energy <= 0) startNextTurn()
+
+          loopUntilPlayerIsAtHeadOfQueue(result :: results)
+      }
     }
 
     // this will be in reverse order (most recent action first), but we reverse everything at the end of all the
     // in order to put the player's action result first
-    results
+    loopUntilPlayerIsAtHeadOfQueue(List.empty[Option[ActionResult]])
   }
   
   def startNextTurn(): Unit = {
