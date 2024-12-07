@@ -2,13 +2,13 @@ package scalangband.ui
 
 import org.slf4j.LoggerFactory
 import scalangband.Scalangband
-import scalangband.model.location.Coordinates
-import scalangband.model.settings.Settings
 import scalangband.model.Game
+import scalangband.model.location.Coordinates
 import scalangband.model.player.{Inventory, Player}
+import scalangband.model.settings.Settings
 
+import scala.swing.*
 import scala.swing.event.ButtonClicked
-import scala.swing._
 import scala.util.Random
 
 class NewGameWindow extends Frame {

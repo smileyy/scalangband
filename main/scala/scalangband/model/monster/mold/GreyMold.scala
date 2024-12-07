@@ -1,6 +1,5 @@
 package scalangband.model.monster.mold
 
-import scalangband.model.Game
 import scalangband.model.action.monster.MonsterPassAction
 import scalangband.model.monster.{Mold, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}

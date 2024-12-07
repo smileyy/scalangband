@@ -1,10 +1,9 @@
 package scalangband.model.action.monster
 
-import scalangband.model.action.player.PhysicalAction
 import scalangband.model.action.result.{ActionResult, MessagesResult}
 import scalangband.model.location.*
 import scalangband.model.monster.Monster
-import scalangband.model.{Game, GameAccessor, GameCallback}
+import scalangband.model.{GameAccessor, GameCallback}
 
 import scala.util.Random
 

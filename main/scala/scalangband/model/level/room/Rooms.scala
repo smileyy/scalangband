@@ -1,11 +1,11 @@
 package scalangband.model.level.room
 
 import org.slf4j.LoggerFactory
+import scalangband.model.level.LevelRanges
 import scalangband.model.level.room.Room.Logger
-import scalangband.model.level.{Level, LevelRanges}
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.{Bestiary, Monster}
-import scalangband.model.tile.{Floor, OccupiableTile, Tile}
+import scalangband.model.tile.{OccupiableTile, Tile}
 import scalangband.model.util.RandomUtils
 
 import scala.util.Random

@@ -1,11 +1,11 @@
 package scalangband.model.level
 
 import org.slf4j.LoggerFactory
+import scalangband.model.Creature
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.Monster
-import scalangband.model.tile.{OccupiableTile, Tile}
-import scalangband.model.Creature
 import scalangband.model.player.Player
+import scalangband.model.tile.{OccupiableTile, Tile}
 import scalangband.model.util.CenteredRange
 
 class Level(val depth: Int, val tiles: Array[Array[Tile]]) {

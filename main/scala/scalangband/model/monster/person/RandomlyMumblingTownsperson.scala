@@ -2,7 +2,6 @@ package scalangband.model.monster.person
 
 import scalangband.model.action.monster.{MonsterAction, MonsterPassAction, RandomMovementAction, TauntAction}
 import scalangband.model.item.ItemGenerator
-import scalangband.model.item.garbage.GarbageGenerator
 import scalangband.model.item.money.MoneyGenerator
 import scalangband.model.monster.{MonsterFactory, MonsterInventoryGenerator, MonsterSpec, Person}
 import scalangband.model.util.{DiceRoll, Weighted}

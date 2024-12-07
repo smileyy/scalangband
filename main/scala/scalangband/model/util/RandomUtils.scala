@@ -1,7 +1,5 @@
 package scalangband.model.util
 
-import scalangband.model.location.Coordinates
-
 import scala.util.Random
 
 object RandomUtils {

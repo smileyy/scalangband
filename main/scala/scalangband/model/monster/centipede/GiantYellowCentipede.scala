@@ -1,6 +1,6 @@
 package scalangband.model.monster.centipede
 
-import scalangband.model.action.monster.{MonsterPassAction, RandomMovementAction}
+import scalangband.model.action.monster.RandomMovementAction
 import scalangband.model.monster.{Centipede, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
 import scalangband.ui.TextColors

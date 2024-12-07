@@ -1,7 +1,7 @@
 package scalangband.ui
 
-import scala.swing.event.ButtonClicked
 import scala.swing.*
+import scala.swing.event.ButtonClicked
 
 class MainWindow extends MainFrame {
   title = "Scalangband"
