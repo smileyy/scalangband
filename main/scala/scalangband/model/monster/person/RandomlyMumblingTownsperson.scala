@@ -19,12 +19,12 @@ object RandomlyMumblingTownsperson extends MonsterFactory {
     actions = actions,
     inventory = inventory
   )
-  
+
   def actions: Seq[Weighted[MonsterAction]] = Seq(
     Weighted(MonsterPassAction, 90),
     Weighted(RandomMovementAction, 9),
     Weighted(TauntAction("The townsperson mumbles incoherently"), 1)
   )
-  
+
   def inventory: MonsterInventoryGenerator = new MonsterInventoryGenerator(1, Seq(Weighted(GarbageGenerator, 1)))
 }
