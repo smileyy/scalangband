@@ -1,5 +1,6 @@
 package scalangband.ui.keys
 
+import scalangband.model.Game
 import scalangband.model.action.*
 import scalangband.model.action.player.{GoDownStairsAction, GoUpStairsAction, ListInventoryAction, MovementAction, PendingDirectionCloseAction, PendingDirectionOpenAction, PickUpItemAction, PlayerAction, PlayerPassAction}
 import scalangband.model.location.*
@@ -8,7 +9,7 @@ import scalangband.ui.GamePanelCallback
 import scala.swing.event.{Key, KeyPressed}
 
 object MainKeyHandler extends KeyHandler {
-  override def handleKeyPressed(event: KeyPressed, callback: GamePanelCallback): Option[PlayerAction] = event match {
+  override def handleKeyPressed(event: KeyPressed, game: Game, callback: GamePanelCallback): Option[PlayerAction] = event match {
     case KeyPressed(_, Key.Key1, _, _) => Some(MovementAction(DownLeft))
     case KeyPressed(_, Key.Key2, _, _) => Some(MovementAction(Down))
     case KeyPressed(_, Key.Key3, _, _) => Some(MovementAction(DownRight))
@@ -35,6 +36,11 @@ object MainKeyHandler extends KeyHandler {
       val action = PendingDirectionOpenAction
       callback.pushKeyHandler(new DirectionKeyHandler(action))
       Some(action)
+
+    case KeyPressed(_, Key.W, Key.Modifier.Control, _) =>
+      game.enableDebug()
+      callback.repaint()
+      None
 
     case KeyPressed(_, _, _, _) => None
   }

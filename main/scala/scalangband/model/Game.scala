@@ -94,6 +94,11 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     
     queue = SchedulerQueue(level.creatures)
   }
+
+  def enableDebug(): Unit = {
+    fov.enableDebugging()
+    fov.recompute(player.coordinates, level, 0) // range value doesn't matter
+  }
 }
 object Game {
   val BaseEnergyUnit: Int = 20
