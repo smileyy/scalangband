@@ -8,7 +8,17 @@ import scalangband.model.location.Coordinates;
  */
 public class FieldOfViewCalculator {
 
+    private boolean debug = false;
+    
+    public void enableDebugging() {
+        this.debug = true;
+    }
+            
     public void recompute(Coordinates origin, Level level, int range) {
+        if (debug) {
+            level.setAllTilesVisible();
+        }
+        
         level.apply(origin).setVisible(true);
         for (int octant = 0; octant < 8; octant++) {
             compute(octant, origin, 1, new Slope(1, 1), new Slope(0, 1), level, range);

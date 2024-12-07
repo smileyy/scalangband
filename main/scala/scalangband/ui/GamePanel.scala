@@ -29,7 +29,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
         repaint()
       } else {
         messages = List.empty
-        keyHandlers.head.handleKeyPressed(kp, callback).foreach(action => dispatchAction(action))
+        keyHandlers.head.handleKeyPressed(kp, game, callback).foreach(action => dispatchAction(action))
     }
   }
 
@@ -112,5 +112,9 @@ class GamePanelCallback(panel: GamePanel) {
   
   def popKeyHandler(): Unit = {
     panel.keyHandlers = panel.keyHandlers.tail
+  }
+
+  def repaint(): Unit = {
+    panel.repaint()
   }
 }

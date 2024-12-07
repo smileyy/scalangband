@@ -48,20 +48,20 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
     }
   }
   
-  def makeEverythingInvisible(): Unit = {
-    for (row <- 0 until height) {
-      for (col <- 0 until width) {
-        tiles(row)(col).setVisible(false)
-      }
-    }
-  }
-
   /**
    * Replaces the tile at the given coordinates. Thus far used when opening / closing / breaking a door. Be careful if
    * used to replace a tile that a monster is standing on (or worse, the player!)
    */
   def replaceTile(coordinates: Coordinates, tile: Tile): Unit = {
     tiles(coordinates.row)(coordinates.col) = tile
+  }
+  
+  def setAllTilesVisible(): Unit = {
+    for (row <- 0 until height) {
+      for (col <- 0 until width) {
+        tiles(row)(col).setVisible(true)
+      }
+    }
   }
 }
 
