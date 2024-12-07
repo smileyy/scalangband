@@ -1,6 +1,7 @@
 package scalangband.model.scheduler
 
 import scalangband.model.Creature
+import scalangband.model.monster.Monster
 
 /**
  * A doubly linked list of creatures, used for the scheduling system. This acts like a priority queue, with the head of
@@ -11,41 +12,27 @@ import scalangband.model.Creature
  * other creatures in the queue, resulting in typically O(1) re-queue, with the worst case of O(N). A disadvantage is
  * that initial construction is something like O(N-squared) vs. O(N logN) for a priority queue.
  *
- * @param first the node containing the creature with the most energy. In general, this should not be read directly
+ * @param head the node containing the creature with the most energy. In general, this should not be read directly
  *              when returning results; instead use `getFirst`
  * @param last the node containing the creature with the least energy
  */
-class SchedulerQueue(private var first: SchedulerNode = null, private var last: SchedulerNode = null) {
-  def peek: Creature = firstNode.creature
+class SchedulerQueue(private var head: SchedulerNode = null, private var last: SchedulerNode = null) {
+  def peek: Creature = head.creature
 
   def poll(): Creature = {
-    val result = firstNode
-
-    if (result == null) {
-      throw IndexOutOfBoundsException("Queue is empty")
-    }
-
-    this.first = result.next
+    val result = head
+    
+    this.head = result.next
 
     result.creature
   }
-
-  private def firstNode: SchedulerNode = {
-    if (first == null) {
-      // in practice this never happens; even if everything on the level is dead, the player will still be in the
-      // queue whenever it is being polled. Still, I'd rather throw an Exception here, rather an an NPE elsewere.
-      throw IndexOutOfBoundsException("Queue is empty")
-    }
-
-    first
-  }
-
+  
   def insert(creature: Creature): Unit = {
     val newNode = SchedulerNode(creature)
 
-    if (first == null) {
+    if (head == null) {
       // if first is null, then last will be too
-      first = newNode
+      head = newNode
       last = newNode
     } else {
       last.next = newNode
@@ -68,19 +55,44 @@ class SchedulerQueue(private var first: SchedulerNode = null, private var last: 
         newNode.next = prev
 
         if (prev.prev == null) {
-          first = newNode
+          head = newNode
         } else {
           prev.prev.next = newNode
         }
       }
     }
   }
+  
+  def remove(monster: Monster): Unit = {
+    var node = head
+    
+    var done = false
+    while (node != null && done) {
+      println(node.creature)
+      if (node.creature == monster) {
+        
+        val prev = node.prev
+        if (prev == null) {
+          head = node.next
+          head.prev = null
+        } else {
+          prev.next = node.next
+          node.next.prev = prev
+        }
+        
+        done = true
+      }
+    }
+    
+    node.prev = null
+    node.next = null
+  }
 
   override def toString: String = {
-    if (first == null) "[]"
+    if (head == null) "[]"
     else {
       val result = new StringBuilder("[")
-      var node = first
+      var node = head
       while (node != null) {
         result.append(node)
         if (node.next != null) result.append(", ")

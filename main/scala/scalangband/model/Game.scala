@@ -25,7 +25,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
 
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
 
-  private var queue: SchedulerQueue = SchedulerQueue(level.creatures)
+  var queue: SchedulerQueue = SchedulerQueue(level.creatures)
 
   val accessor: GameAccessor = new GameAccessor(this)
   val callback: GameCallback = new GameCallback(this)
@@ -128,7 +128,8 @@ class GameCallback(private val game: Game) {
       // TODO: scatter the item nearby if it lands on the stairs
       case _ => logger.info("Oops, an item disappeared into the aether")
     }
-    
+
+    game.queue.remove(monster)
     game.level(coordinates).asInstanceOf[OccupiableTile].clearOccupant()
   }
 
