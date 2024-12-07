@@ -2,6 +2,7 @@ package scalangband.ui.render.text
 
 import scalangband.model.level.Level
 import scalangband.model.item.garbage.PotteryShard
+import scalangband.model.item.money.CopperCoins
 import scalangband.model.monster.{Ant, Centipede, Mold, Monster, Person}
 import scalangband.model.monster.person.RandomlyMumblingTownsperson
 import scalangband.model.player.Player
@@ -44,7 +45,11 @@ class TextRenderer(font: Font) extends Renderer {
 
         // items
         case PileOfItems => TextTile('&', font, White)
+
         case PotteryShard => TextTile('~', font, LightBeige)
+
+        // money
+        case _: CopperCoins => TextTile('$', font, Brown)
 
         // oops!
         case _ => TextTile('0', font, Red)

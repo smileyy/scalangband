@@ -1,5 +1,6 @@
 package scalangband.model.monster
 
+import scalangband.model.Creature.NormalSpeed
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.action.monster.MonsterAction
 import scalangband.model.action.player.PlayerAction
@@ -37,12 +38,12 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
   }
 }
 object Monster {
-  def apply(spec: MonsterSpec, coordinates: Coordinates): Monster = {
-    new Monster(spec, coordinates, spec.health.roll, mutable.ListBuffer.from(spec.generateStartingInventory()))
+  def apply(spec: MonsterSpec, coordinates: Coordinates, random: Random): Monster = {
+    new Monster(spec, coordinates, spec.health.roll, mutable.ListBuffer.from(spec.generateStartingInventory(random)))
   }
 
   /**
-   * All monsters start with some energy, but always less than the player enters a level with.
+   * All monsters start with some energy,  less than the player enters a level with.
    */
-  def startingEnergy(): Int = Random.nextInt(BaseEnergyUnit - 1) + 1
+  def startingEnergy(): Int = Random.nextInt(NormalSpeed - 1) + 1
 }
