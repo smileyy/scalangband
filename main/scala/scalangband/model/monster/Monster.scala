@@ -18,7 +18,7 @@ import scala.util.Random
 class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, val inventory: mutable.ListBuffer[Item] = ListBuffer.empty) extends Creature(spec.name, coordinates, Monster.startingEnergy()) {
   def archetype: MonsterArchetype = spec.archetype
 
-  def speed: Int = spec.baseSpeed
+  def speed: Int = spec.speed
 
   def addItem(item: Item): Unit = {
     inventory += item

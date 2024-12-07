@@ -1,5 +1,7 @@
 package scalangband.model.util
 
+import scalangband.model.location.Coordinates
+
 import scala.util.Random
 
 object RandomUtils {
@@ -12,4 +14,8 @@ object RandomUtils {
    * Returns a random element from the array.
    */
   def randomElement[T](random: Random, array: Array[T]): T = array(random.nextInt(array.length))
+  
+  def randomPairs(random: Random, firstBound: Int, secondBound: Int): LazyList[(Int, Int)] = {
+    LazyList.continually((random.nextInt(firstBound), random.nextInt(secondBound)))
+  }
 }

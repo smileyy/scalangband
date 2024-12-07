@@ -2,5 +2,5 @@ package scalangband.model.tile
 
 import scalangband.model.Creature
 
-class DownStairs(occupant: Option[Creature] = None) extends OccupiableTile(occupant)
-class UpStairs(occupant: Option[Creature] = None) extends OccupiableTile(occupant)
+class DownStairs(occ: Option[Creature] = None) extends OccupiableTile(occ)
+class UpStairs(occ: Option[Creature] = None) extends OccupiableTile(occ)

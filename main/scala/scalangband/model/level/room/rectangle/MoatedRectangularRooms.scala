@@ -1,6 +1,7 @@
 package scalangband.model.level.room.rectangle
 
 import scalangband.model.level.room.{Room, RoomGenerator}
+import scalangband.model.monster.Bestiary
 import scalangband.model.tile.{ClosedDoor, RemovableWall}
 
 import scala.util.Random
@@ -9,8 +10,8 @@ object MoatedRectangularRoom {
   private val InteriorHeight = 7
   private val InteriorWidth = 19
 
-  def apply(random: Random, rowOffset: Int, colOffset: Int, centeredDoor: Boolean = true): Room = {
-    val room = RectangularRoom(rowOffset, colOffset, InteriorHeight + 6, InteriorWidth + 6)
+  def apply(random: Random, rowOffset: Int, colOffset: Int, effectiveDepth: Int, centeredDoor: Boolean = true): Room = {
+    val room = RectangularRoom(rowOffset, colOffset, InteriorHeight + 6, InteriorWidth + 6, effectiveDepth)
 
     // add internal room
     for (rowIdx <- 2 until room.height - 2) {
@@ -37,13 +38,13 @@ object MoatedRectangularRoom {
 
 object EmptyMoatedRoomGenerator extends RoomGenerator {
   override def generateRoom(random: Random, depth: Int, rowOffset: Int, colOffset: Int): Room = {
-    MoatedRectangularRoom(random, rowOffset, colOffset)
+    MoatedRectangularRoom(random, rowOffset, colOffset, depth)
   }
 }
 
 object CheckerboardMoatedRoomGenerator extends RoomGenerator {
   override def generateRoom(random: Random, depth: Int, rowOffset: Int, colOffset: Int): Room = {
-    val room = MoatedRectangularRoom(random, rowOffset, colOffset)
+    val room = MoatedRectangularRoom(random, rowOffset, colOffset, depth)
 
     for (rowIdx <- 3 until room.height - 3) {
       for (colIdx <- 3 until room.width - 3) {
@@ -59,7 +60,7 @@ object CheckerboardMoatedRoomGenerator extends RoomGenerator {
 
 object FourBoxesMoatedRoomGenerator extends RoomGenerator {
   override def generateRoom(random: Random, depth: Int, rowOffset: Int, colOffset: Int): Room = {
-    val room = MoatedRectangularRoom(random, rowOffset, colOffset, false)
+    val room = MoatedRectangularRoom(random, rowOffset, colOffset, depth, false)
 
     // draw vertical box dividing line
     for (rowIdx <- 3 until 10) {

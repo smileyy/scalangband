@@ -7,7 +7,7 @@ import scalangband.model.fov.FieldOfViewCalculator
 import scalangband.model.item.Item
 import scalangband.model.level.*
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.Monster
+import scalangband.model.monster.{Bestiary, Monster}
 import scalangband.model.player.{Player, PlayerAccessor, PlayerCallback}
 import scalangband.model.scheduler.SchedulerQueue
 import scalangband.model.settings.Settings
@@ -25,6 +25,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
   fov.recompute(player.coordinates, town, player.light)
 
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
+  val bestiary: Bestiary = Bestiary()
 
   var queue: SchedulerQueue = SchedulerQueue(level.creatures)
 
@@ -65,7 +66,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     if (queue.peek.energy <= 0) startNextTurn()
 
     @tailrec
-    def loopUntilPlayerIsAtHeadOfQueue(results: List[Option[ActionResult]]): List[Option[ActionResult]] = {
+    def loopUntilPlayerIsAtHeadOfQueue(results: List[Option[ActionResult]] = List.empty): List[Option[ActionResult]] = {
       queue.poll() match {
         case p: Player =>
           queue.push(p)
@@ -85,7 +86,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
 
     // this will be in reverse order (most recent action first), but we reverse everything at the end of all the
     // in order to put the player's action result first
-    loopUntilPlayerIsAtHeadOfQueue(List.empty[Option[ActionResult]])
+    loopUntilPlayerIsAtHeadOfQueue()
   }
   
   def startNextTurn(): Unit = {
@@ -147,8 +148,8 @@ class GameCallback(private val game: Game) {
     game.level(coordinates).asInstanceOf[OccupiableTile].clearOccupant()
   }
 
-  def moveDownTo(depth: Int): Unit = {
-    val newLevel = game.levelGenerator.generateLevel(game.random, game.level.depth + 1)
+  def moveDownTo(newDepth: Int): Unit = {
+    val newLevel = game.levelGenerator.generateLevel(game.random, newDepth, game.bestiary)
     val startingCoordinates =
       randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[UpStairs]))
     newLevel.addPlayer(startingCoordinates, game.player)
@@ -156,11 +157,11 @@ class GameCallback(private val game: Game) {
     player.resetEnergy()
   }
 
-  def moveUpTo(depth: Int): Unit = {
-    val newLevel = if (game.level.depth == 1) {
+  def moveUpTo(newDepth: Int): Unit = {
+    val newLevel = if (newDepth == 0) {
       game.town
     } else {
-      game.levelGenerator.generateLevel(game.random, game.level.depth)
+      game.levelGenerator.generateLevel(game.random, newDepth, game.bestiary)
     }
     val startingCoordinates =
       randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[DownStairs]))

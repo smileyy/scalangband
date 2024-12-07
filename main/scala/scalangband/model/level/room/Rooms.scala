@@ -1,7 +1,9 @@
 package scalangband.model.level.room
 
 import scalangband.model.location.{Coordinates, Direction}
-import scalangband.model.tile.Tile
+import scalangband.model.monster.Bestiary
+import scalangband.model.tile.{Floor, OccupiableTile, Tile}
+import scalangband.model.util.RandomUtils
 
 import scala.util.Random
 
@@ -10,8 +12,8 @@ trait Room {
   def height: Int = tiles.length
   def width: Int = tiles(0).length  
   
-  def apply(rowIdx: Int, colIdx: Int): Tile = tiles(rowIdx)(colIdx)
-
+  def apply(row: Int, col: Int): Tile = tiles(row)(col)
+  
   def top: Int
   def bottom: Int = top + height - 1
   def left: Int
@@ -25,21 +27,41 @@ trait Room {
   def getAttachmentPoint(random: Random, direction: Direction): Coordinates
 
   /**
-   * Replaces the tile at the given coordinates.
+   * Replaces the tile at the given indices.
    */
-  def setTile(rowIdx: Int, colIdx: Int, tile: Tile): Unit
+  def setTile(row: Int, col: Int, tile: Tile): Unit
 
   /**
    * Whether this room should be attached to the rest of the level. If a room is to be attached, it must provide 
    * possible attachment points for each direction.
    */
   def attached: Boolean = true
+  
+  def addMonsters(random: Random, bestiary: Bestiary): Unit
 }
 
-abstract class AbstractRoom(val tiles: Array[Array[Tile]], val top: Int, val left: Int) extends Room {
-  override def setTile(rowIdx: Int, colIdx: Int, tile: Tile): Unit = {
-    val original = apply(rowIdx, colIdx)
-    
-    tiles(rowIdx)(colIdx) = tile
+abstract class AbstractRoom(val tiles: Array[Array[Tile]], val top: Int, val left: Int, val effectiveDepth: Int) extends Room {
+  override def setTile(row: Int, col: Int, tile: Tile): Unit = {
+    tiles(row)(col) = tile
+  }
+
+  override def addMonsters(random: Random, bestiary: Bestiary): Unit = {
+    val numberOfMonsters = random.nextInt(100) match {
+      case x if x < 25 => 0
+      case x if x < 75 => 1
+      case x if x < 95 => 2
+      case x if x < 100 => 3
+    }
+
+    (0 until numberOfMonsters).foreach(_ => {
+        val (row, col) = RandomUtils.randomPairs(random, height, width).filter((r, c) => tiles(r)(c) match {
+          case ot: OccupiableTile if !ot.occupied => true
+          case _ => false
+        }).head
+        
+        bestiary.generateMonster(random, effectiveDepth, Coordinates(row + top, col + left))
+          .foreach(monster => tiles(row)(col).asInstanceOf[OccupiableTile].setOccupant(monster))
+      }
+    )
   }
 }

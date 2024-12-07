@@ -11,6 +11,9 @@ import scala.swing.Color
 /**
  * The idea of this type is that it will allow monster recall to be generated from it
  */
-class MonsterSpec(val name: String, val archetype: MonsterArchetype, val level: Int, val health: DiceRoll, val baseSpeed: Int = BaseEnergyUnit, val actions: Seq[Weighted[MonsterAction]], val inventory: MonsterInventoryGenerator, val color: Color) {
-  def generateStartingInventory(): Seq[Item] = inventory.generate(level)
+class MonsterSpec(val name: String, val archetype: MonsterArchetype, val depth: Int, val health: DiceRoll, val speed: Int = BaseEnergyUnit, val actions: Seq[Weighted[MonsterAction]], val inventory: Option[MonsterInventoryGenerator], val color: Color) {
+  def generateStartingInventory(): Seq[Item] = inventory match {
+    case Some(generator) => generator.generate(depth)
+    case None => Seq.empty
+  }
 }
