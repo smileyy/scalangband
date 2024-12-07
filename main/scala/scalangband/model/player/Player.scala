@@ -17,10 +17,10 @@ class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEner
     var messages = List.empty[String]
 
     monster.health = monster.health - 1
-    messages = s"You hit the ${monster.name}" :: messages
+    messages = s"You hit the ${monster.name}." :: messages
     if (monster.health <= 0) {
       callback.killMonster(monster)
-      messages = s"The ${monster.name} dies" :: messages
+      messages = s"The ${monster.name} dies." :: messages
     }
 
     MessagesResult(messages.reverse)
