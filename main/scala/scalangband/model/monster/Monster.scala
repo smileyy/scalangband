@@ -17,6 +17,7 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
   def archetype: MonsterArchetype = spec.archetype
 
   def speed: Int = spec.speed
+  def evasion: Int = spec.evasion
 
   def addItem(item: Item): Unit = {
     inventory += item
@@ -30,13 +31,15 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
   
   def color: Color = spec.color
 
+  def displayName: String = name.toLowerCase
+  
   override def toString: String = {
     s"$name($health, ${inventory.mkString("[", ",", "]")})"
   }
 }
 object Monster {
   def apply(spec: MonsterSpec, coordinates: Coordinates, random: Random): Monster = {
-    new Monster(spec, coordinates, spec.health.roll, mutable.ListBuffer.from(spec.generateStartingInventory(random)))
+    new Monster(spec, coordinates, spec.health.roll(), mutable.ListBuffer.from(spec.generateStartingInventory(random)))
   }
 
   /**

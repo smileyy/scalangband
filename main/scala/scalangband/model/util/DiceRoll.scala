@@ -3,9 +3,9 @@ package scalangband.model.util
 import scala.util.Random
 
 case class DiceRoll(numberOfDice: Int, numberOfSides: Int, constant: Int = 0) {
-  def roll: Int = (0 until numberOfDice).map(_ => Random.nextInt(numberOfSides) + 1).sum + constant
+  def roll(): Int = (0 until numberOfDice).map(_ => Random.nextInt(numberOfSides) + 1).sum + constant
 
-  override def toString: String = s"${numberOfDice}d${numberOfSides}+$constant"
+  override def toString: String = s"$numberOfDice$numberOfSides+$constant"
 }
 object DiceRoll {
   def apply(rollSpec: String): DiceRoll = {

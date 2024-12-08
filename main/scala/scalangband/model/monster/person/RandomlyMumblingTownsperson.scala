@@ -14,6 +14,7 @@ object RandomlyMumblingTownsperson extends MonsterFactory {
     depth = 0,
     archetype = Person,
     health = DiceRoll("1d4"),
+    evasion = 1,
     actions = actions,
     inventory = Some(inventory),
     color = TextColors.White

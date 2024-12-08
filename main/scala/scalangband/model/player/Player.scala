@@ -8,26 +8,50 @@ import scalangband.model.monster.Monster
 import scalangband.model.player.PlayerCallback.Logger
 import scalangband.model.{Creature, Game, GameCallback}
 
-class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEnergyUnit, var money: Int, val inventory: Inventory) extends Creature(name, coordinates, energy) {
+import scala.util.Random
+
+class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEnergyUnit, skills: Skills, var money: Int, val inventory: Inventory, val equipment: Equipment) extends Creature(name, coordinates, energy) {
   def speed: Int = BaseEnergyUnit
 
   def light: Int = 3
+
+  def meleeSkill: Int = skills.melee
 
   override def startNextTurn(): Unit = {
     regenerateEnergy()
   }
 
   def attack(monster: Monster, callback: GameCallback): ActionResult = {
-    var messages = List.empty[String]
-
-    monster.health = monster.health - 1
-    messages = s"You hit the ${monster.name}." :: messages
-    if (monster.health <= 0) {
-      callback.killMonster(monster)
-      messages = s"The ${monster.name} dies." :: messages
+    val messages = Random.nextInt(5) match {
+      case 0 => handleMiss(monster)
+      case 4 => handleHit(monster, callback)
+      case _ => if (Random.nextInt(meleeSkill) > monster.evasion * 2 / 3) {
+        handleHit(monster, callback)
+      } else {
+        handleMiss(monster)
+      }
     }
 
-    MessagesResult(messages.reverse)
+    MessagesResult(messages)
+  }
+
+  private def handleHit(monster: Monster, callback: GameCallback): List[String] = {
+    var messages: List[String] = List.empty
+
+    val damage = equipment.getWeapon.damage.roll()
+    monster.health = monster.health - damage
+
+    messages = s"You hit the ${monster.displayName}." :: messages
+    if (monster.health <= 0) {
+      callback.killMonster(monster)
+      messages = s"You have slain the ${monster.displayName}." :: messages
+    }
+
+    messages.reverse
+  }
+
+  private def handleMiss(monster: Monster): List[String] = {
+    List(s"You miss the ${monster.displayName}.")
   }
 }
 

@@ -11,6 +11,7 @@ object GiantWhiteAnt extends MonsterFactory {
     archetype = Ant,
     depth = 2,
     health = DiceRoll("3d6"),
+    evasion = 19,
     actions = actions,
     inventory = None,
     color = TextColors.White
