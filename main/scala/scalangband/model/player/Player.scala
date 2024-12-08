@@ -22,9 +22,9 @@ class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEner
   }
 
   def attack(monster: Monster, callback: GameCallback): ActionResult = {
-    val messages = Random.nextInt(5) match {
-      case 0 => handleMiss(monster)
-      case 4 => handleHit(monster, callback)
+    val messages = Random.nextInt(20) + 1 match {
+      case 1 => handleMiss(monster)
+      case 20 => handleHit(monster, callback)
       case _ => if (Random.nextInt(meleeSkill) > monster.evasion * 2 / 3) {
         handleHit(monster, callback)
       } else {
