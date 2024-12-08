@@ -1,10 +1,13 @@
 package scalangband.model.action.player
 
+import org.slf4j.LoggerFactory
 import scalangband.model.action.result.{ActionResult, MessagesResult}
 import scalangband.model.location.Direction
 import scalangband.model.monster.Monster
 import scalangband.model.tile.*
 import scalangband.model.{GameAccessor, GameCallback}
+
+import java.util.logging.Logger
 
 object PlayerPassAction extends PhysicalAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = None
@@ -84,6 +87,13 @@ object PickUpItemAction extends PhysicalAction {
 object ListInventoryAction extends InterfaceAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = {
     callback.player.logInventory()
+    None
+  }
+}
+
+object ListEquipmentAction extends InterfaceAction {
+  override def apply(accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = {
+    callback.player.logEquipment()
     None
   }
 }

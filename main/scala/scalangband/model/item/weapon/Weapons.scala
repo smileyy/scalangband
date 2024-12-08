@@ -1,16 +1,10 @@
 package scalangband.model.item.weapon
 
-import scalangband.model.item.Item
 import scalangband.model.util.DiceRoll
 
-trait Weapon extends Item {
-  def damage: DiceRoll
-}
+object Fists extends Weapon("Fists", DiceRoll("1d1")) {}
 
-object Fists extends Weapon {
-  override def name: String = "Fist"
-
-  override def displayName: String = "your fists"
-
-  override def damage: DiceRoll = DiceRoll("1d1")
+object Dagger extends WeaponFactory {
+  override def name: String = "Dagger"
+  override def damage: DiceRoll = DiceRoll("1d4")
 }

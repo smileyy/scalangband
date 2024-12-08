@@ -3,6 +3,7 @@ package scalangband.ui
 import org.slf4j.LoggerFactory
 import scalangband.Scalangband
 import scalangband.model.Game
+import scalangband.model.item.weapon.Dagger
 import scalangband.model.location.Coordinates
 import scalangband.model.player.{Equipment, Inventory, Player, Skills}
 import scalangband.model.settings.Settings
@@ -67,7 +68,10 @@ class NewGameWindow extends Frame {
       logger.info(s"Starting game with seed $seed")
 
       val placeholderCoordinates = Coordinates(-1, -1)
-      val player = new Player(nameTextBox.text, placeholderCoordinates, skills = Skills(), money = 0, inventory = Inventory.empty(), equipment = new Equipment())
+
+      val inventory: Inventory = Inventory.empty()
+      val equipment: Equipment = new Equipment(weapon = Some(Dagger(random, 0)))
+      val player = new Player(nameTextBox.text, placeholderCoordinates, skills = Skills(), money = 0, inventory = inventory, equipment = equipment)
       val game = Game.newGame(seed, random, new Settings(), player)
       Scalangband.startGame(game)
   }

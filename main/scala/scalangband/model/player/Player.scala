@@ -3,17 +3,20 @@ package scalangband.model.player
 import org.slf4j.LoggerFactory
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.action.result.{ActionResult, MessagesResult}
+import scalangband.model.item.weapon.{Fists, Weapon}
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
-import scalangband.model.player.PlayerCallback.Logger
 import scalangband.model.{Creature, Game, GameCallback}
 
 import scala.util.Random
 
-class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEnergyUnit, skills: Skills, var money: Int, val inventory: Inventory, val equipment: Equipment) extends Creature(name, coordinates, energy) {
+class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEnergyUnit, skills: Skills, var money: Int, val inventory: Inventory, val equipment: Equipment)
+  extends Creature(name, coordinates, energy) {
+
   def speed: Int = BaseEnergyUnit
 
   def light: Int = 3
+  def weapon: Weapon = equipment.weapon.getOrElse(Fists)
 
   def meleeSkill: Int = skills.melee
 
@@ -25,6 +28,7 @@ class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEner
     val messages = Random.nextInt(20) + 1 match {
       case 1 => handleMiss(monster)
       case 20 => handleHit(monster, callback)
+      // TODO #62 this is wrong
       case _ => if (Random.nextInt(meleeSkill) > monster.evasion * 2 / 3) {
         handleHit(monster, callback)
       } else {
@@ -38,12 +42,14 @@ class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEner
   private def handleHit(monster: Monster, callback: GameCallback): List[String] = {
     var messages: List[String] = List.empty
 
-    val damage = equipment.getWeapon.damage.roll()
+    val damage = weapon.damage.roll()
     monster.health = monster.health - damage
 
     messages = s"You hit the ${monster.displayName}." :: messages
+    Player.Logger.info(s"Player hit ${monster.displayName} for $damage damage")
     if (monster.health <= 0) {
       callback.killMonster(monster)
+      Player.Logger.info(s"Player killed ${monster.displayName}")
       messages = s"You have slain the ${monster.displayName}." :: messages
     }
 
@@ -51,8 +57,12 @@ class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEner
   }
 
   private def handleMiss(monster: Monster): List[String] = {
+    Player.Logger.info(s"Player killed ${monster.displayName}")
     List(s"You miss the ${monster.displayName}.")
   }
+}
+object Player {
+  private val Logger = LoggerFactory.getLogger(classOf[Player])
 }
 
 class PlayerAccessor(private val player: Player) {
@@ -66,7 +76,8 @@ class PlayerCallback(private val player: Player) {
   def addMoney(amount: Int): Unit = {
     player.money = player.money + amount
   }
-  def logInventory(): Unit = Logger.info(s"Inventory: ${player.inventory.items.map(_.name).mkString("(", ",", ")")}")
+  def logInventory(): Unit = PlayerCallback.Logger.info(s"Inventory: ${player.inventory}")
+  def logEquipment(): Unit = PlayerCallback.Logger.info(s"Equipment: ${player.equipment}")
 }
 object PlayerCallback {
   private val Logger = LoggerFactory.getLogger(classOf[PlayerCallback])
