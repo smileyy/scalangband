@@ -1,9 +1,9 @@
 package scalangband.model.monster.mold
 
+import scalangband.bridge.rendering.TextColors
 import scalangband.model.monster.action.MonsterPassAction
 import scalangband.model.monster.{Mold, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
-import scalangband.ui.TextColors
 
 object GreyMold extends MonsterFactory {
   override def spec: MonsterSpec = MonsterSpec(

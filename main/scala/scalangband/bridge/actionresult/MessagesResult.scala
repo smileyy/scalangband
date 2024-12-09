@@ -1,4 +1,4 @@
-package scalangband.model.action
+package scalangband.bridge.actionresult
 
 /**
  * Results that are displayed in the ui's messaage line.

@@ -1,5 +1,7 @@
 package scalangband.ui
 
+import scalangband.bridge.actionresult.{ActionResult, MessagesResult, NoResult}
+import scalangband.bridge.rendering.TextColors
 import scalangband.model.Game
 import scalangband.model.action.*
 import scalangband.model.player.action.PlayerAction

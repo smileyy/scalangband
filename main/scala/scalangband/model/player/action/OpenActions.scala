@@ -1,6 +1,6 @@
 package scalangband.model.player.action
 
-import scalangband.model.action.{ActionResult, MessagesResult, NoResult}
+import scalangband.bridge.actionresult.{ActionResult, MessagesResult, NoResult}
 import scalangband.model.location.Direction
 import scalangband.model.tile.{BrokenDoor, ClosedDoor, OpenDoor}
 import scalangband.model.{Game, GameAccessor, GameCallback}

@@ -1,7 +1,7 @@
 package scalangband.model
 
 import org.slf4j.LoggerFactory
-import scalangband.model.action.ActionResult
+import scalangband.bridge.actionresult.ActionResult
 import scalangband.model.fov.FieldOfViewCalculator
 import scalangband.model.item.Item
 import scalangband.model.level.*

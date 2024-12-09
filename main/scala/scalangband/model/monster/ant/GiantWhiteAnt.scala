@@ -1,9 +1,9 @@
 package scalangband.model.monster.ant
 
+import scalangband.bridge.rendering.TextColors
 import scalangband.model.monster.action.{MonsterAction, RandomMovementAction}
 import scalangband.model.monster.{Ant, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
-import scalangband.ui.TextColors
 
 object GiantWhiteAnt extends MonsterFactory {
   override def spec: MonsterSpec = MonsterSpec(

@@ -1,9 +1,9 @@
 package scalangband.model.monster.centipede
 
+import scalangband.bridge.rendering.TextColors
 import scalangband.model.monster.action.{MonsterAction, RandomMovementAction}
 import scalangband.model.monster.{Centipede, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
-import scalangband.ui.TextColors
 
 object MetallicRedCentipede extends MonsterFactory {
   override def spec: MonsterSpec = MonsterSpec(

@@ -1,7 +1,7 @@
 package scalangband.model.player.action
 
 import org.slf4j.LoggerFactory
-import scalangband.model.action.{ActionResult, MessagesResult, NoResult}
+import scalangband.bridge.actionresult.{ActionResult, MessagesResult, NoResult}
 import scalangband.model.location.Direction
 import scalangband.model.monster.Monster
 import scalangband.model.tile.*
