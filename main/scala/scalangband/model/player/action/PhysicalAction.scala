@@ -1,7 +1,6 @@
-package scalangband.model.action.player
+package scalangband.model.player.action
 
 import scalangband.model.Game
-import scalangband.model.action.player.PlayerAction
 
 trait PhysicalAction extends PlayerAction {
   override def energyRequired: Int = Game.BaseEnergyUnit

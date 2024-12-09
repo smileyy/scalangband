@@ -1,6 +1,6 @@
 package scalangband.model.monster.attack
 
-import scalangband.model.action.result.ActionResult
+import scalangband.model.action.{ActionResult, MessagesResult, NoResult}
 import scalangband.model.{GameAccessor, GameCallback}
 import scalangband.model.monster.Monster
 import scalangband.model.util.DiceRoll
@@ -8,16 +8,16 @@ import scalangband.model.util.DiceRoll
 import scala.util.Random
 
 trait MeleeAttack {
-  def attack(monster: Monster, game: GameAccessor, callback: GameCallback): Option[String] = {
+  def attack(monster: Monster, game: GameAccessor, callback: GameCallback): ActionResult = {
     val toHit = Math.max(monster.level, 1) * 3 + power
 
     if (Random.nextInt(toHit) > game.player.armorClass) {
       callback.player.takeHit(damage.roll())
       println(s"$this hits")
-      hitMessage(monster)
+      hitMessage(monster).map(msg => MessagesResult(List(msg))).getOrElse(NoResult)
     } else {
       println(s"$this misses")
-      missMessage(monster)
+      missMessage(monster).map(msg => MessagesResult(List(msg))).getOrElse(NoResult)
     }
   }
 

@@ -1,6 +1,4 @@
-package scalangband.model.action.player
-
-import scalangband.model.action.player.PlayerAction
+package scalangband.model.player.action
 
 /**
  * An action that only involves user interface interaction (loo

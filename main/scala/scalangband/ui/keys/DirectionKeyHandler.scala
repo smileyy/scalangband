@@ -1,8 +1,8 @@
 package scalangband.ui.keys
 
 import scalangband.model.Game
-import scalangband.model.action.player.{DirectionNeededAction, PlayerAction}
 import scalangband.model.location.*
+import scalangband.model.player.action.{DirectionNeededAction, PlayerAction}
 import scalangband.ui.GamePanelCallback
 
 import scala.swing.event.{Key, KeyPressed}

@@ -1,13 +1,13 @@
 package scalangband.model
 
 import org.slf4j.LoggerFactory
-import scalangband.model.action.player.{GoDownStairsAction, GoUpStairsAction, PlayerAction}
-import scalangband.model.action.result.ActionResult
+import scalangband.model.action.ActionResult
 import scalangband.model.fov.FieldOfViewCalculator
 import scalangband.model.item.Item
 import scalangband.model.level.*
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.{Bestiary, Monster}
+import scalangband.model.player.action.{GoDownStairsAction, GoUpStairsAction, PlayerAction}
 import scalangband.model.player.{Player, PlayerAccessor, PlayerCallback}
 import scalangband.model.scheduler.SchedulerQueue
 import scalangband.model.settings.Settings
@@ -32,20 +32,20 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
   val accessor: GameAccessor = new GameAccessor(this)
   val callback: GameCallback = new GameCallback(this)
 
-  def takeTurn(playerAction: PlayerAction): Seq[ActionResult] = {
+  def takeTurn(playerAction: PlayerAction): List[ActionResult] = {
     // We know(?) that the player is at the head of the queue
     logger.debug(s"Player is taking $playerAction")
 
-    val playerActionResult: Option[ActionResult] = playerAction.apply(accessor, callback)
+    val playerActionResult: ActionResult = playerAction.apply(accessor, callback)
 
-    val results: List[Option[ActionResult]] = (playerAction, playerActionResult) match {
+    val results: List[ActionResult] = (playerAction, playerActionResult) match {
       // We don't need / want the monster action loop if the player has successfully gone up or down stairs
-      case (GoUpStairsAction, Some(result)) if result.success =>
+      case (GoUpStairsAction, result)  if result.success =>
         queue = SchedulerQueue(level.creatures)
-        List(playerActionResult)
-      case (GoDownStairsAction, Some(result)) if result.success =>
+        List(result)
+      case (GoDownStairsAction, result) if result.success =>
         queue = SchedulerQueue(level.creatures)
-        List(playerActionResult)
+        List(result)
       case _ =>
         if (playerAction.energyRequired > 0) {
           val player = queue.poll()
@@ -59,14 +59,14 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     }
 
     fov.recompute(player.coordinates, level, player.light)
-    results.flatten.reverse
+    results.reverse
   }
 
-  private def takeMonsterActions(): List[Option[ActionResult]] = {
+  private def takeMonsterActions(): List[ActionResult] = {
     if (queue.peek.energy <= 0) startNextTurn()
 
     @tailrec
-    def loopUntilPlayerIsAtHeadOfQueue(results: List[Option[ActionResult]] = List.empty): List[Option[ActionResult]] = {
+    def loopUntilPlayerIsAtHeadOfQueue(results: List[ActionResult]= List.empty): List[ActionResult] = {
       queue.poll() match {
         case p: Player =>
           queue.push(p)
@@ -74,13 +74,13 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
         case monster: Monster =>
           val action = monster.getAction(accessor)
           logger.debug(s"${monster.name} is taking action $action")
-          val result: Option[ActionResult] = action.apply(monster, accessor, callback)
+          val monsterActionResults = action.apply(monster, accessor, callback).toList
           monster.deductEnergy(action.energyRequired)
           queue.insert(monster)
 
           if (queue.peek.energy <= 0) startNextTurn()
 
-          loopUntilPlayerIsAtHeadOfQueue(result :: results)
+          loopUntilPlayerIsAtHeadOfQueue(monsterActionResults ::: results)
       }
     }
 
