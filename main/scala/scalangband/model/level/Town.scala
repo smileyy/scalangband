@@ -1,6 +1,6 @@
 package scalangband.model.level
 
-import scalangband.model.monster.person.RandomlyMumblingTownsperson
+import scalangband.data.monster.person.RandomlyMumblingTownsperson
 import scalangband.model.tile.{Floor, Tile}
 
 import scala.util.Random

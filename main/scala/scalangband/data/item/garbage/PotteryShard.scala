@@ -1,4 +1,4 @@
-package scalangband.model.item.garbage
+package scalangband.data.item.garbage
 
 import scalangband.model.item.Item
 

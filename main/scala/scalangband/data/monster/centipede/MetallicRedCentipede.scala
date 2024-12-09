@@ -1,4 +1,4 @@
-package scalangband.model.monster.centipede
+package scalangband.data.monster.centipede
 
 import scalangband.bridge.rendering.TextColors
 import scalangband.model.monster.action.{MonsterAction, RandomMovementAction}

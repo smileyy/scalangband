@@ -1,4 +1,4 @@
-package scalangband.model.monster.ant
+package scalangband.data.monster.ant
 
 import scalangband.bridge.rendering.TextColors
 import scalangband.model.monster.action.{MonsterAction, RandomMovementAction}

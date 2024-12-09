@@ -1,9 +1,9 @@
 package scalangband.model.monster
 
+import scalangband.data.monster.ant.GiantWhiteAnt
+import scalangband.data.monster.centipede.{GiantYellowCentipede, MetallicRedCentipede}
+import scalangband.data.monster.mold.GreyMold
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.ant.*
-import scalangband.model.monster.centipede.*
-import scalangband.model.monster.mold.*
 
 import scala.util.Random
 

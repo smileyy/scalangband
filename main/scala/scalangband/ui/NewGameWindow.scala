@@ -2,8 +2,8 @@ package scalangband.ui
 
 import org.slf4j.LoggerFactory
 import scalangband.Scalangband
+import scalangband.data.item.weapon.Dagger
 import scalangband.model.Game
-import scalangband.model.item.weapon.Dagger
 import scalangband.model.location.Coordinates
 import scalangband.model.player.{Equipment, Inventory, Player, Skills}
 import scalangband.model.settings.Settings

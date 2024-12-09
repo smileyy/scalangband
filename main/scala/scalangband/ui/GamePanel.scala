@@ -3,14 +3,13 @@ package scalangband.ui
 import scalangband.bridge.actionresult.{ActionResult, MessagesResult, NoResult}
 import scalangband.bridge.rendering.TextColors
 import scalangband.model.Game
-import scalangband.model.action.*
 import scalangband.model.player.action.PlayerAction
 import scalangband.ui.GamePanel.{MaxMessageLineLength, PlayerPaneWidth}
 import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
 import scalangband.ui.render.Renderer
 
 import scala.swing.*
-import scala.swing.event.KeyPressed
+import scala.swing.event.*
 
 class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHandler], var messages: List[String] = List.empty) extends Panel {
 

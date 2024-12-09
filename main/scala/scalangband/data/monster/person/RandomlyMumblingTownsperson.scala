@@ -1,9 +1,9 @@
-package scalangband.model.monster.person
+package scalangband.data.monster.person
 
 import scalangband.bridge.rendering.TextColors
+import scalangband.data.item.garbage.GarbageGenerator
+import scalangband.data.item.money.MoneyGenerator
 import scalangband.model.item.ItemGenerator
-import scalangband.model.item.garbage.GarbageGenerator
-import scalangband.model.item.money.MoneyGenerator
 import scalangband.model.monster.action.{MonsterAction, MonsterPassAction, RandomMovementAction, SpeakAction}
 import scalangband.model.monster.{MonsterFactory, MonsterInventoryGenerator, MonsterSpec, Person}
 import scalangband.model.util.{DiceRoll, Weighted}
