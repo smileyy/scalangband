@@ -1,4 +1,4 @@
-package scalangband.ui
+package scalangband.bridge.rendering
 
 import scala.swing.Color
 

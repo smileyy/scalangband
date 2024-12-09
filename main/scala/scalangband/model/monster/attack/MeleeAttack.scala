@@ -1,6 +1,6 @@
 package scalangband.model.monster.attack
 
-import scalangband.model.action.{ActionResult, MessagesResult, NoResult}
+import scalangband.bridge.actionresult.{ActionResult, MessagesResult, NoResult}
 import scalangband.model.{GameAccessor, GameCallback}
 import scalangband.model.monster.Monster
 import scalangband.model.util.DiceRoll

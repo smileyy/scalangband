@@ -6,7 +6,7 @@ import scalangband.model.level.Level
 import scalangband.model.monster.*
 import scalangband.model.player.Player
 import scalangband.model.tile.*
-import scalangband.ui.TextColors.*
+import scalangband.bridge.rendering.TextColors.*
 import scalangband.ui.render.{RenderableTile, Renderer}
 
 import scala.swing.Font

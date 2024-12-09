@@ -1,6 +1,6 @@
 package scalangband.model.player.action
 
-import scalangband.model.action.ActionResult
+import scalangband.bridge.actionresult.ActionResult
 import scalangband.model.{Game, GameAccessor, GameCallback}
 
 trait PlayerAction {

@@ -1,6 +1,6 @@
 package scalangband.model.player.action
 
-import scalangband.model.action.{ActionResult, MessagesResult}
+import scalangband.bridge.actionresult.{ActionResult, MessagesResult}
 import scalangband.model.location.Direction
 import scalangband.model.{Game, GameAccessor, GameCallback}
 

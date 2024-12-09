@@ -1,12 +1,12 @@
 package scalangband.model.monster.person
 
+import scalangband.bridge.rendering.TextColors
 import scalangband.model.item.ItemGenerator
 import scalangband.model.item.garbage.GarbageGenerator
 import scalangband.model.item.money.MoneyGenerator
 import scalangband.model.monster.action.{MonsterAction, MonsterPassAction, RandomMovementAction, SpeakAction}
 import scalangband.model.monster.{MonsterFactory, MonsterInventoryGenerator, MonsterSpec, Person}
 import scalangband.model.util.{DiceRoll, Weighted}
-import scalangband.ui.TextColors
 
 object RandomlyMumblingTownsperson extends MonsterFactory {
   override def spec: MonsterSpec = new MonsterSpec(
