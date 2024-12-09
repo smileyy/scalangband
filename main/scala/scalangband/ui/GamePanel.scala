@@ -47,12 +47,12 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     super.paintComponent(g)
 
     val lineHeight = g.getFontMetrics(font).getHeight
-    val characterPaneWidth = g.getFontMetrics(font).charWidth(' ') * PlayerPaneWidth
+    val characterPaneWidth = g.getFontMetrics(font).charWidth(' ') * (PlayerPaneWidth + 1)
 
     paintMessages(g, lineHeight)
     paintPlayer(g, lineHeight, lineHeight)
     paintLevel(g, lineHeight, characterPaneWidth)
-    paintDepth(g, characterPaneWidth, lineHeight)
+    paintDepth(g, lineHeight, characterPaneWidth)
   }
 
   private def paintMessages(g: Graphics2D, messageLineYOffset: Int): Unit = {
@@ -81,17 +81,17 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
 
     g.drawString(playerNameDisplay, 0, yOffset + lineHeight)
 
-    val moneyDisplay = {
-      val displayString = StringBuilder("AU")
-      val rawMoneyString = game.player.money.toString
-      val padding = PlayerPaneWidth - displayString.length() - rawMoneyString.length
-      displayString.append("".padTo(padding, ' '))
-      displayString.append(rawMoneyString)
+    g.drawString(rightAlignedFieldString("AU", game.player.money.toString), 0, yOffset + lineHeight * 2)
+    g.drawString(rightAlignedFieldString("HP", game.player.health.toString), 0, yOffset + lineHeight * 4)
+  }
 
-      displayString.toString()
-    }
+  private def rightAlignedFieldString(label: String, value: String) = {
+    val displayString = StringBuilder(label)
+    val padding = PlayerPaneWidth - displayString.length() - value.length
+    displayString.append("".padTo(padding, ' '))
+    displayString.append(value)
 
-    g.drawString(moneyDisplay, 0, yOffset + lineHeight * 2)
+    displayString.toString()
   }
 
   private def paintLevel(g: Graphics2D, messageLineHeight: Int, characterPaneWidth: Int): Unit = {
@@ -104,7 +104,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     }
   }
 
-  private def paintDepth(g: Graphics2D, characterPaneWidth: Int, lineHeight: Int): Unit = {
+  private def paintDepth(g: Graphics2D, lineHeight: Int, characterPaneWidth: Int): Unit = {
     g.setColor(TextColors.White)
     val depth = if (game.level.depth == 0) "Town" else s"${game.level.depth * 50} feet"
     g.drawString(depth, characterPaneWidth, game.level.tiles.length * renderer.tileHeight + lineHeight * 2)

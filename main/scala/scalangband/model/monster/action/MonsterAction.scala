@@ -1,4 +1,4 @@
-package scalangband.model.action.monster
+package scalangband.model.monster.action
 
 import scalangband.model.action.result.ActionResult
 import scalangband.model.monster.Monster

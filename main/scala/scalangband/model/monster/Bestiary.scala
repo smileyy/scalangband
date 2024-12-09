@@ -29,7 +29,7 @@ object Bestiary {
  ))
 
   def apply(factories: Seq[MonsterFactory]): Bestiary = {
-    val map = factories.map(factory => (factory.spec.depth, factory))
+    val map = factories.map(factory => (factory.spec.level, factory))
       .groupBy((level, _) => level)
       .map((level, seq) => (level, seq.map((_, factory) => factory).toIndexedSeq))
     new Bestiary(map)
