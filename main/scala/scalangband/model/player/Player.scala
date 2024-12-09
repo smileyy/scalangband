@@ -18,7 +18,7 @@ class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEner
   def light: Int = 3
   def weapon: Weapon = equipment.weapon.getOrElse(Fists)
 
-  def meleeSkill: Int = skills.melee
+  def toHit: Int = 24
 
   override def startNextTurn(): Unit = {
     regenerateEnergy()
@@ -29,7 +29,7 @@ class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEner
       case 1 => handleMiss(monster)
       case 20 => handleHit(monster, callback)
       // TODO #62 this is wrong
-      case _ => if (Random.nextInt(meleeSkill) > monster.evasion * 2 / 3) {
+      case _ => if (Random.nextInt(toHit) > monster.evasion * 2 / 3) {
         handleHit(monster, callback)
       } else {
         handleMiss(monster)
