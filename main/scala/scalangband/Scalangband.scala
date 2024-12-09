@@ -20,4 +20,10 @@ object Scalangband extends SwingApplication {
     maybeGameWindow.get.pack()
     maybeGameWindow.get.visible = true
   }
+
+  def endGame(): Unit = {
+    maybeGameWindow.get.close()
+    maybeGameWindow = None
+    mainWindow.visible = true
+  }
 }

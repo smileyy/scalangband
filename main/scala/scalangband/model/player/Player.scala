@@ -1,7 +1,7 @@
 package scalangband.model.player
 
 import org.slf4j.LoggerFactory
-import scalangband.bridge.actionresult.{ActionResult, MessagesResult}
+import scalangband.bridge.actionresult.{ActionResult, MessagesResult, NoResult}
 import scalangband.data.item.weapon.{Fists, Weapon}
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.location.Coordinates
@@ -60,6 +60,8 @@ class Player(name: String, coordinates: Coordinates, var health: Int, energy: In
     Player.Logger.info(s"Player killed ${monster.displayName}")
     List(s"You miss the ${monster.displayName}.")
   }
+  
+  def isDead: Boolean = health <= 0
 }
 object Player {
   private val Logger = LoggerFactory.getLogger(classOf[Player])
@@ -68,15 +70,16 @@ object Player {
 class PlayerAccessor(private val player: Player) {
   def coordinates: Coordinates = player.coordinates
   def armorClass: Int = player.armorClass
+  def isDead: Boolean = player.isDead
 }
 
 class PlayerCallback(private val player: Player) {
   def attack(monster: Monster, callback: GameCallback): ActionResult = player.attack(monster, callback)
   def resetEnergy(): Unit = player.energy = player.speed
 
-  def addMoney(amount: Int): Unit = player.money = player.money + amount
-  
   def takeHit(damage: Int): Unit = player.health = player.health - damage
+
+  def addMoney(amount: Int): Unit = player.money = player.money + amount
   
   def logInventory(): Unit = PlayerCallback.Logger.info(s"Inventory: ${player.inventory}")
   def logEquipment(): Unit = PlayerCallback.Logger.info(s"Equipment: ${player.equipment}")

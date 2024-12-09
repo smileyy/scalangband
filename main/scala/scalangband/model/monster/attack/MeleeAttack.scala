@@ -8,16 +8,14 @@ import scalangband.model.util.DiceRoll
 import scala.util.Random
 
 trait MeleeAttack {
-  def attack(monster: Monster, game: GameAccessor, callback: GameCallback): ActionResult = {
+  def attack(monster: Monster, game: GameAccessor, callback: GameCallback): List[ActionResult] = {
     val toHit = Math.max(monster.level, 1) * 3 + power
 
     if (Random.nextInt(toHit) > game.player.armorClass) {
       callback.player.takeHit(damage.roll())
-      println(s"$this hits")
-      hitMessage(monster).map(msg => MessagesResult(List(msg))).getOrElse(NoResult)
+      List(hitMessage(monster).map(msg => MessagesResult(List(msg))).getOrElse(NoResult)) 
     } else {
-      println(s"$this misses")
-      missMessage(monster).map(msg => MessagesResult(List(msg))).getOrElse(NoResult)
+      List(missMessage(monster).map(msg => MessagesResult(List(msg))).getOrElse(NoResult))
     }
   }
 
