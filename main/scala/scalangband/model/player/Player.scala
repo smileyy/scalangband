@@ -10,7 +10,7 @@ import scalangband.model.{Creature, Game, GameCallback}
 
 import scala.util.Random
 
-class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEnergyUnit, skills: Skills, var money: Int, val inventory: Inventory, val equipment: Equipment)
+class Player(name: String, coordinates: Coordinates, var health: Int, energy: Int = Game.BaseEnergyUnit, skills: Skills, var money: Int, val inventory: Inventory, val equipment: Equipment)
   extends Creature(name, coordinates, energy) {
 
   def speed: Int = BaseEnergyUnit
@@ -19,6 +19,7 @@ class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEner
   def weapon: Weapon = equipment.weapon.getOrElse(Fists)
 
   def toHit: Int = 24
+  def armorClass: Int = equipment.allEquipment.map(_.armorClass).sum
 
   override def startNextTurn(): Unit = {
     regenerateEnergy()
@@ -28,8 +29,7 @@ class Player(name: String, coordinates: Coordinates, energy: Int = Game.BaseEner
     val messages = Random.nextInt(20) + 1 match {
       case 1 => handleMiss(monster)
       case 20 => handleHit(monster, callback)
-      // TODO #62 this is wrong
-      case _ => if (Random.nextInt(toHit) > monster.evasion * 2 / 3) {
+      case _ => if (Random.nextInt(toHit) > monster.armorClass * 2 / 3) {
         handleHit(monster, callback)
       } else {
         handleMiss(monster)
@@ -67,15 +67,17 @@ object Player {
 
 class PlayerAccessor(private val player: Player) {
   def coordinates: Coordinates = player.coordinates
+  def armorClass: Int = player.armorClass
 }
 
 class PlayerCallback(private val player: Player) {
   def attack(monster: Monster, callback: GameCallback): ActionResult = player.attack(monster, callback)
   def resetEnergy(): Unit = player.energy = player.speed
 
-  def addMoney(amount: Int): Unit = {
-    player.money = player.money + amount
-  }
+  def addMoney(amount: Int): Unit = player.money = player.money + amount
+  
+  def takeHit(damage: Int): Unit = player.health = player.health - damage
+  
   def logInventory(): Unit = PlayerCallback.Logger.info(s"Inventory: ${player.inventory}")
   def logEquipment(): Unit = PlayerCallback.Logger.info(s"Equipment: ${player.equipment}")
 }

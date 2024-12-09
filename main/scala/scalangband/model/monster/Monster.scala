@@ -2,9 +2,9 @@ package scalangband.model.monster
 
 import scalangband.model.Creature.NormalSpeed
 import scalangband.model.Game.BaseEnergyUnit
-import scalangband.model.action.monster.MonsterAction
 import scalangband.model.item.Item
 import scalangband.model.location.Coordinates
+import scalangband.model.monster.action.MonsterAction
 import scalangband.model.util.Weighted
 import scalangband.model.{Creature, Game, GameAccessor}
 
@@ -15,9 +15,10 @@ import scala.util.Random
 
 class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, val inventory: mutable.ListBuffer[Item] = ListBuffer.empty) extends Creature(spec.name, coordinates, Monster.startingEnergy()) {
   def archetype: MonsterArchetype = spec.archetype
-
+  def level: Int = spec.level
+  
   def speed: Int = spec.speed
-  def evasion: Int = spec.evasion
+  def armorClass: Int = spec.armorClass
 
   def addItem(item: Item): Unit = {
     inventory += item

@@ -3,6 +3,9 @@ package scalangband.model.location
 sealed abstract class Direction(val dx: Int, val dy: Int) {
   def opposite: Direction
 }
+object Direction {
+  val allDirections: Seq[Direction] = Seq(Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft)
+}
 
 case object Up extends Direction(0, -1) {
   override def opposite: Direction = Down

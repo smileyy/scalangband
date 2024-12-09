@@ -69,9 +69,10 @@ class NewGameWindow extends Frame {
 
       val placeholderCoordinates = Coordinates(-1, -1)
 
-      val inventory: Inventory = Inventory.empty()
-      val equipment: Equipment = new Equipment(weapon = Some(Dagger(random, 0)))
-      val player = new Player(nameTextBox.text, placeholderCoordinates, skills = Skills(), money = 0, inventory = inventory, equipment = equipment)
+      val health = 20
+      val inventory = Inventory.empty()
+      val equipment = new Equipment(weapon = Some(Dagger(random, 0)))
+      val player = new Player(nameTextBox.text, placeholderCoordinates, health = health, skills = Skills(), money = 0, inventory = inventory, equipment = equipment)
       val game = Game.newGame(seed, random, new Settings(), player)
       Scalangband.startGame(game)
   }
