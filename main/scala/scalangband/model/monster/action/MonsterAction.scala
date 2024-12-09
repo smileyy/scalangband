@@ -1,6 +1,6 @@
 package scalangband.model.monster.action
 
-import scalangband.model.action.result.ActionResult
+import scalangband.model.action.ActionResult
 import scalangband.model.monster.Monster
 import scalangband.model.{Game, GameAccessor, GameCallback}
 
@@ -10,7 +10,7 @@ trait MonsterAction {
    */
   def energyRequired: Int = Game.BaseEnergyUnit
 
-  def apply(monster: Monster, game: GameAccessor, callback: GameCallback): Option[ActionResult]
+  def apply(monster: Monster, game: GameAccessor, callback: GameCallback): Seq[ActionResult]
 
   override def toString: String = getClass.getSimpleName
 }

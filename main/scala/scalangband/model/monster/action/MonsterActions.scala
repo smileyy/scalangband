@@ -1,7 +1,7 @@
 package scalangband.model.monster.action
 
 import org.slf4j.{Logger, LoggerFactory}
-import scalangband.model.action.result.{ActionResult, MessagesResult}
+import scalangband.model.action.{ActionResult, MessagesResult, NoResult}
 import scalangband.model.location.*
 import scalangband.model.location.Direction.allDirections
 import scalangband.model.monster.Monster
@@ -12,7 +12,7 @@ import scalangband.model.{GameAccessor, GameCallback}
 import scala.util.Random
 
 class AdjacentToPlayerActions(adjacent: Seq[Weighted[MonsterAction]], otherwise: Seq[Weighted[MonsterAction]]) extends MonsterAction {
-  override def apply(monster: Monster, game: GameAccessor, callback: GameCallback): Option[ActionResult] = {
+  override def apply(monster: Monster, game: GameAccessor, callback: GameCallback): Seq[ActionResult] = {
     val isAdjacent: Boolean = allDirections.exists(dir => monster.coordinates + dir == game.player.coordinates)
     val selectedAction: MonsterAction = if (isAdjacent) Weighted.select(adjacent) else Weighted.select(otherwise)
     selectedAction.apply(monster, game, callback)
@@ -20,15 +20,14 @@ class AdjacentToPlayerActions(adjacent: Seq[Weighted[MonsterAction]], otherwise:
 }
 
 class MeleeAttacksAction(attacks: Seq[MeleeAttack]) extends MonsterAction {
-  override def apply(monster: Monster, game: GameAccessor, callback: GameCallback): Option[ActionResult] = {
-    var maybeMessages: List[Option[String]] = List.empty
+  override def apply(monster: Monster, game: GameAccessor, callback: GameCallback): Seq[ActionResult] = {
+    var results: List[ActionResult] = List.empty
 
     attacks.foreach { attack =>
-      maybeMessages = attack.attack(monster, game, callback) :: maybeMessages
+      results = attack.attack(monster, game, callback) :: results
     }
 
-    val messages = maybeMessages.flatten
-    if (messages.nonEmpty) Some(MessagesResult(messages.reverse)) else None
+    results
   }
 }
 object MeleeAttacksAction {
@@ -37,13 +36,13 @@ object MeleeAttacksAction {
 }
 
 object MonsterPassAction extends MonsterAction {
-  override def apply(monster: Monster, game: GameAccessor, callback: GameCallback): Option[ActionResult] = None
+  override def apply(monster: Monster, game: GameAccessor, callback: GameCallback): Seq[ActionResult] = Seq(NoResult)
 }
 
 object RandomMovementAction extends MonsterAction {
   val Logger: Logger = LoggerFactory.getLogger(classOf[RandomMovementAction.type])
 
-  override def apply(monster: Monster, accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = {
+  override def apply(monster: Monster, accessor: GameAccessor, callback: GameCallback): Seq[ActionResult] = {
     val direction: Direction = Random.nextInt(8) match {
       case 0 => Up
       case 1 => Down
@@ -58,12 +57,12 @@ object RandomMovementAction extends MonsterAction {
     Logger.debug(s"${monster.name} is trying to move $direction")
     callback.level.tryToMoveMonster(monster, direction)
     
-    None
+    Seq(NoResult)
   }
 }
 
 class SpeakAction(message: String) extends MonsterAction {
-  override def apply(monster: Monster, accessor: GameAccessor, callback: GameCallback): Option[ActionResult] = {
-    Some(MessagesResult(List(message)))
+  override def apply(monster: Monster, accessor: GameAccessor, callback: GameCallback): Seq[ActionResult] = {
+    Seq(MessagesResult(List(message)))
   }
 }

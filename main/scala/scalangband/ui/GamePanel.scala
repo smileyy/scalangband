@@ -2,8 +2,7 @@ package scalangband.ui
 
 import scalangband.model.Game
 import scalangband.model.action.*
-import scalangband.model.action.player.PlayerAction
-import scalangband.model.action.result.{ActionResult, MessagesResult}
+import scalangband.model.player.action.PlayerAction
 import scalangband.ui.GamePanel.{MaxMessageLineLength, PlayerPaneWidth}
 import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
 import scalangband.ui.render.Renderer
@@ -41,6 +40,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
 
   private def applyResult(result: ActionResult): Unit = result match {
     case MessagesResult(messages, _) => this.messages = messages ::: this.messages
+    case NoResult =>
   }
 
   override def paintComponent(g: Graphics2D): Unit = {
