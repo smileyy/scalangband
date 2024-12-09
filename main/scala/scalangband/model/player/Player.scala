@@ -2,8 +2,8 @@ package scalangband.model.player
 
 import org.slf4j.LoggerFactory
 import scalangband.bridge.actionresult.{ActionResult, MessagesResult}
+import scalangband.data.item.weapon.{Fists, Weapon}
 import scalangband.model.Game.BaseEnergyUnit
-import scalangband.model.item.weapon.{Fists, Weapon}
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
 import scalangband.model.{Creature, Game, GameCallback}

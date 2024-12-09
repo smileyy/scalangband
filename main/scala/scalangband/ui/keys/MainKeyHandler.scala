@@ -1,7 +1,6 @@
 package scalangband.ui.keys
 
 import scalangband.model.Game
-import scalangband.model.action.*
 import scalangband.model.location.*
 import scalangband.model.player.action.{GoDownStairsAction, GoUpStairsAction, ListEquipmentAction, ListInventoryAction, MovementAction, PendingDirectionCloseAction, PendingDirectionOpenAction, PickUpItemAction, PlayerAction, PlayerPassAction}
 import scalangband.ui.GamePanelCallback

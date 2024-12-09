@@ -1,4 +1,4 @@
-package scalangband.model.monster.mold
+package scalangband.data.monster.mold
 
 import scalangband.bridge.rendering.TextColors
 import scalangband.model.monster.action.MonsterPassAction

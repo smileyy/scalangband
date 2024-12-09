@@ -1,4 +1,4 @@
-package scalangband.model.item.weapon
+package scalangband.data.item.weapon
 
 import scalangband.model.util.DiceRoll
 

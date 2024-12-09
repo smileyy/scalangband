@@ -1,4 +1,4 @@
-package scalangband.model.item.money
+package scalangband.data.item.money
 
 import scalangband.model.item.Item
 

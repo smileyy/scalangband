@@ -1,7 +1,7 @@
 package scalangband.model.tile
 
+import scalangband.data.item.money.Money
 import scalangband.model.item.Item
-import scalangband.model.item.money.Money
 import scalangband.model.{Creature, Representable}
 
 import scala.annotation.tailrec
