@@ -1,5 +1,6 @@
 package scalangband.ui
 
+import scalangband.Scalangband
 import scalangband.bridge.actionresult.{ActionResult, MessagesResult, NoResult}
 import scalangband.bridge.rendering.TextColors
 import scalangband.model.Game
@@ -25,6 +26,9 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
 
   reactions += {
     case kp: KeyPressed =>
+      if (game.player.isDead) {
+        Scalangband.endGame()
+      }
       if (messages.nonEmpty) {
         repaint()
       } else {

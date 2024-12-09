@@ -24,7 +24,11 @@ class MeleeAttacksAction(attacks: Seq[MeleeAttack]) extends MonsterAction {
     var results: List[ActionResult] = List.empty
 
     attacks.foreach { attack =>
-      results = attack.attack(monster, game, callback) :: results
+      results = attack.attack(monster, game, callback) ::: results
+    }
+
+    if (game.player.isDead) {
+      results = MessagesResult(List("You have died.")) :: results
     }
 
     results

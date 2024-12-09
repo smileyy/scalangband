@@ -5,7 +5,7 @@ import scala.util.Random
 case class DiceRoll(numberOfDice: Int, numberOfSides: Int, constant: Int = 0) {
   def roll(): Int = (0 until numberOfDice).map(_ => Random.nextInt(numberOfSides) + 1).sum + constant
 
-  override def toString: String = s"${numberOfDice}d$numberOfSides${ if constant == 0 then "" else "+" + constant }"
+  override def toString: String = s"${numberOfDice}d$numberOfSides${ if (constant == 0) "" else "+" + constant }"
 }
 object DiceRoll {
   def apply(rollSpec: String): DiceRoll = {
