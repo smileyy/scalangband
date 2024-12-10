@@ -2,7 +2,7 @@ package scalangband.model.player.action
 
 import org.slf4j.LoggerFactory
 import scalangband.model.player.action.PlayerMovementAction.Logger
-import scalangband.bridge.actionresult.{ActionResult, MessagesResult, NoResult}
+import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.model.effect.Confusion
 import scalangband.model.location.Direction
 import scalangband.model.monster.Monster
@@ -33,7 +33,7 @@ case class PlayerMovementAction(intendedDirection: Direction) extends PhysicalAc
     val targetTile = accessor.level.tile(targetCoordinates)
 
     targetTile match {
-      case _: Wall => MessagesResult("There is a wall in the way!")
+      case _: Wall => MessageResult("There is a wall in the way!")
       case _: ClosedDoor =>
         callback.level.replaceTile(targetCoordinates, new OpenDoor())
       case ot: OccupiableTile if ot.occupied =>
@@ -44,12 +44,12 @@ case class PlayerMovementAction(intendedDirection: Direction) extends PhysicalAc
         floor.money.foreach(money => {
           floor.removeItem(money)
           callback.player.addMoney(money.amount)
-          results = MessagesResult(s"You have found ${money.amount} gold pieces worth of ${money.material}.") :: results
+          results = MessageResult(s"You have found ${money.amount} gold pieces worth of ${money.material}.") :: results
         })
 
         if (floor.items.isEmpty) {} // it is possible that the floor only had money in it, and now it is all gone
-        else if (floor.items.size == 1) results = MessagesResult("You see ${floor.items.head.displayName}.") :: results
-        else results = MessagesResult("You see a pile of items.") :: results
+        else if (floor.items.size == 1) results = MessageResult("You see ${floor.items.head.displayName}.") :: results
+        else results = MessageResult("You see a pile of items.") :: results
       case ot: OccupiableTile =>
         callback.movePlayerTo(targetCoordinates)
     }
@@ -68,8 +68,8 @@ object GoDownStairsAction extends PhysicalAction {
     accessor.playerTile match {
       case _: DownStairs =>
         callback.moveDownTo(accessor.level.depth + 1)
-        List(MessagesResult(s"You enter a maze of down staircases."))
-      case _ => List(MessagesResult("I see no down staircase here."))
+        List(MessageResult(s"You enter a maze of down staircases."))
+      case _ => List(MessageResult("I see no down staircase here."))
     }
   }
 }
@@ -80,8 +80,8 @@ object GoUpStairsAction extends PhysicalAction {
       case _: UpStairs =>
         callback.moveUpTo(accessor.level.depth - 1)
         val message = "You enter a maze of up staircases."
-        List(MessagesResult(message))
-      case _ => List(MessagesResult("I see no up staircase here."))
+        List(MessageResult(message))
+      case _ => List(MessageResult("I see no up staircase here."))
     }
   }
 }
@@ -92,8 +92,8 @@ object PickUpItemAction extends PhysicalAction {
       case floor: Floor if floor.items.nonEmpty =>
         val item = floor.items.head
         callback.playerPickup(floor, floor.items.head)
-        List(MessagesResult(s"You pick up the ${item.displayName}"))
-      case _ => List(MessagesResult("There is nothing to pick up"))
+        List(MessageResult(s"You pick up the ${item.displayName}"))
+      case _ => List(MessageResult("There is nothing to pick up"))
     }
   }
 }
