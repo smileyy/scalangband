@@ -1,10 +1,13 @@
 package scalangband.model.location
 
+import scala.util.Random
+
 sealed abstract class Direction(val dx: Int, val dy: Int) {
   def opposite: Direction
 }
 object Direction {
-  val allDirections: Seq[Direction] = Seq(Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft)
+  val allDirections: Seq[Direction] = IndexedSeq(Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft)
+  def randomDirection(): Direction = allDirections(Random.nextInt(8))
 }
 
 case object Up extends Direction(0, -1) {

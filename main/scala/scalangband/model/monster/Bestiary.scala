@@ -3,6 +3,7 @@ package scalangband.model.monster
 import scalangband.data.monster.ant.GiantWhiteAnt
 import scalangband.data.monster.centipede.{GiantYellowCentipede, MetallicRedCentipede}
 import scalangband.data.monster.mold.GreyMold
+import scalangband.data.monster.mushroom.GreyMushroomPatch
 import scalangband.model.location.Coordinates
 
 import scala.util.Random
@@ -18,14 +19,15 @@ class Bestiary(
 object Bestiary {
   def apply(): Bestiary = apply(Seq(
     // Level 1
-    GiantYellowCentipede,
-    GreyMold,
+//    GiantYellowCentipede,
+//    GreyMold,
+    GreyMushroomPatch,
 
     // Level 2
-    GiantWhiteAnt,
+//    GiantWhiteAnt,
 
     // Level 3
-    MetallicRedCentipede,
+//    MetallicRedCentipede,
  ))
 
   def apply(factories: Seq[MonsterFactory]): Bestiary = {
@@ -34,6 +36,4 @@ object Bestiary {
       .map((level, seq) => (level, seq.map((_, factory) => factory).toIndexedSeq))
     new Bestiary(map)
   }
-
-
 }

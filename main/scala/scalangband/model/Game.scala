@@ -33,33 +33,36 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
   val callback: GameCallback = new GameCallback(this)
 
   def takeTurn(playerAction: PlayerAction): List[ActionResult] = {
-    // We know(?) that the player is at the head of the queue
-    logger.debug(s"Player is taking $playerAction")
+    var results: List[ActionResult] = List.empty
 
-    val playerActionResult: ActionResult = playerAction.apply(accessor, callback)
+    results = results ::: player.beforeNextAction()
+    if (player.isDead) {
+      // if they died from, e.g., poison or bleeding, we can exit early
+      results
+    } else {
+      results = playerAction.apply(accessor, callback) ::: results
 
-    val results: List[ActionResult] = (playerAction, playerActionResult) match {
-      // We don't need / want the monster action loop if the player has successfully gone up or down stairs
-      case (GoUpStairsAction, result)  if result.success =>
-        queue = SchedulerQueue(level.creatures)
-        List(result)
-      case (GoDownStairsAction, result) if result.success =>
-        queue = SchedulerQueue(level.creatures)
-        List(result)
-      case _ =>
-        if (playerAction.energyRequired > 0) {
-          val player = queue.poll()
-          player.deductEnergy(playerAction.energyRequired)
-          queue.insert(player)
+      playerAction match {
+        case GoUpStairsAction =>
+          // recreate the queue -- this is okay even if the player didn't successfully go up stairs
+          queue = SchedulerQueue(level.creatures)
+        case GoDownStairsAction =>
+          queue = SchedulerQueue(level.creatures)
+        case _ =>
+          if (playerAction.energyRequired > 0) {
+            val player = queue.poll().asInstanceOf[Player]
+            val beforePlayerActionResults = player.beforeNextAction()
+            player.deductEnergy(playerAction.energyRequired)
+            queue.insert(player)
 
-          (takeMonsterActions() ::: List(playerActionResult)).reverse
-        } else {
-          List(playerActionResult)
-        }
+            val monsterActionResults = takeMonsterActions()
+            results = monsterActionResults ::: results
+          }
+      }
     }
 
     fov.recompute(player.coordinates, level, player.light)
-    results.reverse
+    results
   }
 
   private def takeMonsterActions(): List[ActionResult] = {
@@ -72,9 +75,13 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
           queue.push(p)
           results
         case monster: Monster =>
+          var monsterActionResults: List[ActionResult] = List.empty
+
+          monsterActionResults = monster.beforeNextAction() ::: monsterActionResults
+
           val action = monster.getAction(accessor)
-          logger.debug(s"${monster.name} is taking action $action")
-          val monsterActionResults = action.apply(monster, accessor, callback).toList
+          monsterActionResults = action.apply(monster, accessor, callback) ::: monsterActionResults
+
           monster.deductEnergy(action.energyRequired)
           queue.insert(monster)
 
@@ -92,7 +99,6 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
   def startNextTurn(): Unit = {
     turn = turn + 1
     level.startNextTurn()
-    
     queue = SchedulerQueue(level.creatures)
   }
 
@@ -128,7 +134,7 @@ class GameCallback(private val game: Game) {
   
   // this has to be a `def` since the current level of the game is mutable
   def level: LevelCallback = new LevelCallback(game.level)
-  val player: PlayerCallback = new PlayerCallback(game.player)
+  val player: PlayerCallback = game.player.callback
 
   def movePlayerTo(targetCoordinates: Coordinates): Unit = {
     game.level.moveOccupant(game.player.coordinates, targetCoordinates)

@@ -5,7 +5,7 @@ import scalangband.model.{Game, GameAccessor, GameCallback}
 
 trait PlayerAction {
   def energyRequired: Int
-  def apply(accessor: GameAccessor, callback: GameCallback): ActionResult
+  def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult]
 
   override def toString: String = getClass.getSimpleName
 }

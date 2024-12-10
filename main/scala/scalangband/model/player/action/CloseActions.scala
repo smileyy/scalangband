@@ -10,7 +10,7 @@ object PendingDirectionCloseAction extends DirectionNeededAction {
 }
 
 class CloseAction(direction: Direction) extends PhysicalAction {
-  override def apply(accessor: GameAccessor, callback: GameCallback): ActionResult = {
+  override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
 
     val targetCoordinates = accessor.player.coordinates + direction
     val targetTile = accessor.level.tile(targetCoordinates)
@@ -18,9 +18,9 @@ class CloseAction(direction: Direction) extends PhysicalAction {
     targetTile match {
       case _: OpenDoor =>
         callback.level.replaceTile(targetCoordinates, new ClosedDoor())
-        NoResult
-      case _: BrokenDoor => MessagesResult(List("The door appears to be broken."), false)
-      case _ => MessagesResult(List("You see nothing there to close"), false)
+        List.empty
+      case _: BrokenDoor => List(MessagesResult("The door appears to be broken."))
+      case _ => List(MessagesResult("You see nothing there to close"))
     }
 
   }
