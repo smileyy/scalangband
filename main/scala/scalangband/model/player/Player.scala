@@ -1,7 +1,7 @@
 package scalangband.model.player
 
 import org.slf4j.LoggerFactory
-import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessagesResult, NoResult}
+import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult, NoResult}
 import scalangband.data.item.weapon.{Fists, Weapon}
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.effect.{Effect, EffectType}
@@ -58,12 +58,12 @@ class Player(name: String, coordinates: Coordinates, var health: Int, energy: In
     val damage = weapon.damage.roll()
     monster.health = monster.health - damage
 
-    results = MessagesResult(s"You hit the ${monster.displayName}.") :: results
+    results = MessageResult(s"You hit the ${monster.displayName}.") :: results
     Player.Logger.info(s"Player hit ${monster.displayName} for $damage damage")
     if (monster.health <= 0) {
       callback.killMonster(monster)
       Player.Logger.info(s"Player killed ${monster.displayName}")
-      results = MessagesResult(s"You have slain the ${monster.displayName}.") :: results
+      results = MessageResult(s"You have slain the ${monster.displayName}.") :: results
     }
 
     results
@@ -71,7 +71,7 @@ class Player(name: String, coordinates: Coordinates, var health: Int, energy: In
 
   private def handleMiss(monster: Monster): List[ActionResult] = {
     Player.Logger.info(s"Player killed ${monster.displayName}")
-    List(MessagesResult(s"You miss the ${monster.displayName}."))
+    List(MessageResult(s"You miss the ${monster.displayName}."))
   }
 
   def takeDamage(damage: Int, maybeEffect: Option[Effect]): List[ActionResult] = {
@@ -85,7 +85,7 @@ class Player(name: String, coordinates: Coordinates, var health: Int, energy: In
         if (Random.nextInt(100) > savingThrow) {
           results = effects.addEffect(effect) :: results
         } else {
-          results = MessagesResult("You resist.") :: results
+          results = MessageResult("You resist.") :: results
         }
       }
     }

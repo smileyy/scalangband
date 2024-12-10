@@ -1,7 +1,7 @@
 package scalangband.model.monster.action
 
 import org.slf4j.{Logger, LoggerFactory}
-import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessagesResult, NoResult}
+import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult, NoResult}
 import scalangband.model.location.*
 import scalangband.model.location.Direction.allDirections
 import scalangband.model.monster.Monster
@@ -70,7 +70,7 @@ object RandomMovementAction extends MonsterAction {
 class SpeakAction(message: String) extends MonsterAction {
   override def apply(monster: Monster, accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
     SpeakAction.Logger.debug(s"$monster says \"$message\"")
-    List(MessagesResult(message))
+    List(MessageResult(message))
   }
 }
 object SpeakAction {

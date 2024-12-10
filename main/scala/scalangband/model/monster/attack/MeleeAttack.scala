@@ -1,6 +1,6 @@
 package scalangband.model.monster.attack
 
-import scalangband.bridge.actionresult.{ActionResult, MessagesResult, NoResult}
+import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.model.effect.{Effect, EffectFactory}
 import scalangband.model.{GameAccessor, GameCallback}
 import scalangband.model.monster.Monster
@@ -15,10 +15,10 @@ trait MeleeAttack {
     val toHit = Math.max(monster.level, 1) * 3 + power
 
     if (Random.nextInt(toHit) > game.player.armorClass) {
-      results = hitMessage(monster).map(msg => MessagesResult(msg)).getOrElse(NoResult) :: results
+      results = hitMessage(monster).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
       results = callback.player.takeDamage(damage.roll(), effect) ::: results
     } else {
-      results = missMessage(monster).map(msg => MessagesResult(msg)).getOrElse(NoResult) :: results
+      results = missMessage(monster).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
     }
 
     results

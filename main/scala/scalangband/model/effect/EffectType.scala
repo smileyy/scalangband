@@ -1,6 +1,6 @@
 package scalangband.model.effect
 
-import scalangband.bridge.actionresult.{ActionResult, MessagesResult}
+import scalangband.bridge.actionresult.{ActionResult, MessageResult}
 import scalangband.model.util.DiceRoll
 
 sealed trait EffectType {
@@ -16,7 +16,7 @@ object Confusion extends EffectType {
     new EffectFactory(this, turns)
   }
   
-  override def affectedResult: ActionResult = MessagesResult("You are confused!")
-  override def affectedMoreResult: ActionResult = MessagesResult("You are more confused!")
-  override def clearedResult: ActionResult = MessagesResult("You are no longer confused.")
+  override def affectedResult: ActionResult = MessageResult("You are confused!")
+  override def affectedMoreResult: ActionResult = MessageResult("You are more confused!")
+  override def clearedResult: ActionResult = MessageResult("You are no longer confused.")
 }

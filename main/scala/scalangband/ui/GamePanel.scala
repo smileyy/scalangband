@@ -1,7 +1,7 @@
 package scalangband.ui
 
 import scalangband.Scalangband
-import scalangband.bridge.actionresult.{ActionResult, MessagesResult, NoResult}
+import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.bridge.rendering.TextColors
 import scalangband.model.Game
 import scalangband.model.player.action.PlayerAction
@@ -45,7 +45,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
   }
 
   private def applyResult(result: ActionResult): Unit = result match {
-    case MessagesResult(message) => this.messages = message :: this.messages
+    case MessageResult(message) => this.messages = message :: this.messages
     case NoResult =>
   }
 
