@@ -22,6 +22,7 @@ class Player(name: String, coordinates: Coordinates, var health: Int, energy: In
   def weapon: Weapon = equipment.weapon.getOrElse(Fists)
 
   def toHit: Int = 24
+  def savingThrow: Int = 20
   def armorClass: Int = equipment.allEquipment.map(_.armorClass).sum
 
   def beforeNextAction(): List[ActionResult] = {
@@ -81,7 +82,11 @@ class Player(name: String, coordinates: Coordinates, var health: Int, energy: In
       results = DeathResult() :: results
     } else {
       maybeEffect.foreach { effect =>
-        results = effects.addEffect(effect) :: results
+        if (Random.nextInt(100) > savingThrow) {
+          results = effects.addEffect(effect) :: results
+        } else {
+          results = MessagesResult("You resist.") :: results
+        }
       }
     }
 

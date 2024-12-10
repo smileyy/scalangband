@@ -19,15 +19,15 @@ class Bestiary(
 object Bestiary {
   def apply(): Bestiary = apply(Seq(
     // Level 1
-//    GiantYellowCentipede,
-//    GreyMold,
+    GiantYellowCentipede,
+    GreyMold,
     GreyMushroomPatch,
 
     // Level 2
-//    GiantWhiteAnt,
+    GiantWhiteAnt,
 
     // Level 3
-//    MetallicRedCentipede,
+    MetallicRedCentipede,
  ))
 
   def apply(factories: Seq[MonsterFactory]): Bestiary = {
