@@ -1,6 +1,7 @@
 package scalangband.model.level
 
 import org.slf4j.LoggerFactory
+import scalangband.bridge.actionresult.ActionResult
 import scalangband.model.Creature
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.Monster
@@ -18,7 +19,9 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
   def creatures: Seq[Creature] = tiles.flatten.flatMap(_.occupant)
   
   def startNextTurn(): Unit = {
-    creatures.foreach(_.startNextTurn())
+    creatures.foreach { creature =>
+      creature.nextTurn()
+    }
   }
 
   def addPlayer(coordinates: Coordinates, player: Player): Unit = {
@@ -82,7 +85,7 @@ class LevelCallback(private val level: Level) {
 
 object LevelRanges {
   val ranges: Map[Int, CenteredRange] = Map(
-    1 -> CenteredRange(1, 1 to 3),
+    1 -> CenteredRange(1, 1 to 1),
     2 -> CenteredRange(2, 1 to 5)
   )
 }

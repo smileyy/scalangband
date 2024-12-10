@@ -32,6 +32,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
       if (messages.nonEmpty) {
         repaint()
       } else {
+        repaint()
         messages = List.empty
         keyHandlers.head.handleKeyPressed(kp, game, callback).foreach(action => dispatchAction(action))
     }
@@ -44,7 +45,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
   }
 
   private def applyResult(result: ActionResult): Unit = result match {
-    case MessagesResult(messages, _) => this.messages = messages ::: this.messages
+    case MessagesResult(message) => this.messages = message :: this.messages
     case NoResult =>
   }
 

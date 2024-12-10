@@ -4,8 +4,9 @@ import org.slf4j.LoggerFactory
 import scalangband.Scalangband
 import scalangband.data.item.weapon.Dagger
 import scalangband.model.Game
+import scalangband.model.effect.Effect
 import scalangband.model.location.Coordinates
-import scalangband.model.player.{Equipment, Inventory, Player, Skills}
+import scalangband.model.player.{Effects, Equipment, Inventory, Player, Skills}
 import scalangband.model.settings.Settings
 
 import scala.swing.*
@@ -72,7 +73,17 @@ class NewGameWindow extends Frame {
       val health = 20
       val inventory = Inventory.empty()
       val equipment = new Equipment(weapon = Some(Dagger(random, 0)))
-      val player = new Player(nameTextBox.text, placeholderCoordinates, health = health, skills = Skills(), money = 0, inventory = inventory, equipment = equipment)
+
+      val player = new Player(
+        nameTextBox.text,
+        placeholderCoordinates,
+        health = health,
+        skills = Skills(),
+        money = 0,
+        inventory = inventory,
+        equipment = equipment,
+        effects = Effects.empty())
+
       val game = Game.newGame(seed, random, new Settings(), player)
       Scalangband.startGame(game)
   }

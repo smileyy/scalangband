@@ -7,7 +7,7 @@ import scalangband.model.{Game, GameAccessor, GameCallback}
 trait DirectionNeededAction extends InterfaceAction {
   def withDirection(direction: Direction): PlayerAction
 
-  override def apply(accessor: GameAccessor, callback: GameCallback): ActionResult = {
-    MessagesResult(List("Choose a direction..."))
+  override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
+    List(MessagesResult("Choose a direction..."))
   }
 }

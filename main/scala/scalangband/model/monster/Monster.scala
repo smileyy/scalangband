@@ -1,5 +1,6 @@
 package scalangband.model.monster
 
+import scalangband.bridge.actionresult.ActionResult
 import scalangband.model.Creature.NormalSpeed
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.item.Item
@@ -23,8 +24,13 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
   def addItem(item: Item): Unit = {
     inventory += item
   }
+
+  /**
+   * Anything that happens before a monster's next action.
+   */
+  def beforeNextAction(): List[ActionResult] = List.empty
   
-  override def startNextTurn(): Unit = {
+  override def nextTurn(): Unit = {
     regenerateEnergy()
   }
 

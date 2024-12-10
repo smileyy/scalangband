@@ -10,7 +10,7 @@ trait MonsterAction {
    */
   def energyRequired: Int = Game.BaseEnergyUnit
 
-  def apply(monster: Monster, game: GameAccessor, callback: GameCallback): Seq[ActionResult]
+  def apply(monster: Monster, game: GameAccessor, callback: GameCallback): List[ActionResult]
 
   override def toString: String = getClass.getSimpleName
 }
