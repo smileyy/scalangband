@@ -20,7 +20,7 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
   
   def startNextTurn(): Unit = {
     creatures.foreach { creature =>
-      creature.nextTurn()
+      creature.onNextTurn()
     }
   }
 

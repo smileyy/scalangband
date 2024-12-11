@@ -1,6 +1,7 @@
 package scalangband.model.player.playerclass
 
 import scalangband.data.item.armor.body.SoftLeatherArmor
+import scalangband.data.item.lightsource.Torch
 import scalangband.data.item.weapon.Dagger
 import scalangband.model.player.{Equipment, Inventory}
 import scalangband.model.util.DiceRoll
@@ -16,6 +17,7 @@ object Warrior extends PlayerClass {
 
   override def startingEquipment(random: Random): Equipment = new Equipment(
     weapon = Some(Dagger(random, 0)),
+    light = Some(Torch()),
     body = Some(SoftLeatherArmor(random, 0))
   )
 

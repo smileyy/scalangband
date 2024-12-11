@@ -30,7 +30,7 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
    */
   def beforeNextAction(): List[ActionResult] = List.empty
   
-  override def nextTurn(): Unit = {
+  override def onNextTurn(): Unit = {
     regenerateEnergy()
   }
 

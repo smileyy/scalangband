@@ -24,7 +24,7 @@ class Player(name: String, val race: Race, val cls: PlayerClass, var health: Hea
 
   def speed: Int = BaseEnergyUnit
 
-  def light: Int = 3
+  def lightRadius: Int = equipment.light.map(_.radius).getOrElse(0)
   def weapon: Weapon = equipment.weapon.getOrElse(Fists)
 
   def toHit: Int = 24
@@ -42,8 +42,9 @@ class Player(name: String, val race: Race, val cls: PlayerClass, var health: Hea
     results
   }
 
-  override def nextTurn(): Unit = {
+  override def onNextTurn(): Unit = {
     regenerateEnergy()
+    equipment.allEquipment.foreach(item => item.onNextTurn())
   }
 
   def attack(monster: Monster, callback: GameCallback): List[ActionResult] = {
