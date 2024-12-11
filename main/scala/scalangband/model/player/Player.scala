@@ -32,13 +32,15 @@ class Player(
   val accessor: PlayerAccessor = new PlayerAccessor(this)
   val callback: PlayerCallback = new PlayerCallback(this)
 
+  def level: Int = 1
+  
   def speed: Int = BaseEnergyUnit
 
   def lightRadius: Int = equipment.light.map(_.radius).getOrElse(0)
   def weapon: Weapon = equipment.weapon.getOrElse(Fists)
 
-  def toHit: Int = 24
-  def savingThrow: Int = cls.savingThrow(1)
+  def toHit: Int = cls.meleeSkill(level)
+  def savingThrow: Int = cls.savingThrow(level) + 3 * equipment.allEquipment.map(_.toHit).sum
   def armorClass: Int = equipment.allEquipment.map(_.armorClass).sum
 
   def beforeNextAction(): List[ActionResult] = {

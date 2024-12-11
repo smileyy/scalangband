@@ -12,7 +12,7 @@ object Warrior extends PlayerClass {
   override val name: String = "Warrior"
   override val hitdice: DiceRoll = DiceRoll("1d10")
 
-  override def meleeSkill(level: Int): Int = 70 + 5 * level
+  override def meleeSkill(level: Int): Int = (70 + 4.5 * level).toInt
   override def savingThrow(level: Int): Int = 18 + level
 
   override def startingEquipment(random: Random): Equipment = new Equipment(
