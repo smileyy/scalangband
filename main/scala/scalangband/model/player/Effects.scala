@@ -40,5 +40,5 @@ class Effects(effectsByType: mutable.Map[EffectType, Effect]) {
   override def toString: String = effectsByType.values.mkString("[", ",", "]")
 }
 object Effects {
-  def empty(): Effects = new Effects(mutable.Map.empty)
+  def none(): Effects = new Effects(mutable.Map.empty)
 }

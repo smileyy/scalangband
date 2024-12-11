@@ -2,7 +2,7 @@ package scalangband.ui
 
 import scalangband.Scalangband
 import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
-import scalangband.bridge.rendering.TextColors
+import scalangband.bridge.rendering.TextColors.*
 import scalangband.model.Game
 import scalangband.model.player.action.PlayerAction
 import scalangband.ui.GamePanel.{MaxMessageLineLength, PlayerPaneWidth}
@@ -63,7 +63,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
 
   private def paintMessages(g: Graphics2D, messageLineYOffset: Int): Unit = {
     if (messages.nonEmpty) {
-      g.setColor(TextColors.White)
+      g.setColor(White)
 
       val line = StringBuilder()
       while (messages.nonEmpty && line.length() + 1 + messages.head.length <= MaxMessageLineLength) {
@@ -77,7 +77,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
   }
 
   private def paintPlayer(g: Graphics2D, yOffset: Int, lineHeight: Int): Unit = {
-    g.setColor(TextColors.White)
+    g.setColor(White)
 
     val playerNameDisplay = if (game.player.name.length < PlayerPaneWidth) {
       game.player.name
@@ -87,8 +87,14 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
 
     g.drawString(playerNameDisplay, 0, yOffset + lineHeight)
 
-    g.drawString(rightAlignedFieldString("AU", game.player.money.toString), 0, yOffset + lineHeight * 2)
-    g.drawString(rightAlignedFieldString("HP", game.player.health.toString), 0, yOffset + lineHeight * 4)
+    g.setColor(Turquoise)
+    g.drawString(game.player.race.name, 0, yOffset + lineHeight * 2)
+    g.drawString(game.player.cls.name, 0, yOffset + lineHeight * 3)
+
+    g.setColor(White)
+    g.drawString(rightAlignedFieldString("AU", game.player.money.toString), 0, yOffset + lineHeight * 5)
+    g.drawString(rightAlignedFieldString("AC", game.player.armorClass.toString), 0, yOffset + lineHeight * 7)
+    g.drawString(rightAlignedFieldString("HP", game.player.health.toString), 0, yOffset + lineHeight * 8)
   }
 
   private def rightAlignedFieldString(label: String, value: String) = {
@@ -111,7 +117,7 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
   }
 
   private def paintDepth(g: Graphics2D, lineHeight: Int, characterPaneWidth: Int): Unit = {
-    g.setColor(TextColors.White)
+    g.setColor(White)
     val depth = if (game.level.depth == 0) "Town" else s"${game.level.depth * 50} feet"
     g.drawString(depth, characterPaneWidth, game.level.tiles.length * renderer.tileHeight + lineHeight * 2)
   }

@@ -37,7 +37,7 @@ class TextRenderer(font: Font) extends Renderer {
         case _: OpenDoor => TextTile('\'', font, Brown)
         case _: BrokenDoor => TextTile('\'', font, Brown)
         case _: RemovableWall => TextTile('#', font, MediumGrey)
-        case _: PermanentWall => TextTile('#', font, DarkGrey)
+        case _: PermanentWall => TextTile('#', font, Turquoise)
 
         // monsters
         case monster: Monster => renderMonster(monster, font)
