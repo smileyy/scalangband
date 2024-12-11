@@ -5,8 +5,10 @@ import scalangband.model.util.DiceRoll
 
 import scala.util.Random
 
-class Weapon(val name: String, val damage: DiceRoll, var toHit: Int = 0, var toDam: Int = 0) extends EquippableItem {
-  override def displayName: String = s"$name ($damage) ($toHit,$toDam)"
+class Weapon(val name: String, val damage: DiceRoll, var weaponToHit: Int = 0, var weaponToDam: Int = 0) extends EquippableItem {
+  override def displayName: String = s"$name ($damage) ($weaponToHit,$weaponToDam)"
+  override def toHit: Int = weaponToHit
+  override def toDamage: Int = weaponToDam
 }
 
 trait WeaponFactory {

@@ -41,7 +41,7 @@ class Player(
 
   def toHit: Int = cls.meleeSkill(level)
   def savingThrow: Int = cls.savingThrow(level) + 3 * equipment.allEquipment.map(_.toHit).sum
-  def armorClass: Int = equipment.allEquipment.map(_.armorClass).sum
+  def armorClass: Int = equipment.allEquipment.map(_.baseArmorClass).sum
 
   def beforeNextAction(): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
