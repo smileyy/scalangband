@@ -16,8 +16,18 @@ import scalangband.model.{Creature, Game, GameCallback}
 
 import scala.util.Random
 
-class Player(name: String, val race: Race, val cls: PlayerClass, var health: Health, energy: Int = Game.BaseEnergyUnit, var money: Int, val inventory: Inventory, val equipment: Equipment, val effects: Effects, coordinates: Coordinates)
-  extends Creature(name, coordinates, energy) {
+class Player(
+    name: String,
+    val race: Race,
+    val cls: PlayerClass,
+    var health: Health,
+    energy: Int = Game.BaseEnergyUnit,
+    var money: Int,
+    val inventory: Inventory,
+    val equipment: Equipment,
+    val effects: Effects,
+    coordinates: Coordinates
+) extends Creature(name, coordinates, energy) {
 
   val accessor: PlayerAccessor = new PlayerAccessor(this)
   val callback: PlayerCallback = new PlayerCallback(this)
@@ -49,13 +59,14 @@ class Player(name: String, val race: Race, val cls: PlayerClass, var health: Hea
 
   def attack(monster: Monster, callback: GameCallback): List[ActionResult] = {
     Random.nextInt(20) + 1 match {
-      case 1 => handleMiss(monster)
+      case 1  => handleMiss(monster)
       case 20 => handleHit(monster, callback)
-      case _ => if (Random.nextInt(toHit) > monster.armorClass * 2 / 3) {
-        handleHit(monster, callback)
-      } else {
-        handleMiss(monster)
-      }
+      case _ =>
+        if (Random.nextInt(toHit) > monster.armorClass * 2 / 3) {
+          handleHit(monster, callback)
+        } else {
+          handleMiss(monster)
+        }
     }
   }
 
@@ -108,18 +119,18 @@ class Player(name: String, val race: Race, val cls: PlayerClass, var health: Hea
 }
 object Player {
   private val Logger = LoggerFactory.getLogger(classOf[Player])
-  
+
   def apply(random: Random, name: String, race: Race, cls: PlayerClass): Player = {
     new Player(
-      name = name, 
-      race = race, 
-      cls = cls, 
-      health = Health.fullHealth(race.hitdice.max + cls.hitdice.max), 
-      energy = Game.BaseEnergyUnit, 
-      money = DiceRoll("1d100+100").roll(), 
-      inventory = cls.startingInventory(random), 
-      equipment = cls.startingEquipment(random), 
-      effects = Effects.none(), 
+      name = name,
+      race = race,
+      cls = cls,
+      health = Health.fullHealth(race.hitdice.max + cls.hitdice.max),
+      energy = Game.BaseEnergyUnit,
+      money = DiceRoll("1d100+100").roll(),
+      inventory = cls.startingInventory(random),
+      equipment = cls.startingEquipment(random),
+      effects = Effects.none(),
       coordinates = Coordinates.Placeholder
     )
   }
@@ -140,7 +151,7 @@ class PlayerCallback(private val player: Player) {
   }
 
   def addMoney(amount: Int): Unit = player.money = player.money + amount
-  
+
   def logInventory(): Unit = PlayerCallback.Logger.info(s"Inventory: ${player.inventory}")
   def logEquipment(): Unit = PlayerCallback.Logger.info(s"Equipment: ${player.equipment}")
 }

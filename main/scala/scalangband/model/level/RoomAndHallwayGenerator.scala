@@ -8,16 +8,15 @@ import scalangband.model.tile.*
 
 import scala.util.Random
 
-/**
- * Generates a dungeon based on rooms and hallways. The type of room generated is based on a set of generators with
- * weighted values. Basically, we want normal rooms to show up most of the time, and "special" rooms less frequently.
- * This probably ought to be updated to be weighted by depth as well as you don't want a Greater Checkerboard Vault to
- * show up on level 1.
- *
- * The algorithm in use is inspired by https://roguebasin.com/index.php/Dungeon-Building_Algorithm, but starts in the
- * upper left hand corner of the map, generating successive rooms down and to the right. There's a bit of a "downward
- * slope" bias, but if you try enough times, you'll eventually get something in that upper right corner.
- */
+/** Generates a dungeon based on rooms and hallways. The type of room generated is based on a set of generators with
+  * weighted values. Basically, we want normal rooms to show up most of the time, and "special" rooms less frequently.
+  * This probably ought to be updated to be weighted by depth as well as you don't want a Greater Checkerboard Vault to
+  * show up on level 1.
+  *
+  * The algorithm in use is inspired by https://roguebasin.com/index.php/Dungeon-Building_Algorithm, but starts in the
+  * upper left hand corner of the map, generating successive rooms down and to the right. There's a bit of a "downward
+  * slope" bias, but if you try enough times, you'll eventually get something in that upper right corner.
+  */
 class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) extends LevelGenerator {
   private val totalWeights = weightedGenerators.map(_._2).sum
 
@@ -54,11 +53,16 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     }
   }
 
-  private def tryToCreateRoom(random: Random, builder: LevelBuilder, start: Coordinates, offsetDir: Direction): Option[Room] = {
+  private def tryToCreateRoom(
+      random: Random,
+      builder: LevelBuilder,
+      start: Coordinates,
+      offsetDir: Direction
+  ): Option[Room] = {
     val (rowOffset, colOffset) = offsetDir match {
       // TODO: Explain why these numbers lead to decent, if short, hallways
       case Right => (-(random.nextInt(4) + 1), random.nextInt(8) + 4)
-      case Down => (random.nextInt(8) + 4, -(random.nextInt(4) + 1))
+      case Down  => (random.nextInt(8) + 4, -(random.nextInt(4) + 1))
     }
 
     val room = generateRoom(random, builder.depth, start.row + rowOffset, start.col + colOffset)
@@ -91,10 +95,16 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     }
   }
 
-  private def attachRoom(random: Random, builder: LevelBuilder, room: Room, start: Coordinates, startingDirection: Direction): Unit = {
+  private def attachRoom(
+      random: Random,
+      builder: LevelBuilder,
+      room: Room,
+      start: Coordinates,
+      startingDirection: Direction
+  ): Unit = {
     startingDirection match {
       case Right => drawRight(random, builder, room, start)
-      case Down => drawDown(random, builder, room, start)
+      case Down  => drawDown(random, builder, room, start)
     }
   }
 
@@ -150,7 +160,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     random.nextInt(100) match {
       case x if x < 75 => new ClosedDoor()
       case x if x < 95 => new OpenDoor()
-      case _ => new BrokenDoor()
+      case _           => new BrokenDoor()
     }
   }
 
@@ -176,11 +186,13 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
 }
 object RoomAndHallwayGenerator {
   def apply(): RoomAndHallwayGenerator = {
-    new RoomAndHallwayGenerator(Seq(
-      (RectangularRoomGenerator, 100),
-      (EmptyMoatedRoomGenerator, 10),
-      (CheckerboardMoatedRoomGenerator, 2),
-      (FourBoxesMoatedRoomGenerator, 2),
-    ))
+    new RoomAndHallwayGenerator(
+      Seq(
+        (RectangularRoomGenerator, 100),
+        (EmptyMoatedRoomGenerator, 10),
+        (CheckerboardMoatedRoomGenerator, 2),
+        (FourBoxesMoatedRoomGenerator, 2)
+      )
+    )
   }
 }
