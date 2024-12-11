@@ -7,7 +7,7 @@ abstract class Creature(val name: String, var coordinates: Coordinates, var ener
   def deductEnergy(deduction: Int): Unit = energy = energy - deduction
   def regenerateEnergy(): Unit = energy = energy + speed
   
-  def nextTurn(): Unit
+  def onNextTurn(): Unit
 }
 object Creature {
   val NormalSpeed = 20

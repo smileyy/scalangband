@@ -22,7 +22,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   private val fov = new FieldOfViewCalculator()
-  fov.recompute(player.coordinates, town, player.light)
+  fov.recompute(player.coordinates, town, player.lightRadius)
 
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
   val bestiary: Bestiary = Bestiary()
@@ -61,7 +61,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
       }
     }
 
-    fov.recompute(player.coordinates, level, player.light)
+    fov.recompute(player.coordinates, level, player.lightRadius)
     results
   }
 
