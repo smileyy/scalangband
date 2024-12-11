@@ -7,3 +7,6 @@ case class Coordinates(row: Int, col: Int) {
 
   override def toString: String = s"($row, $col)"
 }
+object Coordinates {
+  val Placeholder: Coordinates = Coordinates(-1, -1)
+}

@@ -6,37 +6,45 @@ import scalangband.data.item.weapon.Dagger
 import scalangband.model.Game
 import scalangband.model.effect.Effect
 import scalangband.model.location.Coordinates
+import scalangband.model.player.playerclass.{PlayerClass, Warrior}
+import scalangband.model.player.race.{Human, Race}
 import scalangband.model.player.{Effects, Equipment, Inventory, Player, Skills}
 import scalangband.model.settings.Settings
+import scalangband.ui.NewGameWindow.Logger
 
 import scala.swing.*
 import scala.swing.event.ButtonClicked
 import scala.util.Random
 
 class NewGameWindow extends Frame {
-  private val logger = LoggerFactory.getLogger(this.getClass)
-
-  // UI Components
   private val nameLabel = new Label("Name:", null, Alignment.Right)
   private val nameTextBox = new TextField(18)
+
+  private val raceLabel = new Label("Race:", null, Alignment.Right)
+  private val raceMenu = new ComboBox[String](Seq("Human"))
+
+  private val classLabel = new Label("Class:", null, Alignment.Right)
+  private val classMenu = new ComboBox[String](Seq("Warrior"))
+
+  private val seedLabel = new Label("Seed (optional):", null, Alignment.Right)
+  private val seedTextBox = new TextField(18)
+
   private val startGameButton = new Button("Start Game")
 
-  // Advanced Options Components
-  private val advancedOptionsToggle = new ToggleButton("Advanced Options")
-  private val seedLabel = new Label("Seed:", null, Alignment.Right)
-  private val seedTextBox = new TextField(18)
-  private val seedPanel = new GridPanel(1, 2) {
-    contents += seedLabel
-    contents += seedTextBox
-    visible = false // Start hidden
-  }
-
   private val fieldsPanel = new BoxPanel(Orientation.Vertical) {
-    contents += new GridPanel(1, 2) {
+    contents += new GridPanel(4, 2) {
       contents += nameLabel
       contents += nameTextBox
+
+      contents += raceLabel
+      contents += raceMenu
+
+      contents += classLabel
+      contents += classMenu
+
+      contents += seedLabel
+      contents += seedTextBox
     }
-    contents += createAdvancedOptionsPanel()
   }
 
   contents = new BoxPanel(Orientation.Vertical) {
@@ -47,53 +55,44 @@ class NewGameWindow extends Frame {
   resizable = false
 
   // Event Listeners
-  listenTo(startGameButton, advancedOptionsToggle)
+  listenTo(startGameButton)
 
   reactions += {
-    case ButtonClicked(`advancedOptionsToggle`) =>
-      seedPanel.visible = advancedOptionsToggle.selected
-      this.pack() // Adjust window size dynamically
-
     case ButtonClicked(`startGameButton`) =>
       this.close()
 
-      val seed: Long =
-        if (advancedOptionsToggle.selected && seedTextBox.text.nonEmpty) {
-          seedTextBox.text.toLong
-        } else {
-          Random.nextLong()
-        }
+      val seed: Long = if (seedTextBox.text.nonEmpty) {
+        seedTextBox.text.toLong
+      } else {
+        Random.nextLong()
+      }
+      Logger.info(s"Starting game with seed $seed")
 
-      val random = new Random(seed)
+      startNewGame(seed)
+  }
 
-      logger.info(s"Starting game with seed $seed")
+  private def startNewGame(seed: Long): Unit = {
+    val random = new Random(seed)
 
-      val placeholderCoordinates = Coordinates(-1, -1)
+    val name = nameTextBox.text
+    val cls = Warrior
 
-      val health = 20
-      val inventory = Inventory.empty()
-      val equipment = new Equipment(weapon = Some(Dagger(random, 0)))
+    val player = Player(random, name, race, cls)
 
-      val player = new Player(
-        nameTextBox.text,
-        placeholderCoordinates,
-        health = health,
-        skills = Skills(),
-        money = 0,
-        inventory = inventory,
-        equipment = equipment,
-        effects = Effects.empty())
+    val game = Game.newGame(seed, random, new Settings(), player)
+    Scalangband.startGame(game)
+  }
 
-      val game = Game.newGame(seed, random, new Settings(), player)
-      Scalangband.startGame(game)
+  private def race: Race = raceMenu.selection.item match {
+    case "Human" => Human
+  }
+
+  private def cls: PlayerClass = classMenu.selection.item match {
+    case "Warrior" => Warrior
   }
 
   this.pack()
-
-  private def createAdvancedOptionsPanel(): BoxPanel = {
-    new BoxPanel(Orientation.Vertical) {
-      contents += advancedOptionsToggle
-      contents += seedPanel
-    }
-  }
+}
+object NewGameWindow {
+  private val Logger = LoggerFactory.getLogger(this.getClass)
 }

@@ -1,10 +1,11 @@
 package scalangband.model.player
 
-import scalangband.data.item.weapon.Weapon
 import scalangband.model.item.EquippableItem
+import scalangband.model.item.armor.BodyArmor
+import scalangband.model.item.weapon.Weapon
 
-class Equipment(var weapon: Option[Weapon] = None) {
+class Equipment(var weapon: Option[Weapon] = None, var body: Option[BodyArmor] = None) {
   
-  def allEquipment: Seq[EquippableItem] = Seq(weapon).flatten
-  override def toString: String = s"{ weapoon: $weapon }"
+  def allEquipment: Seq[EquippableItem] = Seq(weapon, body).flatten
+  override def toString: String = s"{ weapon: $weapon, body: $body }"
 }

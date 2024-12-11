@@ -1,19 +1,25 @@
 package scalangband.model.player
 
 import org.slf4j.LoggerFactory
-import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult, NoResult}
-import scalangband.data.item.weapon.{Fists, Weapon}
+import scalangband.model.Health
+import scalangband.model.player.race.Race
+import scalangband.model.player.playerclass.PlayerClass
+import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult}
+import scalangband.data.item.weapon.Fists
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.effect.{Effect, EffectType}
+import scalangband.model.item.weapon.Weapon
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
+import scalangband.model.util.DiceRoll
 import scalangband.model.{Creature, Game, GameCallback}
 
 import scala.util.Random
 
-class Player(name: String, coordinates: Coordinates, var health: Int, energy: Int = Game.BaseEnergyUnit, skills: Skills, var money: Int, val inventory: Inventory, val equipment: Equipment, val effects: Effects)
+class Player(name: String, val race: Race, val cls: PlayerClass, var health: Health, energy: Int = Game.BaseEnergyUnit, var money: Int, val inventory: Inventory, val equipment: Equipment, val effects: Effects, coordinates: Coordinates)
   extends Creature(name, coordinates, energy) {
 
+  val accessor: PlayerAccessor = new PlayerAccessor(this)
   val callback: PlayerCallback = new PlayerCallback(this)
 
   def speed: Int = BaseEnergyUnit
@@ -22,7 +28,7 @@ class Player(name: String, coordinates: Coordinates, var health: Int, energy: In
   def weapon: Weapon = equipment.weapon.getOrElse(Fists)
 
   def toHit: Int = 24
-  def savingThrow: Int = 20
+  def savingThrow: Int = cls.savingThrow(1)
   def armorClass: Int = equipment.allEquipment.map(_.armorClass).sum
 
   def beforeNextAction(): List[ActionResult] = {
@@ -35,7 +41,7 @@ class Player(name: String, coordinates: Coordinates, var health: Int, energy: In
 
     results
   }
-  
+
   override def nextTurn(): Unit = {
     regenerateEnergy()
   }
@@ -78,7 +84,7 @@ class Player(name: String, coordinates: Coordinates, var health: Int, energy: In
     var results: List[ActionResult] = List.empty
 
     health = health - damage
-    if (health <= 0) {
+    if (health.current <= 0) {
       results = DeathResult() :: results
     } else {
       maybeEffect.foreach { effect =>
@@ -92,7 +98,7 @@ class Player(name: String, coordinates: Coordinates, var health: Int, energy: In
 
     results
   }
-  
+
   def hasEffect(effectType: EffectType): Boolean = {
     effects.hasEffect(effectType)
   }
@@ -101,6 +107,21 @@ class Player(name: String, coordinates: Coordinates, var health: Int, energy: In
 }
 object Player {
   private val Logger = LoggerFactory.getLogger(classOf[Player])
+  
+  def apply(random: Random, name: String, race: Race, cls: PlayerClass): Player = {
+    new Player(
+      name = name, 
+      race = race, 
+      cls = cls, 
+      health = Health.fullHealth(race.hitdice.max + cls.hitdice.max), 
+      energy = Game.BaseEnergyUnit, 
+      money = DiceRoll("1d100+100").roll(), 
+      inventory = cls.startingInventory(random), 
+      equipment = cls.startingEquipment(random), 
+      effects = Effects.none(), 
+      coordinates = Coordinates.Placeholder
+    )
+  }
 }
 
 class PlayerAccessor(private val player: Player) {

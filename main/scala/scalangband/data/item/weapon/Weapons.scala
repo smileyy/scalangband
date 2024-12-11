@@ -1,5 +1,6 @@
 package scalangband.data.item.weapon
 
+import scalangband.model.item.weapon.{Weapon, WeaponFactory}
 import scalangband.model.util.DiceRoll
 
 object Fists extends Weapon("Fists", DiceRoll("1d1")) {}
