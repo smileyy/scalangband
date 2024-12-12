@@ -14,7 +14,7 @@ import scala.util.Random
 class MonsterActions(adjacent: Seq[Weighted[MonsterAction]], otherwise: Seq[Weighted[MonsterAction]]) {
   def select(monster: Monster, game: GameAccessor): MonsterAction = {
     val isAdjacent = allDirections.exists(dir => monster.coordinates + dir == game.player.coordinates)
-    if (isAdjacent) Weighted.select(adjacent) else Weighted.select(otherwise)
+    if (isAdjacent) Weighted.selectFrom(adjacent) else Weighted.selectFrom(otherwise)
   }
 }
 

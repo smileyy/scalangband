@@ -34,7 +34,7 @@ class Player(
   val callback: PlayerCallback = new PlayerCallback(this)
 
   def level: Int = 1
-  
+
   def speed: Int = BaseEnergyUnit
 
   def lightRadius: Int = equipment.light.map(_.radius).getOrElse(0)
@@ -95,19 +95,27 @@ class Player(
     List(MessageResult(s"You miss the ${monster.displayName}."))
   }
 
-  def takeDamage(damage: Int, element: Option[Element], effect: Option[Effect]): List[ActionResult] = {
+  def takeDamage(damage: Int, maybeElement: Option[Element], maybeEffect: Option[Effect]): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
-    val actualDamage = element match {
-      case Some(elt) if resists(elt) => damage / 2
+    val actualDamage = maybeElement match {
+      case Some(element) if resists(element) => damage / 2
       case _ => damage
     }
-    
+
+    maybeElement match {
+      case Some(element) => element.message match {
+        case Some(message) => results = MessageResult(message) :: results
+        case None =>
+      }
+      case None =>
+    }
+
     health = health - actualDamage
     if (health.current <= 0) {
       results = DeathResult() :: results
     } else {
-      effect.foreach { eff =>
+      maybeEffect.foreach { eff =>
         if (Random.nextInt(100) > savingThrow) {
           results = effects.addEffect(eff) :: results
         } else {
@@ -122,7 +130,7 @@ class Player(
   def hasEffect(effectType: EffectType): Boolean = {
     effects.hasEffect(effectType)
   }
-  
+
   def resists(element: Element): Boolean = false
 
   def isDead: Boolean = health <= 0
