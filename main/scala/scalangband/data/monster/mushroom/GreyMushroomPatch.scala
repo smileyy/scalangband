@@ -21,7 +21,7 @@ object GreyMushroomPatch extends MonsterFactory {
   private def actions: Seq[Weighted[MonsterAction]] = Seq(
       Weighted(100, AdjacentToPlayerActions(
         adjacent = Seq(Weighted(100, MeleeAttacksAction(Seq(
-          new SporeAttack(DiceRoll("1d4"), Some(Confusion(DiceRoll("1d4+1"))))
+          new SporeAttack(DiceRoll("1d4"), effectFactory = Some(Confusion(DiceRoll("1d4+1"))))
         )))),
         otherwise = Seq(Weighted(100, MonsterPassAction))
       ))

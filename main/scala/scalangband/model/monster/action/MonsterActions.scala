@@ -13,16 +13,11 @@ import scala.util.Random
 
 class AdjacentToPlayerActions(adjacent: Seq[Weighted[MonsterAction]], otherwise: Seq[Weighted[MonsterAction]]) extends MonsterAction {
   override def apply(monster: Monster, game: GameAccessor, callback: GameCallback): List[ActionResult] = {
-    val isAdjacent: Boolean = allDirections.exists(dir => monster.coordinates + dir == game.player.coordinates)
-    val selectedAction: MonsterAction = if (isAdjacent) Weighted.select(adjacent) else Weighted.select(otherwise)
-
-
+    val isAdjacent = allDirections.exists(dir => monster.coordinates + dir == game.player.coordinates)
+    val selectedAction = if (isAdjacent) Weighted.select(adjacent) else Weighted.select(otherwise)
 
     selectedAction.apply(monster, game, callback)
   }
-}
-object AdjacentToPlayerActions {
-
 }
 
 class MeleeAttacksAction(attacks: Seq[MeleeAttack]) extends MonsterAction {

@@ -2,6 +2,7 @@ package scalangband.model.monster.attack
 
 import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.model.effect.{Effect, EffectFactory}
+import scalangband.model.element.Element
 import scalangband.model.{GameAccessor, GameCallback}
 import scalangband.model.monster.Monster
 import scalangband.model.util.DiceRoll
@@ -16,7 +17,7 @@ trait MeleeAttack {
 
     if (Random.nextInt(toHit) > game.player.armorClass) {
       results = hitMessage(monster).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
-      results = callback.player.takeDamage(damage.roll(), effect) ::: results
+      results = callback.player.takeDamage(damage.roll(), element, effect) ::: results
     } else {
       results = missMessage(monster).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
     }
@@ -33,6 +34,7 @@ trait MeleeAttack {
    * The damage done by the attack
    */
   def damage: DiceRoll
+  def element: Option[Element]
   def effect: Option[Effect]
 
   def hitMessage(monster: Monster): Option[String] = Some(s"The ${monster.displayName} hits you.")
