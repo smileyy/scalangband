@@ -5,11 +5,11 @@ import scalangband.model.effect.{Effect, EffectFactory}
 import scalangband.model.monster.Monster
 import scalangband.model.util.DiceRoll
 
-abstract class BlowAttack(val damage: DiceRoll, val element: Option[Element], val effectFactory: Option[EffectFactory])
+abstract class BlowAttack(val damage: DiceRoll, val maybeElement: Option[Element], val effectFactory: Option[EffectFactory])
   extends MeleeAttack {
 
   override def power: Int = 40
-  override def effect: Option[Effect] = effectFactory.map(factory => factory.createEffect())
+  override def maybeEffect: Option[Effect] = effectFactory.map(factory => factory.createEffect())
 }
 
 class BiteAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory: Option[EffectFactory] = None)

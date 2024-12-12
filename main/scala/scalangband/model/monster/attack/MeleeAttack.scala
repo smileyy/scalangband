@@ -17,7 +17,7 @@ trait MeleeAttack {
 
     if (Random.nextInt(toHit) > game.player.armorClass) {
       results = hitMessage(monster).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
-      results = callback.player.takeDamage(damage.roll(), element, effect) ::: results
+      results = callback.player.takeDamage(damage.roll(), maybeElement, maybeEffect) ::: results
     } else {
       results = missMessage(monster).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
     }
@@ -34,8 +34,8 @@ trait MeleeAttack {
    * The damage done by the attack
    */
   def damage: DiceRoll
-  def element: Option[Element]
-  def effect: Option[Effect]
+  def maybeElement: Option[Element]
+  def maybeEffect: Option[Effect]
 
   def hitMessage(monster: Monster): Option[String] = Some(s"The ${monster.displayName} hits you.")
   def missMessage(monster: Monster): Option[String] = Some(s"The ${monster.displayName} misses you.")
