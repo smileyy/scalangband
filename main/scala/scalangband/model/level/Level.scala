@@ -85,7 +85,7 @@ class LevelCallback(private val level: Level) {
 
 object LevelRanges {
   val ranges: Map[Int, CenteredRange] = Map(
-    1 -> CenteredRange(1, 1 to 1),
+    1 -> CenteredRange(1, 1 to 3),
     2 -> CenteredRange(2, 1 to 5)
   )
 }

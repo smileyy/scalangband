@@ -11,12 +11,10 @@ import scalangband.model.{GameAccessor, GameCallback}
 
 import scala.util.Random
 
-class AdjacentToPlayerActions(adjacent: Seq[Weighted[MonsterAction]], otherwise: Seq[Weighted[MonsterAction]]) extends MonsterAction {
-  override def apply(monster: Monster, game: GameAccessor, callback: GameCallback): List[ActionResult] = {
+class MonsterActions(adjacent: Seq[Weighted[MonsterAction]], otherwise: Seq[Weighted[MonsterAction]]) {
+  def select(monster: Monster, game: GameAccessor): MonsterAction = {
     val isAdjacent = allDirections.exists(dir => monster.coordinates + dir == game.player.coordinates)
-    val selectedAction = if (isAdjacent) Weighted.select(adjacent) else Weighted.select(otherwise)
-
-    selectedAction.apply(monster, game, callback)
+    if (isAdjacent) Weighted.select(adjacent) else Weighted.select(otherwise)
   }
 }
 
@@ -64,7 +62,7 @@ object RandomMovementAction extends MonsterAction {
 
 class SpeakAction(message: String) extends MonsterAction {
   override def apply(monster: Monster, accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
-    SpeakAction.Logger.debug(s"$monster says \"$message\"")
+    SpeakAction.Logger.debug(s"${monster.name} says \"$message\"")
     List(MessageResult(message))
   }
 }

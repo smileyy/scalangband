@@ -1,6 +1,7 @@
 package scalangband.model.monster
 
 import scalangband.data.monster.ant.*
+import scalangband.data.monster.bird.*
 import scalangband.data.monster.centipede.*
 import scalangband.data.monster.mold.*
 import scalangband.data.monster.mushroom.*
@@ -19,23 +20,24 @@ class Bestiary(
 object Bestiary {
   def apply(): Bestiary = apply(Seq(
     // these are in the same order as Angband's `monsters.txt`
-    
+
     // Level 1
     GreyMold,
     GreyMushroomPatch,
     GiantYellowCentipede,
     GiantWhiteCentipede,
-    
+
 
     // Level 2
-    GiantWhiteAnt,
+    Crow,
 
     // Level 3
+    GiantWhiteAnt,
     MetallicRedCentipede,
  ))
 
   def apply(factories: Seq[MonsterFactory]): Bestiary = {
-    val map = factories.map(factory => (factory.spec.level, factory))
+    val map = factories.map(factory => (factory.spec.depth, factory))
       .groupBy((level, _) => level)
       .map((level, seq) => (level, seq.map((_, factory) => factory).toIndexedSeq))
     new Bestiary(map)
