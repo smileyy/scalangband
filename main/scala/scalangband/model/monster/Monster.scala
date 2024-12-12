@@ -16,7 +16,7 @@ import scala.util.Random
 
 class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, val inventory: mutable.ListBuffer[Item] = ListBuffer.empty) extends Creature(spec.name, coordinates, Monster.startingEnergy()) {
   def archetype: MonsterArchetype = spec.archetype
-  def level: Int = spec.level
+  def level: Int = spec.depth
   
   def speed: Int = spec.speed
   def armorClass: Int = spec.armorClass
@@ -34,7 +34,7 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
     regenerateEnergy()
   }
 
-  def getAction(game: GameAccessor): MonsterAction = Weighted.selectFrom(spec.actions)
+  def getAction(game: GameAccessor): MonsterAction = spec.actions.select(this, game)
   
   def color: Color = spec.color
 

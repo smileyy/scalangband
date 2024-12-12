@@ -4,14 +4,14 @@ import scalangband.bridge.rendering.TextColors
 import scalangband.data.item.garbage.GarbageGenerator
 import scalangband.data.item.money.MoneyGenerator
 import scalangband.model.item.ItemGenerator
-import scalangband.model.monster.action.{MonsterAction, MonsterPassAction, RandomMovementAction, SpeakAction}
+import scalangband.model.monster.action.{MonsterAction, MonsterActions, MonsterPassAction, RandomMovementAction, SpeakAction}
 import scalangband.model.monster.{MonsterFactory, MonsterInventoryGenerator, MonsterSpec, Person}
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object RandomlyMumblingTownsperson extends MonsterFactory {
   override def spec: MonsterSpec = new MonsterSpec(
     name = "Randomly Mumbling Townsperson",
-    level = 0,
+    depth = 0,
     archetype = Person,
     health = DiceRoll("1d4"),
     armorClass = 1,
@@ -20,10 +20,17 @@ object RandomlyMumblingTownsperson extends MonsterFactory {
     color = TextColors.White
   )
 
-  def actions: Seq[Weighted[MonsterAction]] = Seq(
-    Weighted(90, MonsterPassAction),
-    Weighted(9, RandomMovementAction),
-    Weighted(1, SpeakAction("The townsperson mumbles incoherently."))
+  private def actions = MonsterActions(
+    adjacent = Seq(
+      Weighted(90, MonsterPassAction),
+      Weighted(9, RandomMovementAction),
+      Weighted(1, SpeakAction("The townsperson mumbles incoherently."))
+    ),
+    otherwise = Seq(
+      Weighted(90, MonsterPassAction),
+      Weighted(9, RandomMovementAction),
+      Weighted(1, SpeakAction("The townsperson mumbles incoherently."))
+    )
   )
 
   def inventory: MonsterInventoryGenerator =
