@@ -1,9 +1,9 @@
 package scalangband.model.monster
 
-import scalangband.data.monster.ant.GiantWhiteAnt
-import scalangband.data.monster.centipede.{GiantYellowCentipede, MetallicRedCentipede}
-import scalangband.data.monster.mold.GreyMold
-import scalangband.data.monster.mushroom.GreyMushroomPatch
+import scalangband.data.monster.ant.*
+import scalangband.data.monster.centipede.*
+import scalangband.data.monster.mold.*
+import scalangband.data.monster.mushroom.*
 import scalangband.model.location.Coordinates
 
 import scala.util.Random
@@ -18,10 +18,14 @@ class Bestiary(
 }
 object Bestiary {
   def apply(): Bestiary = apply(Seq(
+    // these are in the same order as Angband's `monsters.txt`
+    
     // Level 1
-    GiantYellowCentipede,
     GreyMold,
     GreyMushroomPatch,
+    GiantYellowCentipede,
+    GiantWhiteCentipede,
+    
 
     // Level 2
     GiantWhiteAnt,

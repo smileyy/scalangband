@@ -1,6 +1,7 @@
 package scalangband.model.player
 
 import org.slf4j.LoggerFactory
+import scalangband.model.element.Element
 import scalangband.model.Health
 import scalangband.model.player.race.Race
 import scalangband.model.player.playerclass.PlayerClass
@@ -94,16 +95,21 @@ class Player(
     List(MessageResult(s"You miss the ${monster.displayName}."))
   }
 
-  def takeDamage(damage: Int, maybeEffect: Option[Effect]): List[ActionResult] = {
+  def takeDamage(damage: Int, element: Option[Element], effect: Option[Effect]): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
-    health = health - damage
+    val actualDamage = element match {
+      case Some(elt) if resists(elt) => damage / 2
+      case _ => damage
+    }
+    
+    health = health - actualDamage
     if (health.current <= 0) {
       results = DeathResult() :: results
     } else {
-      maybeEffect.foreach { effect =>
+      effect.foreach { eff =>
         if (Random.nextInt(100) > savingThrow) {
-          results = effects.addEffect(effect) :: results
+          results = effects.addEffect(eff) :: results
         } else {
           results = MessageResult("You resist.") :: results
         }
@@ -116,6 +122,8 @@ class Player(
   def hasEffect(effectType: EffectType): Boolean = {
     effects.hasEffect(effectType)
   }
+  
+  def resists(element: Element): Boolean = false
 
   def isDead: Boolean = health <= 0
 }
@@ -148,8 +156,8 @@ class PlayerCallback(private val player: Player) {
   def attack(monster: Monster, callback: GameCallback): List[ActionResult] = player.attack(monster, callback)
   def resetEnergy(): Unit = player.energy = player.speed
 
-  def takeDamage(damage: Int, maybeEffect: Option[Effect]): List[ActionResult] = {
-    player.takeDamage(damage, maybeEffect)
+  def takeDamage(damage: Int, element: Option[Element], effect: Option[Effect]): List[ActionResult] = {
+    player.takeDamage(damage, element, effect)
   }
 
   def addMoney(amount: Int): Unit = player.money = player.money + amount
