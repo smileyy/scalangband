@@ -5,6 +5,7 @@ import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.bridge.rendering.TextColors
 import scalangband.bridge.rendering.TextColors.*
 import scalangband.model.Game
+import scalangband.model.player.{Player, Stat, Stats}
 import scalangband.model.player.action.PlayerAction
 import scalangband.ui.GamePanel.{MaxMessageLineLength, PlayerPaneWidth}
 import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
@@ -83,32 +84,7 @@ class GamePanel(
   }
 
   private def paintPlayer(g: Graphics2D, charWidth: Int, yOffset: Int, lineHeight: Int): Unit = {
-    g.setColor(White)
-
-    val playerNameDisplay = if (game.player.name.length < PlayerPaneWidth) {
-      game.player.name
-    } else {
-      game.player.name.substring(0, PlayerPaneWidth - 1)
-    }
-
-    g.drawString(playerNameDisplay, 0, yOffset + lineHeight)
-
-    g.setColor(Turquoise)
-    g.drawString(game.player.race.name, 0, yOffset + lineHeight * 2)
-    g.drawString(game.player.cls.name, 0, yOffset + lineHeight * 3)
-
-    g.setColor(White)
-    drawLabeledValue(g, charWidth, PlayerPaneWidth, "Level", game.player.level.toString, Green, 0, yOffset + lineHeight * 5)
-    drawLabeledValue(g, charWidth, PlayerPaneWidth, "AU", game.player.money.toString, Green, 0, yOffset + lineHeight * 7)
-
-    drawLabeledValue(g, charWidth, PlayerPaneWidth, "STR:", game.player.stats.str.toString, Green, 0, yOffset + lineHeight * 9)
-    drawLabeledValue(g, charWidth, PlayerPaneWidth, "INT:", game.player.stats.intg.toString, Green, 0, yOffset + lineHeight * 10)
-    drawLabeledValue(g, charWidth, PlayerPaneWidth, "WIS:", game.player.stats.wis.toString, Green, 0, yOffset + lineHeight * 11)
-    drawLabeledValue(g, charWidth, PlayerPaneWidth, "DEX:", game.player.stats.dex.toString, Green, 0, yOffset + lineHeight * 12)
-    drawLabeledValue(g, charWidth, PlayerPaneWidth, "CON:", game.player.stats.con.toString, Green, 0, yOffset + lineHeight * 13)
-
-    drawLabeledValue(g, charWidth, PlayerPaneWidth, "AC", game.player.armorClass.toString, Green, 0, yOffset + lineHeight * 15)
-    drawLabeledValue(g, charWidth, PlayerPaneWidth, "HP", game.player.health.toString, Green, 0, yOffset + lineHeight * 16)
+    new PlayerPane(game.player, font).paint(g, 0, lineHeight)
   }
 
   def drawLabeledValue(
@@ -170,4 +146,87 @@ class GamePanelCallback(panel: GamePanel) {
   def repaint(): Unit = {
     panel.repaint()
   }
+}
+
+class PlayerPane(player: Player, font: Font) {
+  def paint(g: Graphics2D, x: Int, y: Int): Unit = {
+    val lineHeight = g.getFontMetrics(font).getHeight
+    val charWidth = g.getFontMetrics(font).charWidth(' ')
+
+    g.setColor(White)
+    g.drawString(playerNameDisplay, x, y + lineHeight)
+
+    g.setColor(Turquoise)
+    g.drawString(player.race.name, x, y + lineHeight * 2)
+    g.drawString(player.cls.name, x, y + lineHeight * 3)
+
+    new LevelField().paint(player, g, font, 0, 5, PlayerPane.CharWidth)
+    new MoneyField().paint(player, g, font, 0, 7, PlayerPane.CharWidth)
+
+    new StatField("STR", stats => stats.str).paint(player, g, font, 0, 9, PlayerPane.CharWidth)
+    new StatField("INT", stats => stats.intg).paint(player, g, font, 0, 10, PlayerPane.CharWidth)
+    new StatField("WIS", stats => stats.wis).paint(player, g, font, 0, 11, PlayerPane.CharWidth)
+    new StatField("DEX", stats => stats.dex).paint(player, g, font, 0, 12, PlayerPane.CharWidth)
+    new StatField("CON", stats => stats.con).paint(player, g, font, 0, 13, PlayerPane.CharWidth)
+
+    new ArmorClassField().paint(player, g, font, 0, 15, PlayerPane.CharWidth)
+    new HealthField().paint(player, g, font, 0, 16, PlayerPane.CharWidth)
+  }
+
+  private def playerNameDisplay = {
+    if (player.name.length < PlayerPane.CharWidth) {
+      player.name
+    } else {
+      player.name.substring(0, PlayerPane.CharWidth - 1)
+    }
+  }
+
+}
+object PlayerPane {
+  def CharWidth: Int = 12
+}
+
+trait LabeledField {
+  def paint(player: Player, g: Graphics2D, font: Font, x: Int, y: Int, width: Int): Unit = {
+    val charWidth = g.getFontMetrics(font).charWidth(' ')
+    val charHeight = g.getFontMetrics(font).getHeight
+
+    val value = getValue(player)
+    val valueOffset = width - value.length
+
+    g.setColor(labelColor)
+    g.drawString(label, x * charWidth, (y + 1) * charHeight)
+    g.setColor(valueColor)
+    g.drawString(value, (x + valueOffset) * charWidth, (y + 1) * charHeight)
+  }
+
+  def label: String
+  def getValue(player: Player): String
+  def labelColor: Color = White
+  def valueColor: Color = Green
+}
+
+class LevelField extends LabeledField {
+  override def label: String = "Level"
+  override def getValue(player: Player): String = player.level.toString
+}
+
+class MoneyField extends LabeledField {
+  override def label: String = "AU"
+  override def getValue(player: Player): String = player.money.toString
+}
+
+class StatField(statName: String, getStat: Stats => Stat) extends LabeledField {
+  override def label: String = s"$statName:"
+  override def getValue(player: Player): String = getStat(player.stats).toString
+}
+
+class ArmorClassField extends LabeledField {
+  override def label: String = "AC"
+  override def getValue(player: Player): String = player.armorClass.toString
+}
+
+class HealthField extends LabeledField {
+  override def label: String = "HP"
+  override def getValue(player: Player): String = player.health.toString
 }
