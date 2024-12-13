@@ -35,8 +35,8 @@ class Player(
   val callback: PlayerCallback = new PlayerCallback(this)
 
   def level: Int = 1
-  def stats: Stats = baseStats + (race.statBonus + cls.statBonus + equipment.statBonus) 
-  
+  def stats: Stats = baseStats + (race.statBonus + cls.statBonus + equipment.statBonus)
+
   def speed: Int = BaseEnergyUnit
 
   def lightRadius: Int = equipment.light.map(_.radius).getOrElse(0)
@@ -50,7 +50,7 @@ class Player(
     var results: List[ActionResult] = List.empty
 
     results = effects.onNewTurn(callback) ::: results
-    if (health <= 0) {
+    if (isDead) {
       results = DeathResult() :: results
     }
 
@@ -115,7 +115,7 @@ class Player(
     }
 
     health = health - actualDamage
-    if (health.current <= 0) {
+    if (isDead) {
       results = DeathResult() :: results
     } else {
       maybeEffect.foreach { eff =>
@@ -136,7 +136,7 @@ class Player(
 
   def resists(element: Element): Boolean = false
 
-  def isDead: Boolean = health <= 0
+  def isDead: Boolean = health.current < 0
 }
 object Player {
   private val Logger = LoggerFactory.getLogger(classOf[Player])
@@ -148,7 +148,7 @@ object Player {
       cls = cls,
       baseStats = cls.startingStats,
       health = Health.fullHealth(race.hitdice.max + cls.hitdice.max),
-      money = DiceRoll("1d100+100").roll(),
+      money = DiceRoll("1d50+100").roll(),
       inventory = cls.startingInventory(random),
       equipment = cls.startingEquipment(random),
       effects = Effects.none(),
