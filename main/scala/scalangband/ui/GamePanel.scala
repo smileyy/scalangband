@@ -92,9 +92,17 @@ class GamePanel(game: Game, var renderer: Renderer, var keyHandlers: List[KeyHan
     g.drawString(game.player.cls.name, 0, yOffset + lineHeight * 3)
 
     g.setColor(White)
-    g.drawString(rightAlignedFieldString("AU", game.player.money.toString), 0, yOffset + lineHeight * 5)
-    g.drawString(rightAlignedFieldString("AC", game.player.armorClass.toString), 0, yOffset + lineHeight * 7)
-    g.drawString(rightAlignedFieldString("HP", game.player.health.toString), 0, yOffset + lineHeight * 8)
+    g.drawString(rightAlignedFieldString("Level", game.player.level.toString), 0, yOffset + lineHeight * 5)
+    g.drawString(rightAlignedFieldString("AU", game.player.money.toString), 0, yOffset + lineHeight * 7)
+
+    g.drawString(rightAlignedFieldString("STR:", game.player.stats.str.toString), 0, yOffset + lineHeight * 9)
+    g.drawString(rightAlignedFieldString("INT:", game.player.stats.intg.toString), 0, yOffset + lineHeight * 10)
+    g.drawString(rightAlignedFieldString("WIS:", game.player.stats.wis.toString), 0, yOffset + lineHeight * 11)
+    g.drawString(rightAlignedFieldString("DEX:", game.player.stats.dex.toString), 0, yOffset + lineHeight * 12)
+    g.drawString(rightAlignedFieldString("CON:", game.player.stats.con.toString), 0, yOffset + lineHeight * 13)
+
+    g.drawString(rightAlignedFieldString("AC", game.player.armorClass.toString), 0, yOffset + lineHeight * 15)
+    g.drawString(rightAlignedFieldString("HP", game.player.health.toString), 0, yOffset + lineHeight * 16)
   }
 
   private def rightAlignedFieldString(label: String, value: String) = {

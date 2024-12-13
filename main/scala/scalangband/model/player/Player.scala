@@ -21,12 +21,13 @@ class Player(
     name: String,
     val race: Race,
     val cls: PlayerClass,
+    var baseStats: Stats,
     var health: Health,
-    energy: Int = Game.BaseEnergyUnit,
     var money: Int,
     val inventory: Inventory,
     val equipment: Equipment,
     val effects: Effects,
+    energy: Int,
     coordinates: Coordinates
 ) extends Creature(name, coordinates, energy) {
 
@@ -34,7 +35,8 @@ class Player(
   val callback: PlayerCallback = new PlayerCallback(this)
 
   def level: Int = 1
-
+  def stats: Stats = baseStats + (race.statBonus + cls.statBonus + equipment.statBonus) 
+  
   def speed: Int = BaseEnergyUnit
 
   def lightRadius: Int = equipment.light.map(_.radius).getOrElse(0)
@@ -100,14 +102,15 @@ class Player(
 
     val actualDamage = maybeElement match {
       case Some(element) if resists(element) => damage / 2
-      case _ => damage
+      case _                                 => damage
     }
 
     maybeElement match {
-      case Some(element) => element.message match {
-        case Some(message) => results = MessageResult(message) :: results
-        case None =>
-      }
+      case Some(element) =>
+        element.message match {
+          case Some(message) => results = MessageResult(message) :: results
+          case None          =>
+        }
       case None =>
     }
 
@@ -143,12 +146,13 @@ object Player {
       name = name,
       race = race,
       cls = cls,
+      baseStats = cls.startingStats,
       health = Health.fullHealth(race.hitdice.max + cls.hitdice.max),
-      energy = Game.BaseEnergyUnit,
       money = DiceRoll("1d100+100").roll(),
       inventory = cls.startingInventory(random),
       equipment = cls.startingEquipment(random),
       effects = Effects.none(),
+      energy = Game.BaseEnergyUnit,
       coordinates = Coordinates.Placeholder
     )
   }
