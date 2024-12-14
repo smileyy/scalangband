@@ -2,7 +2,7 @@ package scalangband.ui.keys
 
 import scalangband.model.Game
 import scalangband.model.player.action.PlayerAction
-import scalangband.ui.GamePanelCallback
+import scalangband.ui.gamepanel.GamePanelCallback
 
 import scala.swing.event.KeyPressed
 

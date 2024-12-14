@@ -12,9 +12,6 @@ import scalangband.ui.render.{RenderableTile, Renderer}
 import scala.swing.Font
 
 class TextRenderer(font: Font) extends Renderer {
-  override def tileWidth: Int = 9
-  override def tileHeight: Int = 12
-
   override def render(level: Level): Array[Array[RenderableTile]] = {
     level.tiles.map(row => renderRow(row))
   }

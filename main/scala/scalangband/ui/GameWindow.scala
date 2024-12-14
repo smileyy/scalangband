@@ -1,6 +1,7 @@
 package scalangband.ui
 
 import scalangband.model.Game
+import scalangband.ui.gamepanel.GamePanel
 import scalangband.ui.render.Renderer
 
 import scala.swing.Frame

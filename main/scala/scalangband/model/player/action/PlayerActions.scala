@@ -33,7 +33,9 @@ case class PlayerMovementAction(intendedDirection: Direction) extends PhysicalAc
     val targetTile = accessor.level.tile(targetCoordinates)
 
     targetTile match {
-      case _: Wall => MessageResult("There is a wall in the way!")
+      case _: Wall =>
+        println("There is a wall in the way!")
+        results = MessageResult("There is a wall in the way!") :: results
       case _: ClosedDoor =>
         callback.level.replaceTile(targetCoordinates, new OpenDoor())
       case ot: OccupiableTile if ot.occupied =>
@@ -92,8 +94,8 @@ object PickUpItemAction extends PhysicalAction {
       case floor: Floor if floor.items.nonEmpty =>
         val item = floor.items.head
         callback.playerPickup(floor, floor.items.head)
-        List(MessageResult(s"You pick up the ${item.displayName}"))
-      case _ => List(MessageResult("There is nothing to pick up"))
+        List(MessageResult(s"You pick up the ${item.displayName}."))
+      case _ => List(MessageResult("There is nothing to pick up."))
     }
   }
 }

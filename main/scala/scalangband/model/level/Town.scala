@@ -8,7 +8,7 @@ import scala.util.Random
 class Town(tiles: Array[Array[Tile]]) extends Level(0, tiles)
 object Town {
   private val TownHeight = 36
-  private val TownWidth = 60
+  private val TownWidth = 80
 
   def apply(random: Random): Town = {
     val builder = LevelBuilder(TownHeight, TownWidth, 0)
