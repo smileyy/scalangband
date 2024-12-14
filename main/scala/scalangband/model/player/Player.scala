@@ -38,7 +38,7 @@ class Player(
 
   def stats: Stats = baseStats + (race.statBonus + cls.statBonus + equipment.statBonus)
   def level: Int = levels.size
-  def maxHealth: Int = levels.map(_.hitpoints).sum
+  def maxHealth: Int = levels.map(_.hitpoints).sum + (stats.toHp * level).toInt
   def healthPercent: Int = (health * 100) / maxHealth
 
   def toHit: Int = cls.meleeSkill(level) + 3 * (equipment.toHit + stats.toHit)
@@ -168,14 +168,15 @@ object Player {
   private val Logger = LoggerFactory.getLogger(classOf[Player])
 
   def newPlayer(random: Random, name: String, race: Race, cls: PlayerClass): Player = {
+    val startingStats = cls.startingStats
     val levelOne = PlayerLevel.first(race: Race, cls: PlayerClass)
 
     new Player(
       name = name,
       race = race,
       cls = cls,
-      baseStats = cls.startingStats,
-      health = levelOne.hitpoints,
+      baseStats = startingStats,
+      health = levelOne.hitpoints + (startingStats + cls.statBonus).toHp.toInt,
       experience = Experience.None,
       levels = List(levelOne),
       money = DiceRoll("1d50+100").roll(),

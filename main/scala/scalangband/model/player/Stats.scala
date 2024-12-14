@@ -6,6 +6,7 @@ class Stats(val str: Strength, val intg: Intelligence, val wis: Wisdom, val dex:
   def toHit: Int = allStats.map(_.toHit).sum
   def toDamage: Int = allStats.map(_.toDamage).sum
   def toArmor: Int = allStats.map(_.toArmor).sum
+  def toHp: Float = allStats.map(_.toHp).sum.toInt
 
   def +(b: StatBonuses): Stats = new Stats(str + b.str, intg + b.intg, wis + b.wis, dex + b.dex, con + b.con)
 }
@@ -26,6 +27,8 @@ trait Stat[T <: Stat[T]] {
   def toHit: Int = 0
   def toDamage: Int = 0
   def toArmor: Int = 0
+
+  def toHp: Float = 0
 }
 
 class Strength(var value: Int) extends Stat[Strength] {
@@ -100,6 +103,33 @@ class Dexterity(var value: Int) extends Stat[Dexterity] {
 }
 
 class Constitution(var value: Int) extends Stat[Constitution] {
+  override def toHp: Float = value match {
+    case 3            => -2.5
+    case 4            => -1.5
+    case 5            => -1
+    case 6            => -.5
+    case x if x <= 14 => 0
+    case x if x <= 17 => .0
+    case 17           => 1
+    case 18           => 1.5
+    case x if x <= 22 => 2
+    case x if x <= 24 => 2.5
+    case 25           => 3
+    case 26           => 3.5
+    case 27           => 4
+    case 28           => 5
+    case 29           => 5.5
+    case 30           => 6
+    case 31           => 6.5
+    case 32           => 7
+    case 33           => 7.5
+    case 34           => 8
+    case 35           => 9
+    case 36           => 10
+    case 37           => 11
+    case _            => 12.5
+  }
+
   override def +(bonus: Int): Constitution = if (value + bonus >= 40) Constitution(40) else Constitution(value + bonus)
 }
 
