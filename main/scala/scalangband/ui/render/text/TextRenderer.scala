@@ -23,7 +23,14 @@ class TextRenderer(font: Font) extends Renderer {
   def render(tile: Tile): RenderableTile = {
     if (tile.isVisible || tile.seen) {
       tile.representation match {
-        case _: Player => TextTile('@', font.deriveFont(java.awt.Font.BOLD), White)
+        case p: Player =>
+          println(p.health.percent)
+          val color = p.health.percent match
+            case x if x <= 25 => Red
+            case x if x <= 50 => Orange
+            case x if x <= 75 => Yellow
+            case _ => White
+          TextTile ('@', font.deriveFont(java.awt.Font.BOLD), color)
 
         // terrain
         case _: DownStairs => TextTile('>', font, VeryLightGrey)
