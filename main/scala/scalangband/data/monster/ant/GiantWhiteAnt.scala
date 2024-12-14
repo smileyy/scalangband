@@ -14,7 +14,7 @@ object GiantWhiteAnt extends MonsterFactory {
     health = DiceRoll("3d6"),
     armorClass = 19,
     actions = actions,
-    inventory = None,
+    baseXp = 2,
     color = TextColors.White
   )
 

@@ -161,6 +161,7 @@ class PlayerPane(player: Player, font: Font) {
     g.drawString(player.cls.name, x, y + lineHeight * 3)
 
     new LevelField().paint(player, g, font, 0, 5, PlayerPane.CharWidth)
+    new XpField().paint(player, g, font, 0, 6, PlayerPane.CharWidth)
     new MoneyField().paint(player, g, font, 0, 7, PlayerPane.CharWidth)
 
     new StatField("STR", stats => stats.str).paint(player, g, font, 0, 9, PlayerPane.CharWidth)
@@ -209,6 +210,11 @@ trait LabeledField {
 class LevelField extends LabeledField {
   override def label: String = "Level"
   override def getValue(player: Player): String = player.level.toString
+}
+
+class XpField extends LabeledField {
+  override def label: String = "EXP"
+  override def getValue(player: Player): String = player.experience.value.toString
 }
 
 class MoneyField extends LabeledField {

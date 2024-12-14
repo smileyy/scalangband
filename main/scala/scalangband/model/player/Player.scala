@@ -23,6 +23,7 @@ class Player(
     val cls: PlayerClass,
     var baseStats: Stats,
     var health: Health,
+    var experience: Experience,
     var money: Int,
     val inventory: Inventory,
     val equipment: Equipment,
@@ -87,6 +88,7 @@ class Player(
     Player.Logger.info(s"Player hit ${monster.displayName} for $damage damage")
     if (monster.health <= 0) {
       callback.killMonster(monster)
+      experience = experience + monster.experience / level
       Player.Logger.info(s"Player killed ${monster.displayName}")
       results = MessageResult(s"You have slain the ${monster.displayName}.") :: results
     }
@@ -150,6 +152,7 @@ object Player {
       cls = cls,
       baseStats = cls.startingStats,
       health = Health.fullHealth(race.hitdice.max + cls.hitdice.max),
+      experience = Experience.None,
       money = DiceRoll("1d50+100").roll(),
       inventory = cls.startingInventory(random),
       equipment = cls.startingEquipment(random),
