@@ -34,7 +34,6 @@ case class PlayerMovementAction(intendedDirection: Direction) extends PhysicalAc
 
     targetTile match {
       case _: Wall =>
-        println("There is a wall in the way!")
         results = MessageResult("There is a wall in the way!") :: results
       case _: ClosedDoor =>
         callback.level.replaceTile(targetCoordinates, new OpenDoor())
