@@ -76,7 +76,7 @@ class Player(
       (level + 1 to newLevel).foreach { i =>
         val newLevelActual: PlayerLevel = PlayerLevel.next(race, cls)
         levels = newLevelActual :: levels
-        results = MessageResult(s"Welcome to level $i") :: results
+        results = MessageResult(s"Welcome to level $i.") :: results
       }
 
       results
@@ -84,8 +84,7 @@ class Player(
       List.empty
     }
   }
-
-
+  
   def attack(monster: Monster, callback: GameCallback): List[ActionResult] = {
     Random.nextInt(20) + 1 match {
       case 1  => handleMiss(monster)

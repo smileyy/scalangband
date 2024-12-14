@@ -13,11 +13,7 @@ object MainKeyHandler extends KeyHandler {
       game.enableDebug()
       callback.repaint()
       None
-
-    case KeyPressed(_, Key.E, Key.Modifier.Control, _) =>
-      println(game.player.effects)
-      None
-
+      
     case KeyPressed(_, Key.Key1, _, _) => Some(PlayerMovementAction(DownLeft))
     case KeyPressed(_, Key.Key2, _, _) => Some(PlayerMovementAction(Down))
     case KeyPressed(_, Key.Key3, _, _) => Some(PlayerMovementAction(DownRight))
