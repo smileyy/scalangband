@@ -9,6 +9,7 @@ object TextColors {
   val Green = new Color(0,232,0)
   val LightBeige = new Color(237,232,208)
   val MediumGrey = new Color(95, 95, 95)
+  val Orange = new Color(255, 165, 0)
   val Red = new Color(255, 0, 0)
   val Turquoise = new Color(83, 195, 189)
   val VeryLightGrey = new Color(239, 239, 239)
