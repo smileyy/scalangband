@@ -5,13 +5,13 @@ import scalangband.model.tile.{Floor, Tile}
 
 import scala.util.Random
 
-class Town(tiles: Array[Array[Tile]]) extends Level(0, tiles)
+class Town(tiles: Array[Array[Tile]]) extends DungeonLevel(0, tiles)
 object Town {
   private val TownHeight = 36
   private val TownWidth = 80
 
   def apply(random: Random): Town = {
-    val builder = LevelBuilder(TownHeight, TownWidth, 0)
+    val builder = DungeonLevelBuilder(TownHeight, TownWidth, 0)
 
     for (row <- 1 until TownHeight - 1) {
       for (col <- 1 until TownWidth - 1) {

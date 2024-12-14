@@ -1,7 +1,7 @@
 package scalangband.ui.render
 
-import scalangband.model.level.Level
+import scalangband.model.level.DungeonLevel
 
 trait Renderer {
-  def render(level: Level): Array[Array[RenderableTile]]
+  def render(level: DungeonLevel): Array[Array[RenderableTile]]
 }
