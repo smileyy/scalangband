@@ -97,8 +97,7 @@ object LevelBuilder {
   }
 
   /**
-   * Generates a random sized builder, twice as wide as it is tall, since this seems to be a pleasing ratio when
-   * rendered in a monospace font.
+   * Generates a level builder with a pleasing width : height ratio
    */
   def randomSizedLevelBuilder(random: Random, depth: Int): LevelBuilder = {
     val minWidth: Int = 80
@@ -109,6 +108,6 @@ object LevelBuilder {
     val width = minWidth + (increment * increments)
     val height = width / 2
 
-    LevelBuilder(height, width, depth)
+    LevelBuilder(50, 100, depth)
   }
 }
