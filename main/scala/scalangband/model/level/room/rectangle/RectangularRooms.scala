@@ -30,10 +30,10 @@ class RectangularRoom(tiles: Array[Array[Tile]], top: Int, left: Int, effectiveD
   private def rightWall: Array[Coordinates] = (top + 1 until top + height).map(row => Coordinates(row, right)).toArray
   
   override def getAttachmentPoint(random: Random, direction: Direction): Coordinates = direction match {
-    case Up => randomElement(random, topWall)
-    case Down => randomElement(random, bottomWall)
-    case Left => randomElement(random, leftWall)
-    case Right => randomElement(random, rightWall)
+    case UpDirection => randomElement(random, topWall)
+    case DownDirection => randomElement(random, bottomWall)
+    case LeftDirection => randomElement(random, leftWall)
+    case RightDirection => randomElement(random, rightWall)
   }
 }
 object RectangularRoom {

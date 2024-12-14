@@ -43,14 +43,14 @@ object RandomMovementAction extends MonsterAction {
 
   override def apply(monster: Monster, accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
     val direction: Direction = Random.nextInt(8) match {
-      case 0 => Up
-      case 1 => Down
-      case 2 => Left
-      case 3 => Right
-      case 4 => UpLeft
-      case 5 => UpRight
-      case 6 => DownLeft
-      case 7 => DownRight
+      case 0 => UpDirection
+      case 1 => DownDirection
+      case 2 => LeftDirection
+      case 3 => RightDirection
+      case 4 => UpLeftDirection
+      case 5 => UpRightDirection
+      case 6 => DownLeftDirection
+      case 7 => DownRightDirection
     }
 
     Logger.debug(s"${monster.name} is trying to move $direction")

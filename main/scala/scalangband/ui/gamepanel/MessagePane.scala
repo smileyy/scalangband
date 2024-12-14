@@ -5,6 +5,10 @@ import scalangband.bridge.rendering.TextColors.White
 import scala.swing.{Font, Graphics2D}
 
 class MessagePane(font: Font, var messages: List[String] = List.empty) {
+  def addMessage(message: String): Unit = {
+    messages = message :: messages
+  }
+
   def paint(g: Graphics2D, x: Int, y: Int): Unit = {
     val lineHeight = g.getFontMetrics(font).getHeight
 
