@@ -110,7 +110,8 @@ class Player(
     if (monster.health <= 0) {
       callback.killMonster(monster)
       Player.Logger.info(s"Player killed ${monster.displayName}")
-      results = MessageResult(s"You have slain the ${monster.displayName}.") :: results
+      val deathString = s"You have ${if (monster.alive) "slain" else "destroyed"} the ${monster.displayName}."
+      results = MessageResult(deathString) :: results
 
       results = addExperience(monster.experience) ::: results
     }

@@ -16,6 +16,7 @@ object GreyMushroomPatch extends MonsterFactory {
     armorClass = 1,
     experience = 1,
     sleepiness = 0,
+    alive = false,
     actions = actions,
     color = TextColors.MediumGrey
   )

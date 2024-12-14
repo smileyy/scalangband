@@ -15,6 +15,7 @@ object GreyMold extends MonsterFactory {
     armorClass = 1,
     experience = 3,
     sleepiness = 0,
+    alive = false,
     actions = actions,
     color = TextColors.MediumGrey
   )
@@ -25,5 +26,4 @@ object GreyMold extends MonsterFactory {
     ),
     otherwise = Seq(Weighted(100, MonsterPassAction))
   )
-
 }
