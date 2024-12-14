@@ -2,12 +2,11 @@ package scalangband.ui
 
 import scalangband.Scalangband
 import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
-import scalangband.bridge.rendering.TextColors
 import scalangband.bridge.rendering.TextColors.*
 import scalangband.model.Game
 import scalangband.model.player.{Player, Stat, Stats}
 import scalangband.model.player.action.PlayerAction
-import scalangband.ui.GamePanel.{MaxMessageLineLength, PlayerPaneWidth}
+import scalangband.ui.GamePanel.MaxMessageLineLength
 import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
 import scalangband.ui.render.Renderer
 
@@ -60,12 +59,11 @@ class GamePanel(
 
     val lineHeight = g.getFontMetrics(font).getHeight
     val charWidth = g.getFontMetrics(font).charWidth(' ')
-    val playerPanePixelWidth = charWidth * (PlayerPaneWidth + 1)
+    val playerPanePixelWidth = charWidth * (PlayerPane.CharWidth + 1)
 
     paintMessages(g, lineHeight)
     paintPlayer(g, charWidth, lineHeight, lineHeight)
     paintLevel(g, lineHeight, playerPanePixelWidth + charWidth)
-    paintDepth(g, lineHeight, playerPanePixelWidth + charWidth)
   }
 
   private def paintMessages(g: Graphics2D, messageLineYOffset: Int): Unit = {
@@ -84,27 +82,9 @@ class GamePanel(
   }
 
   private def paintPlayer(g: Graphics2D, charWidth: Int, yOffset: Int, lineHeight: Int): Unit = {
-    new PlayerPane(game.player, font).paint(g, 0, lineHeight)
+    new PlayerPane(game, font).paint(g, 0, lineHeight)
   }
 
-  def drawLabeledValue(
-      g: Graphics2D,
-      charWidthInPixels: Int,
-      totalWidthInChars: Int,
-      label: String,
-      value: String,
-      color: Color,
-      x: Int,
-      y: Int
-  ): Unit = {
-    val valueOffset = (PlayerPaneWidth - value.length) * charWidthInPixels
-
-    g.setColor(White)
-    g.drawString(label, x, y)
-    g.setColor(color)
-    g.drawString(value, x + valueOffset, y)
-  }
-  
   private def paintLevel(g: Graphics2D, messageLineHeight: Int, characterPaneWidth: Int): Unit = {
     val tiles = renderer.render(game.level)
 
@@ -118,16 +98,9 @@ class GamePanel(
       }
     }
   }
-
-  private def paintDepth(g: Graphics2D, lineHeight: Int, characterPaneWidth: Int): Unit = {
-    g.setColor(White)
-    val depth = if (game.level.depth == 0) "Town" else s"${game.level.depth * 50} feet"
-    g.drawString(depth, characterPaneWidth, game.level.tiles.length * renderer.tileHeight + lineHeight * 2)
-  }
 }
 object GamePanel {
   private val MaxMessageLineLength = 96
-  private val PlayerPaneWidth = 12
 
   def apply(game: Game, renderer: Renderer): GamePanel = {
     new GamePanel(game, renderer, List(MainKeyHandler), List.empty)
@@ -148,13 +121,15 @@ class GamePanelCallback(panel: GamePanel) {
   }
 }
 
-class PlayerPane(player: Player, font: Font) {
+class PlayerPane(game: Game, font: Font) {
+  val player: Player = game.player
+
   def paint(g: Graphics2D, x: Int, y: Int): Unit = {
     val lineHeight = g.getFontMetrics(font).getHeight
     val charWidth = g.getFontMetrics(font).charWidth(' ')
 
     g.setColor(White)
-    g.drawString(playerNameDisplay, x, y + lineHeight)
+    g.drawString(playerNameString, x, y + lineHeight)
 
     g.setColor(Turquoise)
     g.drawString(player.race.name, x, y + lineHeight * 2)
@@ -172,9 +147,23 @@ class PlayerPane(player: Player, font: Font) {
 
     new ArmorClassField().paint(player, g, font, 0, 15, PlayerPane.CharWidth)
     new HealthField().paint(player, g, font, 0, 16, PlayerPane.CharWidth)
+
+    g.setColor(White)
+    g.drawString(levelDepthString, 0, lineHeight * 22)
   }
 
-  private def playerNameDisplay = {
+  private def levelDepthString = {
+    if (game.level.depth == 0) {
+      "Town"
+    } else {
+      val depth = game.level.depth
+      val firstPart = s"${depth * 50}'"
+      val secondPart = if (depth < 10) s"(L $depth)" else s"(L$depth)"
+      s"$firstPart   $secondPart"
+    }
+  }
+
+  private def playerNameString = {
     if (player.name.length < PlayerPane.CharWidth) {
       player.name
     } else {
