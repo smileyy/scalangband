@@ -13,15 +13,16 @@ object GiantWhiteAnt extends MonsterFactory {
     depth = 3,
     health = DiceRoll("3d6"),
     armorClass = 19,
+    sleepiness = 80,
+    experience = 2,
     actions = actions,
-    baseXp = 2,
     color = TextColors.White
   )
 
   private def actions = MonsterActions(
     adjacent = Seq(
       Weighted(100, MeleeAttacksAction(Seq(BiteAttack(DiceRoll("1d4")))))
-    ), 
+    ),
     otherwise = Seq(Weighted(100, RandomMovementAction))
   )
 }

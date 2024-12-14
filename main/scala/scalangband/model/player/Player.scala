@@ -40,13 +40,13 @@ class Player(
 
   def toHit: Int = cls.meleeSkill(level) + 3 * (equipment.toHit + stats.toHit)
   def toDamage: Int = equipment.toDamage + stats.toDamage
-  
+
   def speed: Int = BaseEnergyUnit
 
   def lightRadius: Int = equipment.light.map(_.radius).getOrElse(0)
   def weapon: Weapon = equipment.weapon.getOrElse(Fists)
 
-  def savingThrow: Int = cls.savingThrow(level) + 3 * equipment.allEquipment.map(_.toHit).sum
+  private def savingThrow: Int = cls.savingThrow(level) + 3 * equipment.allEquipment.map(_.toHit).sum
   def armorClass: Int = equipment.allEquipment.map(_.baseArmorClass).sum
 
   def beforeNextAction(): List[ActionResult] = {
@@ -83,6 +83,7 @@ class Player(
 
     val damage = Math.max(weapon.damage.roll() + toDamage, 0)
     monster.health = monster.health - damage
+    monster.awake = true
 
     results = MessageResult(s"You hit the ${monster.displayName}.") :: results
     Player.Logger.info(s"Player hit ${monster.displayName} for $damage damage")
@@ -138,7 +139,7 @@ class Player(
     effects.hasEffect(effectType)
   }
 
-  def resists(element: Element): Boolean = false
+  private def resists(element: Element): Boolean = false
 
   def isDead: Boolean = health.current < 0
 }

@@ -4,19 +4,26 @@ import scalangband.bridge.rendering.TextColors
 import scalangband.data.item.garbage.GarbageGenerator
 import scalangband.data.item.money.MoneyGenerator
 import scalangband.model.item.ItemGenerator
-import scalangband.model.monster.action.{MonsterAction, MonsterActions, MonsterPassAction, RandomMovementAction, SpeakAction}
+import scalangband.model.monster.action.{
+  MonsterAction,
+  MonsterActions,
+  MonsterPassAction,
+  RandomMovementAction,
+  SpeakAction
+}
 import scalangband.model.monster.{MonsterFactory, MonsterInventoryGenerator, MonsterSpec, Person}
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object RandomlyMumblingTownsperson extends MonsterFactory {
   override def spec: MonsterSpec = new MonsterSpec(
     name = "Randomly Mumbling Townsperson",
-    depth = 0,
     archetype = Person,
+    depth = 0,
     health = DiceRoll("1d4"),
     armorClass = 1,
+    experience = 0,
+    sleepiness = 0,
     actions = actions,
-    baseXp = 0,
     inventory = Some(inventory),
     color = TextColors.White
   )

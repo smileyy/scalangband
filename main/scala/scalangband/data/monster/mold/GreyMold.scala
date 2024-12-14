@@ -13,16 +13,17 @@ object GreyMold extends MonsterFactory {
     depth = 1,
     health = DiceRoll("1d3"),
     armorClass = 1,
+    experience = 3,
+    sleepiness = 0,
     actions = actions,
-    baseXp = 3,
     color = TextColors.MediumGrey
   )
 
   private def actions = MonsterActions(
-      adjacent = Seq(
-        Weighted(100, MeleeAttacksAction(Seq(new SporeAttack(DiceRoll("1d4")), new SporeAttack(DiceRoll("1d4")))))
-      ),
-      otherwise = Seq(Weighted(100, MonsterPassAction))
+    adjacent = Seq(
+      Weighted(100, MeleeAttacksAction(Seq(new SporeAttack(DiceRoll("1d4")), new SporeAttack(DiceRoll("1d4")))))
+    ),
+    otherwise = Seq(Weighted(100, MonsterPassAction))
   )
 
 }

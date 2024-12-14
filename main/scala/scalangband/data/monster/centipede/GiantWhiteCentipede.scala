@@ -14,14 +14,18 @@ object GiantWhiteCentipede extends MonsterFactory {
     depth = 1,
     health = DiceRoll("3d5"),
     armorClass = 11,
+    experience = 2,
+    sleepiness = 40,
     actions = actions,
-    baseXp = 2,
     color = TextColors.White
   )
 
   private def actions = MonsterActions(
     adjacent = Seq(
-      Weighted(50, MeleeAttacksAction(Seq(CrawlAttack(DiceRoll("1d2")), StingAttack(DiceRoll("1d2"), element = Some(Cold))))),
+      Weighted(
+        50,
+        MeleeAttacksAction(Seq(CrawlAttack(DiceRoll("1d2")), StingAttack(DiceRoll("1d2"), element = Some(Cold))))
+      ),
       Weighted(50, RandomMovementAction)
     ),
     otherwise = Seq(Weighted(100, RandomMovementAction))

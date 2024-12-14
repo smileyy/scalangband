@@ -13,15 +13,16 @@ object GiantYellowCentipede extends MonsterFactory {
     depth = 1,
     health = DiceRoll("2d6"),
     armorClass = 14,
+    experience = 2,
+    sleepiness = 20,
     actions = actions,
-    baseXp = 2,
     color = TextColors.Yellow
   )
 
   private def actions = MonsterActions(
-      adjacent = Seq(
-        Weighted(100, MeleeAttacksAction(Seq(new CrawlAttack(DiceRoll("1d4")), new StingAttack(DiceRoll("1d4")))))
-      ),
-      otherwise = Seq(Weighted(100, RandomMovementAction))
+    adjacent = Seq(
+      Weighted(100, MeleeAttacksAction(Seq(new CrawlAttack(DiceRoll("1d4")), new StingAttack(DiceRoll("1d4")))))
+    ),
+    otherwise = Seq(Weighted(100, RandomMovementAction))
   )
 }
