@@ -18,7 +18,7 @@ import scalangband.model.util.TileUtils.allCoordinatesFor
 import scala.annotation.tailrec
 import scala.util.Random
 
-class Game(seed: Long, val random: Random, val settings: Settings, val player: Player, val town: Level, var level: Level, var turn: Int) {
+class Game(seed: Long, val random: Random, val settings: Settings, val player: Player, val town: DungeonLevel, var level: DungeonLevel, var turn: Int) {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   private val fov = new FieldOfViewCalculator()
@@ -117,7 +117,7 @@ object Game {
   val MaxDungeonDepth: Int = 100
 
   def newGame(seed: Long, random: Random, settings: Settings, player: Player): Game = {
-    val town: Level = Town(random)
+    val town: DungeonLevel = Town(random)
 
     val start = randomElement(random, allCoordinatesFor(town.tiles, tile => tile.isInstanceOf[DownStairs]))
     town.addPlayer(start, player)
@@ -128,7 +128,7 @@ object Game {
 
 class GameAccessor(private val game: Game) {
   // this has to be a `def` since the current level of the game is mutable
-  def level: LevelAccessor = new LevelAccessor(game.level)
+  def level: DungeonLevelAccessor = new DungeonLevelAccessor(game.level)
   val player: PlayerAccessor = new PlayerAccessor(game.player)
 
   def playerTile: OccupiableTile = level.tile(player.coordinates).asInstanceOf[OccupiableTile]

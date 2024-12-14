@@ -1,6 +1,6 @@
 package scalangband.ui.render.text
 
-import scalangband.model.level.Level
+import scalangband.model.level.DungeonLevel
 import scalangband.model.monster.*
 import scalangband.model.player.Player
 import scalangband.model.tile.*
@@ -12,7 +12,7 @@ import scalangband.ui.render.{RenderableTile, Renderer}
 import scala.swing.Font
 
 class TextRenderer(font: Font) extends Renderer {
-  override def render(level: Level): Array[Array[RenderableTile]] = {
+  override def render(level: DungeonLevel): Array[Array[RenderableTile]] = {
     level.tiles.map(row => renderRow(row))
   }
 

@@ -8,7 +8,7 @@ class RandomWeightedLevelGenerator(weightedGenerators: Seq[(LevelGenerator, Int)
 
   private val totalWeights = weightedGenerators.map((_, weight) => weight).sum
 
-  override def generateLevel(random: Random, depth: Int, bestiary: Bestiary): Level = {
+  override def generateLevel(random: Random, depth: Int, bestiary: Bestiary): DungeonLevel = {
     selectLevelGenerator(random).generateLevel(random, depth, bestiary)
   }
   

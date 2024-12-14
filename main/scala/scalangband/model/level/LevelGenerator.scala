@@ -5,5 +5,5 @@ import scalangband.model.monster.Bestiary
 import scala.util.Random
 
 trait LevelGenerator {
-  def generateLevel(random: Random, depth: Int, bestiary: Bestiary): Level
+  def generateLevel(random: Random, depth: Int, bestiary: Bestiary): DungeonLevel
 }

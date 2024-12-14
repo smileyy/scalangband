@@ -9,7 +9,7 @@ import scalangband.model.player.Player
 import scalangband.model.tile.{OccupiableTile, Tile}
 import scalangband.model.util.CenteredRange
 
-class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
+class DungeonLevel(val depth: Int, val tiles: Array[Array[Tile]]) {
   def height: Int = tiles.length
   def width: Int = tiles(0).length
 
@@ -69,16 +69,16 @@ class Level(val depth: Int, val tiles: Array[Array[Tile]]) {
     }
   }
 }
-object Level {
-  private val Logger = LoggerFactory.getLogger(classOf[Level])
+object DungeonLevel {
+  private val Logger = LoggerFactory.getLogger(classOf[DungeonLevel])
 }
 
-class LevelAccessor(private val level: Level) {
+class DungeonLevelAccessor(private val level: DungeonLevel) {
   def depth: Int = level.depth
   def tile(coordinates: Coordinates): Tile = level(coordinates)
 }
 
-class LevelCallback(private val level: Level) {
+class LevelCallback(private val level: DungeonLevel) {
   def replaceTile(coordinates: Coordinates, tile: Tile): Unit = level.replaceTile(coordinates, tile)
   def tryToMoveMonster(monster: Monster, direction: Direction): Unit = level.tryToMoveMonster(monster, direction)
 }

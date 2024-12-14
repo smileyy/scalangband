@@ -1,6 +1,6 @@
 package scalangband.model.fov;
 
-import scalangband.model.level.Level;
+import scalangband.model.level.DungeonLevel;
 import scalangband.model.location.Coordinates;
 
 /**
@@ -14,7 +14,7 @@ public class FieldOfViewCalculator {
         this.debug = true;
     }
             
-    public void recompute(Coordinates origin, Level level, int range) {
+    public void recompute(Coordinates origin, DungeonLevel level, int range) {
         if (debug) {
             level.setAllTilesVisible();
         }
@@ -25,7 +25,7 @@ public class FieldOfViewCalculator {
         }
     }
 
-    private void compute(int octant, Coordinates origin, int x, Slope top, Slope bottom, Level level, int range) {
+    private void compute(int octant, Coordinates origin, int x, Slope top, Slope bottom, DungeonLevel level, int range) {
         for (; x <= range; x++) {
             int topY;
             if (top.x() == 1) {
@@ -116,7 +116,7 @@ public class FieldOfViewCalculator {
         return (int)Math.sqrt(x * x + y * y);
     }
 
-    private static boolean blocksLight(int x, int y, int octant, Coordinates origin, Level level) {
+    private static boolean blocksLight(int x, int y, int octant, Coordinates origin, DungeonLevel level) {
         int nx = origin.col();
         int ny = origin.row();
 
@@ -161,7 +161,7 @@ public class FieldOfViewCalculator {
         return level.apply(ny, nx).opaque();
     }
 
-    private static void setVisible(int x, int y, int octant, Coordinates origin, Level level) {
+    private static void setVisible(int x, int y, int octant, Coordinates origin, DungeonLevel level) {
         int nx = origin.col();
         int ny = origin.row();
         switch(octant) {

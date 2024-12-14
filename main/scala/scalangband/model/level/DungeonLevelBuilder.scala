@@ -10,7 +10,7 @@ import scalangband.model.util.TileUtils.allCoordinatesFor
 
 import scala.util.Random
 
-class LevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
+class DungeonLevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
   def height: Int = tiles.length
   def width: Int = tiles(0).length
 
@@ -28,7 +28,7 @@ class LevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
     this(row, col).asInstanceOf[Floor].addItems(List(item))
   }
   
-  def build(random: Random, createTown: (Int, Array[Array[Tile]]) => Level): Level = {
+  def build(random: Random, createTown: (Int, Array[Array[Tile]]) => DungeonLevel): DungeonLevel = {
     enforceStairInvariants(random)
 
     createTown(depth, tiles)
@@ -76,13 +76,13 @@ class LevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
     if (depth == 0) 1 else random.nextInt(3) + 1
   }
 }
-object LevelBuilder {
+object DungeonLevelBuilder {
 
   /**
    * Creates a new builder of the given height and width. The builder starts out as a boundary of a [[PermanentWall]],
    * filled by [[RemovableWall]]s.
    */
-  def apply(height: Int, width: Int, depth: Int): LevelBuilder = {
+  def apply(height: Int, width: Int, depth: Int): DungeonLevelBuilder = {
     val tiles = Array.ofDim[Tile](height, width)
 
     for (row <- 0 until height) {
@@ -93,13 +93,13 @@ object LevelBuilder {
       }
     }
 
-    new LevelBuilder(tiles, depth)
+    new DungeonLevelBuilder(tiles, depth)
   }
 
   /**
    * Generates a level builder with a pleasing width : height ratio
    */
-  def randomSizedLevelBuilder(random: Random, depth: Int): LevelBuilder = {
+  def randomSizedLevelBuilder(random: Random, depth: Int): DungeonLevelBuilder = {
     val minWidth: Int = 80
     val maxWidth: Int = 120
     val increments = 4
@@ -108,6 +108,6 @@ object LevelBuilder {
     val width = minWidth + (increment * increments)
     val height = width / 2
 
-    LevelBuilder(50, 100, depth)
+    DungeonLevelBuilder(50, 100, depth)
   }
 }

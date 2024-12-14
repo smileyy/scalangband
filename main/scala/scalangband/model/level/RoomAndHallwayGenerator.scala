@@ -20,8 +20,8 @@ import scala.util.Random
 class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) extends LevelGenerator {
   private val totalWeights = weightedGenerators.map(_._2).sum
 
-  override def generateLevel(random: Random, depth: Int, bestiary: Bestiary): Level = {
-    val builder = LevelBuilder.randomSizedLevelBuilder(random, depth)
+  override def generateLevel(random: Random, depth: Int, bestiary: Bestiary): DungeonLevel = {
+    val builder = DungeonLevelBuilder.randomSizedLevelBuilder(random, depth)
 
     val firstRoom = generateRoom(random, depth, random.nextInt(4) + 2, random.nextInt(8) + 2)
     applyRoom(builder, firstRoom)
@@ -43,7 +43,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
       }
     }
 
-    builder.build(random, (depth, tiles) => new Level(depth, tiles))
+    builder.build(random, (depth, tiles) => new DungeonLevel(depth, tiles))
   }
 
   private def chooseDirectionAndStart(random: Random, room: Room): (Direction, Coordinates) = {
@@ -54,10 +54,10 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   }
 
   private def tryToCreateRoom(
-      random: Random,
-      builder: LevelBuilder,
-      start: Coordinates,
-      offsetDir: Direction
+                               random: Random,
+                               builder: DungeonLevelBuilder,
+                               start: Coordinates,
+                               offsetDir: Direction
   ): Option[Room] = {
     val (rowOffset, colOffset) = offsetDir match {
       // TODO: Explain why these numbers lead to decent, if short, hallways
@@ -70,11 +70,11 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     if (inLevelBound(room, builder) && doesNotOverwriteAnything(room, builder)) Some(room) else None
   }
 
-  private def inLevelBound(room: Room, builder: LevelBuilder): Boolean = {
+  private def inLevelBound(room: Room, builder: DungeonLevelBuilder): Boolean = {
     (room.top > 1) && (room.right < builder.width - 1) && (room.bottom < builder.height - 1) && (room.left > 1)
   }
 
-  private def doesNotOverwriteAnything(room: Room, builder: LevelBuilder): Boolean = {
+  private def doesNotOverwriteAnything(room: Room, builder: DungeonLevelBuilder): Boolean = {
     // TODO: A more Scala-idiomatic way of writing this without `return`?
     for (row <- room.top until room.bottom) {
       for (col <- room.left until room.right) {
@@ -87,7 +87,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     true
   }
 
-  private def applyRoom(builder: LevelBuilder, room: Room): Unit = {
+  private def applyRoom(builder: DungeonLevelBuilder, room: Room): Unit = {
     for (rowIdx <- 0 until room.height) {
       for (colIdx <- 0 until room.width) {
         builder.setTile(room.top + rowIdx, room.left + colIdx, room(rowIdx, colIdx))
@@ -96,11 +96,11 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   }
 
   private def attachRoom(
-      random: Random,
-      builder: LevelBuilder,
-      room: Room,
-      start: Coordinates,
-      startingDirection: Direction
+                          random: Random,
+                          builder: DungeonLevelBuilder,
+                          room: Room,
+                          start: Coordinates,
+                          startingDirection: Direction
   ): Unit = {
     startingDirection match {
       case Right => drawRight(random, builder, room, start)
@@ -108,7 +108,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     }
   }
 
-  private def drawRight(random: Random, builder: LevelBuilder, room: Room, start: Coordinates): Unit = {
+  private def drawRight(random: Random, builder: DungeonLevelBuilder, room: Room, start: Coordinates): Unit = {
     val end = room.getAttachmentPoint(random, Left)
     val dx = end.col - start.col
     val turnAt = start.col + (dx / 2)
@@ -132,7 +132,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
     builder.setTile(end, randomDoorTile(random))
   }
 
-  private def drawDown(random: Random, builder: LevelBuilder, room: Room, start: Coordinates): Unit = {
+  private def drawDown(random: Random, builder: DungeonLevelBuilder, room: Room, start: Coordinates): Unit = {
     val end = room.getAttachmentPoint(random, Up)
     val dy = end.row - start.row
     val turnAt = start.row + (dy / 2)
