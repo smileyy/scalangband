@@ -37,12 +37,14 @@ class Player(
   def level: Int = 1
   def stats: Stats = baseStats + (race.statBonus + cls.statBonus + equipment.statBonus)
 
+  def toHit: Int = cls.meleeSkill(level) + 3 * (equipment.toHit + stats.toHit)
+  def toDamage: Int = equipment.toDamage + stats.toDamage
+  
   def speed: Int = BaseEnergyUnit
 
   def lightRadius: Int = equipment.light.map(_.radius).getOrElse(0)
   def weapon: Weapon = equipment.weapon.getOrElse(Fists)
 
-  def toHit: Int = cls.meleeSkill(level)
   def savingThrow: Int = cls.savingThrow(level) + 3 * equipment.allEquipment.map(_.toHit).sum
   def armorClass: Int = equipment.allEquipment.map(_.baseArmorClass).sum
 
@@ -67,7 +69,7 @@ class Player(
       case 1  => handleMiss(monster)
       case 20 => handleHit(monster, callback)
       case _ =>
-        if (Random.nextInt(toHit) > monster.armorClass * 2 / 3) {
+        if (Random.nextInt(toHit) > monster.armorClass * 3 / 4) {
           handleHit(monster, callback)
         } else {
           handleMiss(monster)
@@ -78,7 +80,7 @@ class Player(
   private def handleHit(monster: Monster, callback: GameCallback): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
-    val damage = weapon.damage.roll()
+    val damage = Math.max(weapon.damage.roll() + toDamage, 0)
     monster.health = monster.health - damage
 
     results = MessageResult(s"You hit the ${monster.displayName}.") :: results

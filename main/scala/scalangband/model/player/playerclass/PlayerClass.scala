@@ -1,7 +1,7 @@
 package scalangband.model.player.playerclass
 
 import scalangband.data.item.weapon.Dagger
-import scalangband.model.player.{Equipment, Inventory, StatBonus, Stats}
+import scalangband.model.player.{Equipment, Inventory, StatBonuses, Stats}
 import scalangband.model.util.DiceRoll
 
 import scala.util.Random
@@ -10,7 +10,7 @@ trait PlayerClass {
   def name: String
 
   def startingStats: Stats
-  def statBonus: StatBonus
+  def statBonus: StatBonuses
   
   def hitdice: DiceRoll
   
