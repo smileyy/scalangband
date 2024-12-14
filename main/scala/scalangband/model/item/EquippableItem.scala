@@ -4,7 +4,7 @@ import scalangband.model.player.StatBonuses
 import scalangband.model.player.StatBonuses.NoBonus
 
 trait EquippableItem extends Item {
-  def baseArmorClass: Int = 0
+  def armorClass: Int = 0
   def toArmor: Int = 0
 
   def toHit: Int = 0
