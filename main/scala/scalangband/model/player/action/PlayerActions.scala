@@ -48,7 +48,7 @@ case class PlayerMovementAction(intendedDirection: Direction) extends PhysicalAc
         })
 
         if (floor.items.isEmpty) {} // it is possible that the floor only had money in it, and now it is all gone
-        else if (floor.items.size == 1) results = MessageResult("You see ${floor.items.head.displayName}.") :: results
+        else if (floor.items.size == 1) results = MessageResult(s"You see ${floor.items.head.displayName}.") :: results
         else results = MessageResult("You see a pile of items.") :: results
       case ot: OccupiableTile =>
         callback.movePlayerTo(targetCoordinates)

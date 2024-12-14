@@ -216,7 +216,7 @@ class MoneyField extends LabeledField {
   override def getValue(player: Player): String = player.money.toString
 }
 
-class StatField(statName: String, getStat: Stats => Stat) extends LabeledField {
+class StatField(statName: String, getStat: Stats => Stat[?]) extends LabeledField {
   override def label: String = s"$statName:"
   override def getValue(player: Player): String = getStat(player.stats).toString
 }
