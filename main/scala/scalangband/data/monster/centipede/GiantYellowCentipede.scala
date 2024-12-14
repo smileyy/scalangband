@@ -14,6 +14,7 @@ object GiantYellowCentipede extends MonsterFactory {
     health = DiceRoll("2d6"),
     armorClass = 14,
     actions = actions,
+    baseXp = 2,
     color = TextColors.Yellow
   )
 

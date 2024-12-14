@@ -14,6 +14,7 @@ object GreyMold extends MonsterFactory {
     health = DiceRoll("1d3"),
     armorClass = 1,
     actions = actions,
+    baseXp = 3,
     color = TextColors.MediumGrey
   )
 

@@ -16,6 +16,7 @@ object RandomlyMumblingTownsperson extends MonsterFactory {
     health = DiceRoll("1d4"),
     armorClass = 1,
     actions = actions,
+    baseXp = 0,
     inventory = Some(inventory),
     color = TextColors.White
   )
