@@ -24,8 +24,8 @@ class TextRenderer(font: Font) extends Renderer {
     if (tile.isVisible || tile.seen) {
       tile.representation match {
         case p: Player =>
-          println(p.health.percent)
-          val color = p.health.percent match
+          println(p.healthPercent)
+          val color = p.healthPercent match
             case x if x <= 25 => Red
             case x if x <= 50 => Orange
             case x if x <= 75 => Yellow
