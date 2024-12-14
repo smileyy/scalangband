@@ -13,8 +13,9 @@ object Crow extends MonsterFactory {
     depth = 2,
     health = DiceRoll("3d5"),
     armorClass = 14,
+    experience = 8,
+    sleepiness = 0,
     actions = actions,
-    baseXp = 8,
     color = TextColors.DarkGrey
   )
 

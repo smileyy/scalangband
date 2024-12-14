@@ -14,15 +14,19 @@ object MetallicRedCentipede extends MonsterFactory {
     depth = 3,
     health = DiceRoll("4d6+3"),
     armorClass = 10,
+    experience = 12,
+    sleepiness = 20,
     actions = actions,
     inventory = None,
-    baseXp = 12,
     color = TextColors.Red
   )
 
   private def actions = MonsterActions(
     adjacent = Seq(
-      Weighted(50, MeleeAttacksAction(Seq(CrawlAttack(DiceRoll("1d2")), StingAttack(DiceRoll("1d2"), element = Some(Fire))))),
+      Weighted(
+        50,
+        MeleeAttacksAction(Seq(CrawlAttack(DiceRoll("1d2")), StingAttack(DiceRoll("1d2"), element = Some(Fire))))
+      ),
       Weighted(50, RandomMovementAction)
     ),
     otherwise = Seq(Weighted(100, RandomMovementAction))

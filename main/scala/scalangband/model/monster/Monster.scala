@@ -14,11 +14,11 @@ import scala.collection.mutable.ListBuffer
 import scala.swing.Color
 import scala.util.Random
 
-class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, val inventory: mutable.ListBuffer[Item] = ListBuffer.empty) extends Creature(spec.name, coordinates, Monster.startingEnergy()) {
+class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, var awake: Boolean, val inventory: mutable.ListBuffer[Item] = ListBuffer.empty) extends Creature(spec.name, coordinates, Monster.startingEnergy()) {
   def archetype: MonsterArchetype = spec.archetype
   def level: Int = spec.depth
-  def experience: Int = spec.baseXp * level
-  
+  def experience: Int = spec.experience * level
+
   def speed: Int = spec.speed
   def armorClass: Int = spec.armorClass
 
@@ -47,7 +47,8 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
 }
 object Monster {
   def apply(spec: MonsterSpec, coordinates: Coordinates, random: Random): Monster = {
-    new Monster(spec, coordinates, spec.health.roll(), mutable.ListBuffer.from(spec.generateStartingInventory(random)))
+    val awake = random.nextInt(256) > spec.sleepiness
+    new Monster(spec, coordinates, spec.health.roll(), awake, mutable.ListBuffer.from(spec.generateStartingInventory(random)))
   }
 
   /**

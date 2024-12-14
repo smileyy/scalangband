@@ -74,7 +74,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
         case p: Player =>
           queue.push(p)
           results
-        case monster: Monster =>
+        case monster: Monster if monster.awake =>
           var monsterActionResults: List[ActionResult] = List.empty
 
           monsterActionResults = monster.beforeNextAction() ::: monsterActionResults
@@ -88,6 +88,11 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
           if (queue.peek.energy <= 0) startNextTurn()
 
           loopUntilPlayerIsAtHeadOfQueue(monsterActionResults ::: results)
+        case monster: Monster => 
+          monster.deductEnergy(monster.speed)
+          queue.insert(monster)
+          if (queue.peek.energy <= 0) startNextTurn()
+          loopUntilPlayerIsAtHeadOfQueue(results)
       }
     }
 

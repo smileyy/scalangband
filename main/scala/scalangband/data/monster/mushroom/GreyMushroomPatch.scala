@@ -14,8 +14,9 @@ object GreyMushroomPatch extends MonsterFactory {
     depth = 1,
     health = DiceRoll("1d3"),
     armorClass = 1,
+    experience = 1,
+    sleepiness = 0,
     actions = actions,
-    baseXp = 1,
     color = TextColors.MediumGrey
   )
 
