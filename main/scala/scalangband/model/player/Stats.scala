@@ -31,28 +31,28 @@ class Strength(var value: Int) extends Stat[Strength] {
   override def +(bonus: Int): Strength = if (value + bonus >= 40) Strength(40) else Strength(value + bonus)
 
   override def toHit: Int = value match {
-    case 3 => -3
-    case 4 => -2
-    case x if x <= 6 => -1
+    case 3            => -3
+    case 4            => -2
+    case x if x <= 6  => -1
     case x if x <= 17 => 0
     case x if x <= 24 => 1
-    case x if x < 38 => x - 23
-    case _ => 15
+    case x if x < 38  => x - 23
+    case _            => 15
   }
 
   override def toDamage: Int = value match {
-    case x if x <= 4 => -2
-    case x if x <= 6 => -1
+    case x if x <= 4  => -2
+    case x if x <= 6  => -1
     case x if x <= 15 => 0
-    case 16 => 1
+    case 16           => 1
     case x if x <= 19 => 2
     case x if x <= 24 => 3
-    case 25 => 4
+    case 25           => 4
     case x if x <= 27 => 5
-    case 28 => 6
+    case 28           => 6
     case x if x <= 38 => x - 22
-    case 39 => 18
-    case _ => 20
+    case 39           => 18
+    case _            => 20
   }
 }
 
@@ -66,25 +66,25 @@ class Wisdom(var value: Int) extends Stat[Wisdom] {
 
 class Dexterity(var value: Int) extends Stat[Dexterity] {
   override def toHit: Int = value match {
-    case 3 => -3
-    case x if x <= 5 => -2
-    case x if x <= 7 => -1
+    case 3            => -3
+    case x if x <= 5  => -2
+    case x if x <= 7  => -1
     case x if x <= 15 => 0
-    case 16 => 1
-    case 17 => 2
+    case 16           => 1
+    case 17           => 2
     case x if x <= 22 => 3
     case x if x <= 26 => 4
     case x if x <= 30 => x - 22
     case x if x <= 32 => 8
     case x if x <= 37 => x - 23
-    case _ => 15
+    case _            => 15
   }
 
   override def toArmor: Int = value match {
-    case 3 => -4
-    case 4 => -3
-    case 5 => -2
-    case 6 => -1
+    case 3            => -4
+    case 4            => -3
+    case 5            => -2
+    case 6            => -1
     case x if x <= 14 => 0
     case x if x <= 17 => 1
     case x if x <= 22 => 2
@@ -92,7 +92,7 @@ class Dexterity(var value: Int) extends Stat[Dexterity] {
     case x if x <= 30 => x - 22
     case x if x <= 32 => 9
     case x if x <= 37 => x - 23
-    case _ => 15
+    case _            => 15
   }
 
   override def +(bonus: Int): Dexterity = if (value + bonus >= 40) Dexterity(40) else Dexterity(value + bonus)
