@@ -5,6 +5,7 @@ class Stats(val str: Strength, val intg: Intelligence, val wis: Wisdom, val dex:
 
   def toHit: Int = allStats.map(_.toHit).sum
   def toDamage: Int = allStats.map(_.toDamage).sum
+  def toArmor: Int = allStats.map(_.toArmor).sum
 
   def +(b: StatBonuses): Stats = new Stats(str + b.str, intg + b.intg, wis + b.wis, dex + b.dex, con + b.con)
 }

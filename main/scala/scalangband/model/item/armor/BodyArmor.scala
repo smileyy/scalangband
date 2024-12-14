@@ -4,7 +4,7 @@ import scalangband.model.item.EquippableItem
 
 import scala.util.Random
 
-class BodyArmor(val name: String, override val baseArmorClass: Int, var armorToArmor: Int) extends Armor {
+class BodyArmor(val name: String, override val armorClass: Int, var armorToArmor: Int) extends Armor {
   override def toArmor: Int = armorToArmor
 }
 
