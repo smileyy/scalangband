@@ -48,8 +48,8 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
 
   private def chooseDirectionAndStart(random: Random, room: Room): (Direction, Coordinates) = {
     random.nextInt(2) match {
-      case 0 => (Right, room.getAttachmentPoint(random, Right))
-      case 1 => (Down, room.getAttachmentPoint(random, Down))
+      case 0 => (RightDirection, room.getAttachmentPoint(random, RightDirection))
+      case 1 => (DownDirection, room.getAttachmentPoint(random, DownDirection))
     }
   }
 
@@ -61,8 +61,8 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   ): Option[Room] = {
     val (rowOffset, colOffset) = offsetDir match {
       // TODO: Explain why these numbers lead to decent, if short, hallways
-      case Right => (-(random.nextInt(4) + 1), random.nextInt(8) + 4)
-      case Down  => (random.nextInt(8) + 4, -(random.nextInt(4) + 1))
+      case RightDirection => (-(random.nextInt(4) + 1), random.nextInt(8) + 4)
+      case DownDirection  => (random.nextInt(8) + 4, -(random.nextInt(4) + 1))
     }
 
     val room = generateRoom(random, builder.depth, start.row + rowOffset, start.col + colOffset)
@@ -103,13 +103,13 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
                           startingDirection: Direction
   ): Unit = {
     startingDirection match {
-      case Right => drawRight(random, builder, room, start)
-      case Down  => drawDown(random, builder, room, start)
+      case RightDirection => drawRight(random, builder, room, start)
+      case DownDirection  => drawDown(random, builder, room, start)
     }
   }
 
   private def drawRight(random: Random, builder: DungeonLevelBuilder, room: Room, start: Coordinates): Unit = {
-    val end = room.getAttachmentPoint(random, Left)
+    val end = room.getAttachmentPoint(random, LeftDirection)
     val dx = end.col - start.col
     val turnAt = start.col + (dx / 2)
 
@@ -133,7 +133,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   }
 
   private def drawDown(random: Random, builder: DungeonLevelBuilder, room: Room, start: Coordinates): Unit = {
-    val end = room.getAttachmentPoint(random, Up)
+    val end = room.getAttachmentPoint(random, UpDirection)
     val dy = end.row - start.row
     val turnAt = start.row + (dy / 2)
 

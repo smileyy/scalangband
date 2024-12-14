@@ -5,10 +5,6 @@ import scalangband.model.location.Direction
 import scalangband.model.tile.{BrokenDoor, ClosedDoor, OpenDoor}
 import scalangband.model.{Game, GameAccessor, GameCallback}
 
-object PendingDirectionCloseAction extends DirectionNeededAction {
-  override def withDirection(direction: Direction): PlayerAction = new CloseAction(direction)
-}
-
 class CloseAction(direction: Direction) extends PhysicalAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
 
