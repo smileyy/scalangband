@@ -88,7 +88,7 @@ class LevelField extends LabeledField {
 
 class XpField extends LabeledField {
   override def label: String = "EXP"
-  override def getValue(player: Player): String = player.experience.value.toString
+  override def getValue(player: Player): String = player.experience.current.toString
 }
 
 class MoneyField extends LabeledField {
@@ -108,5 +108,5 @@ class ArmorClassField extends LabeledField {
 
 class HealthField extends LabeledField {
   override def label: String = "HP"
-  override def getValue(player: Player): String = player.health.toString
+  override def getValue(player: Player): String = s"${player.health}/ ${player.maxHealth}"
 }

@@ -22,8 +22,9 @@ class Player(
     val race: Race,
     val cls: PlayerClass,
     var baseStats: Stats,
-    var health: Health,
+    var health: Int,
     var experience: Experience,
+    var levels: List[PlayerLevel],
     var money: Int,
     val inventory: Inventory,
     val equipment: Equipment,
@@ -35,8 +36,10 @@ class Player(
   val accessor: PlayerAccessor = new PlayerAccessor(this)
   val callback: PlayerCallback = new PlayerCallback(this)
 
-  def level: Int = 1
   def stats: Stats = baseStats + (race.statBonus + cls.statBonus + equipment.statBonus)
+  def level: Int = levels.size
+  def maxHealth: Int = levels.map(_.hitpoints).sum
+  def healthPercent: Int = (health * 100) / maxHealth
 
   def toHit: Int = cls.meleeSkill(level) + 3 * (equipment.toHit + stats.toHit)
   def toDamage: Int = equipment.toDamage + stats.toDamage
@@ -65,6 +68,24 @@ class Player(
     equipment.allEquipment.foreach(item => item.onNextTurn())
   }
 
+  private def addExperience(xp: Int): List[ActionResult] = {
+    experience = experience + xp / level
+    val newLevel = ExperienceTable.getLevel(race, experience.current)
+    if (newLevel > level) {
+      var results: List[ActionResult] = List.empty
+      (level + 1 to newLevel).foreach { i =>
+        val newLevelActual: PlayerLevel = PlayerLevel.next(race, cls)
+        levels = newLevelActual :: levels
+        results = MessageResult(s"Welcome to level $i") :: results
+      }
+
+      results
+    } else {
+      List.empty
+    }
+  }
+
+
   def attack(monster: Monster, callback: GameCallback): List[ActionResult] = {
     Random.nextInt(20) + 1 match {
       case 1  => handleMiss(monster)
@@ -89,9 +110,10 @@ class Player(
     Player.Logger.info(s"Player hit ${monster.displayName} for $damage damage")
     if (monster.health <= 0) {
       callback.killMonster(monster)
-      experience = experience + monster.experience / level
       Player.Logger.info(s"Player killed ${monster.displayName}")
       results = MessageResult(s"You have slain the ${monster.displayName}.") :: results
+
+      results = addExperience(monster.experience) ::: results
     }
 
     results
@@ -141,19 +163,22 @@ class Player(
 
   private def resists(element: Element): Boolean = false
 
-  def isDead: Boolean = health.current < 0
+  def isDead: Boolean = health < 0
 }
 object Player {
   private val Logger = LoggerFactory.getLogger(classOf[Player])
 
-  def apply(random: Random, name: String, race: Race, cls: PlayerClass): Player = {
+  def newPlayer(random: Random, name: String, race: Race, cls: PlayerClass): Player = {
+    val levelOne = PlayerLevel.first(race: Race, cls: PlayerClass)
+
     new Player(
       name = name,
       race = race,
       cls = cls,
       baseStats = cls.startingStats,
-      health = Health.fullHealth(race.hitdice.max + cls.hitdice.max),
+      health = levelOne.hitpoints,
       experience = Experience.None,
+      levels = List(levelOne),
       money = DiceRoll("1d50+100").roll(),
       inventory = cls.startingInventory(random),
       equipment = cls.startingEquipment(random),

@@ -10,4 +10,6 @@ object Human extends Race {
   override def statBonus: StatBonuses = NoBonus
 
   override def hitdice: DiceRoll = DiceRoll("1d9")
+
+  override def experienceFactor: Int = 100
 }
