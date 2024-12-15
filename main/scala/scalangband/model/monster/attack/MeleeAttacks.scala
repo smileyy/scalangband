@@ -43,3 +43,9 @@ class StingAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory:
     Some(s"The ${monster.displayName} stings you.")
   }
 }
+
+class TouchAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory: Option[EffectFactory] = None) extends BlowAttack(dmg, element, effectFactory) {
+  override def hitMessage(monster: Monster): Option[String] = {
+    Some(s"The ${monster.displayName} touches you.")
+  }
+}

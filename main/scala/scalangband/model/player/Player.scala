@@ -217,7 +217,7 @@ class Player(
   
   def fullHeal(): List[ActionResult] = {
     health = maxHealth
-    List(MessageResult("You feel *much* better"))
+    List(MessageResult("You feel *much* better."))
   }
 }
 object Player {
