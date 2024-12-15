@@ -11,22 +11,40 @@ class Equipment(
     var light: Option[LightSource] = None,
     var body: Option[BodyArmor] = None
 ) {
+  
+  def wield(w: Weapon): Option[Weapon] = {
+    val result = weapon
+    weapon = Some(w)
+    result
+  }
 
-  def unwieldWeapon(): Option[Item] = {
+  def unwieldWeapon(): Option[Weapon] = {
     weapon match {
       case Some(w) => weapon = None; Some(w)
       case None => None
     }
   }
   
-  def removeLight(): Option[Item] = {
+  def wield(l: LightSource): Option[LightSource] = {
+    val result = light
+    light = Some(l)
+    result
+  }
+  
+  def removeLight(): Option[LightSource] = {
     light match {
       case Some(l) => light = None; Some(l)
       case None => None
     }
   }
   
-  def removeBodyArmor(): Option[Item] = {
+  def wear(b: BodyArmor): Option[BodyArmor] = {
+    val result = body
+    body = Some(b)
+    result
+  }
+  
+  def removeBodyArmor(): Option[BodyArmor] = {
     body match {
       case Some(b) => body = None; Some(b)
       case None => None

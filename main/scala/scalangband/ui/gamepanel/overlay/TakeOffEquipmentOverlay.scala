@@ -14,7 +14,7 @@ import scala.swing.{Font, Graphics2D}
 class TakeOffEquipmentOverlay(game: Game) extends GamePanelOverlay {
   override def message: Option[String] = None
   override def keyHandler: KeyHandler = new TakeOffEquipmentKeyHandler(game, this)
-  override def paintable: Option[Paintable] = Some(new TakeOffEquipmentPane(game))
+  override def paintable: Option[OverlayPanel] = Some(new TakeOffEquipmentPane(game))
 }
 
 class TakeOffEquipmentKeyHandler(game: Game, overlay: TakeOffEquipmentOverlay) extends KeyHandler {
@@ -46,7 +46,7 @@ class TakeOffEquipmentKeyHandler(game: Game, overlay: TakeOffEquipmentOverlay) e
   }
 }
 
-class TakeOffEquipmentPane(game: Game) extends Paintable {
+class TakeOffEquipmentPane(game: Game) extends OverlayPanel {
   override def paint(g: Graphics2D, font: Font): Unit = {
     val fontMetrics = g.getFontMetrics(font)
     val lineHeight = fontMetrics.getHeight
@@ -64,10 +64,10 @@ class TakeOffEquipmentPane(game: Game) extends Paintable {
 
     var itemsDrawn = 0
 
-    def paintEquipmentLine(get: Equipment => Option[Item], choice: Char): Unit = {
+    def paintEquipmentLine(get: Equipment => Option[Item], option: Char): Unit = {
       get(equipment) match {
         case Some(item) =>
-          g.drawString(s"$choice) ${item.displayName}", startX, (itemsDrawn + 2) * lineHeight)
+          g.drawString(s"$option) ${item.displayName}", startX, (itemsDrawn + 2) * lineHeight)
           itemsDrawn = itemsDrawn + 1
         case None =>
       }

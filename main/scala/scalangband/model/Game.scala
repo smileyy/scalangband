@@ -159,7 +159,7 @@ class GameCallback(private val game: Game) {
     game.level(coordinates).asInstanceOf[OccupiableTile].clearOccupant()
   }
 
-  def dropItem(coordinates: Coordinates, item: Item): Unit = {
+  def addItemToTile(coordinates: Coordinates, item: Item): Unit = {
     game.level(coordinates) match {
       case floor: Floor => floor.addItem(item)
       // TODO #25: scatter the item nearby if it lands on a non-Floor tile
@@ -188,9 +188,9 @@ class GameCallback(private val game: Game) {
     game.level = newLevel
     player.resetEnergy()
   }
-  
-  def playerPickup(tile: Floor, item: Item): Unit = { 
-    game.player.inventory.addItem(item)
+
+  def playerPickup(tile: Floor, item: Item): ActionResult = {
     tile.removeItem(item)
+    player.pickUp(item)
   }
 }

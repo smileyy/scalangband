@@ -9,8 +9,8 @@ object PickUpItemAction extends FreeAction {
     accessor.playerTile match {
       case floor: Floor if floor.items.nonEmpty =>
         val item = floor.items.head
-        callback.playerPickup(floor, floor.items.head)
-        List(MessageResult(s"You pick up the ${item.displayName}."))
+        val result = callback.playerPickup(floor, floor.items.head)
+        List(result)
       case _ => List(MessageResult("There is nothing to pick up."))
     }
   }
