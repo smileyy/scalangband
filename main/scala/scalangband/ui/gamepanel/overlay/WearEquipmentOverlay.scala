@@ -14,7 +14,7 @@ import scala.swing.event.{Key, KeyPressed}
 class WearEquipmentOverlay(game: Game) extends GamePanelOverlay {
   override def message: Option[String] = None
   override def keyHandler: KeyHandler = new WearEquipmentKeyHandler(game, this)
-  override def paintable: Option[OverlayPanel] = Some(new WearEquipmentPane(game))
+  override def panel: Option[OverlayPanel] = Some(new WearEquipmentPane(game))
 }
 
 class WearEquipmentKeyHandler(game: Game, overlay: WearEquipmentOverlay) extends KeyHandler {
