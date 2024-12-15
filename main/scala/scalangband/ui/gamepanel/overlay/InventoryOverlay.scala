@@ -3,7 +3,7 @@ package scalangband.ui.gamepanel.overlay
 import scalangband.bridge.rendering.TextColors.*
 import scalangband.model.Game
 import scalangband.model.player.action.{DropInventoryItemAction, PlayerAction}
-import scalangband.ui.gamepanel.PlayerPane
+import scalangband.ui.gamepanel.{GamePanel, PlayerPane}
 import scalangband.ui.keys.KeyHandler
 
 import scala.swing.{Font, Graphics2D}
@@ -20,6 +20,7 @@ class InventoryKeyHandler(overlay: InventoryOverlay, factory: InventoryActionFac
   override def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay] = {
     event match {
       case KeyPressed(_, Key.Escape, _, _) => Left(None)
+      
       case KeyPressed(_, Key.A, _, _) => actionOrOverlay(game, 0)
       case KeyPressed(_, Key.B, _, _) => actionOrOverlay(game, 1)
       case KeyPressed(_, Key.C, _, _) => actionOrOverlay(game, 2)
@@ -40,6 +41,7 @@ class InventoryKeyHandler(overlay: InventoryOverlay, factory: InventoryActionFac
       case KeyPressed(_, Key.R, _, _) => actionOrOverlay(game, 17)
       case KeyPressed(_, Key.S, _, _) => actionOrOverlay(game, 18)
       case KeyPressed(_, Key.T, _, _) => actionOrOverlay(game, 19)
+      
       case _ => Right(overlay)
     }
   }
@@ -59,12 +61,12 @@ class InventoryPane(game: Game, prompt: String) extends Paintable {
 
     g.setColor(Black)
     val startX = (PlayerPane.WidthInChars + 1) * charWidth
-    g.fillRect(startX, 0, 1024 - startX, (itemsByCharacter.size + 1) * lineHeight)
+    g.fillRect(startX, 0, GamePanel.WidthInPixels - startX, (itemsByCharacter.size + 1) * lineHeight)
 
     g.setColor(White)
     g.drawString(prompt, 0, lineHeight)
     itemsByCharacter.foreach { (item, idx) =>
-      g.drawString(s"${(idx + 'a').toChar}) a ${item.name}", startX, (idx + 2) * lineHeight)
+      g.drawString(s"${(idx + 'a').toChar}) a ${item.displayName}", startX, (idx + 2) * lineHeight)
     }
   }
 }

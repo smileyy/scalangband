@@ -3,7 +3,7 @@ package scalangband.ui.keys
 import scalangband.model.Game
 import scalangband.model.location.*
 import scalangband.model.player.action.*
-import scalangband.ui.gamepanel.overlay.{CharacterOverlay, CloseOverlay, DropItemActionFactory, GamePanelOverlay, InventoryOverlay, OpenOverlay, ViewItemActionFactory}
+import scalangband.ui.gamepanel.overlay.*
 
 import scala.swing.event.{Key, KeyPressed}
 
@@ -37,6 +37,7 @@ object MainKeyHandler extends KeyHandler {
     case KeyPressed(_, Key.G, _, _) => Left(Some(PickUpItemAction))
     case KeyPressed(_, Key.I, _, _) => Right(new InventoryOverlay(game, ViewItemActionFactory, "Select Item:"))
     case KeyPressed(_, Key.O, _, _) => Right(OpenOverlay)
+    case KeyPressed(_, Key.T, _, _) => Right(new TakeOffEquipmentOverlay(game))
       
     case KeyPressed(_, _, _, _) => Left(None)
   }

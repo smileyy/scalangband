@@ -1,6 +1,6 @@
 package scalangband.model.player
 
-import scalangband.model.item.EquippableItem
+import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.item.armor.BodyArmor
 import scalangband.model.item.lightsource.LightSource
 import scalangband.model.item.weapon.Weapon
@@ -12,6 +12,27 @@ class Equipment(
     var body: Option[BodyArmor] = None
 ) {
 
+  def unwieldWeapon(): Option[Item] = {
+    weapon match {
+      case Some(w) => weapon = None; Some(w)
+      case None => None
+    }
+  }
+  
+  def removeLight(): Option[Item] = {
+    light match {
+      case Some(l) => light = None; Some(l)
+      case None => None
+    }
+  }
+  
+  def removeBodyArmor(): Option[Item] = {
+    body match {
+      case Some(b) => body = None; Some(b)
+      case None => None
+    }
+  }
+  
   def allEquipment: Seq[EquippableItem] = Seq(weapon, light, body).flatten
 
   def armorClass: Int = allEquipment.map(_.armorClass).sum
