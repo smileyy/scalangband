@@ -36,5 +36,6 @@ class CharacterPane(game: Game) extends Paintable {
 
     g.setFont(font)
     g.setColor(TextColors.White)
-    g.drawString(s"Name: ${game.player.name}", charWidth, lineHeight * 2)120
+    g.drawString(s"Name: ${game.player.name}", charWidth, lineHeight * 2)
+  }
 }

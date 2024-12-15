@@ -9,10 +9,9 @@ import scala.swing.event.{Key, KeyPressed}
 
 object MainKeyHandler extends KeyHandler {
   override def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay] = event match {
-//    case KeyPressed(_, Key.W, Key.Modifier.Control, _) =>
-//      game.enableDebug()
-//      callback.repaint()
-//      None
+    case KeyPressed(_, Key.W, Key.Modifier.Control, _) =>
+      game.enableDebug()
+      Left(None)
 
     case KeyPressed(_, Key.C, Key.Modifier.Shift, _) => Right(new CharacterOverlay(game))
       
