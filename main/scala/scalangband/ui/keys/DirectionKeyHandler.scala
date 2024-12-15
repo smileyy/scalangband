@@ -1,5 +1,6 @@
 package scalangband.ui.keys
 
+import scalangband.model.Game
 import scalangband.model.location.*
 import scalangband.model.player.action.{CloseAction, OpenAction, PlayerAction}
 import scalangband.ui.gamepanel.overlay.GamePanelOverlay
@@ -7,7 +8,7 @@ import scalangband.ui.gamepanel.overlay.GamePanelOverlay
 import scala.swing.event.{Key, KeyPressed}
 
 class DirectionKeyHandler(factory: DirectionActionFactory) extends KeyHandler {
-  override def handleKeyPressed(event: KeyPressed): Either[Option[PlayerAction], GamePanelOverlay] = {
+  override def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay] = {
     event match {
       case KeyPressed(_, Key.Key1, _, _) => Left(Some(factory(DownLeftDirection)))
       case KeyPressed(_, Key.Key2, _, _) => Left(Some(factory(DownDirection)))
