@@ -1,17 +1,17 @@
 package scalangband.model.player
 
 import org.slf4j.LoggerFactory
-import scalangband.model.element.Element
-import scalangband.model.Health
-import scalangband.model.player.race.Race
-import scalangband.model.player.playerclass.PlayerClass
-import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult}
+import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult, NoResult}
 import scalangband.data.item.weapon.Fists
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.effect.{Effect, EffectType}
+import scalangband.model.element.Element
+import scalangband.model.item.Item
 import scalangband.model.item.weapon.Weapon
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
+import scalangband.model.player.playerclass.PlayerClass
+import scalangband.model.player.race.Race
 import scalangband.model.util.DiceRoll
 import scalangband.model.{Creature, Game, GameCallback}
 
@@ -30,16 +30,18 @@ class Player(
     val equipment: Equipment,
     val effects: Effects,
     energy: Int,
-    coordinates: Coordinates
-) extends Creature(name, coordinates, energy) {
+    coords: Coordinates
+) extends Creature(name, coords, energy) {
 
   val accessor: PlayerAccessor = new PlayerAccessor(this)
   val callback: PlayerCallback = new PlayerCallback(this)
 
   def stats: Stats = baseStats + (race.statBonus + cls.statBonus + equipment.statBonus)
   def level: Int = levels.size
+
   def maxHealth: Int = levels.map(_.hitpoints).sum + (stats.toHp * level).toInt
   def healthPercent: Int = (health * 100) / maxHealth
+  def isDead: Boolean = health < 0
 
   def toHit: Int = cls.meleeSkill(level) + 3 * (equipment.toHit + stats.toHit)
   def toDamage: Int = equipment.toDamage + stats.toDamage
@@ -66,6 +68,15 @@ class Player(
   override def onNextTurn(): Unit = {
     regenerateEnergy()
     equipment.allEquipment.foreach(item => item.onNextTurn())
+  }
+
+  def dropItem(index: Int, callback: GameCallback): ActionResult = {
+    inventory.removeItem(index) match {
+      case Some(item) =>
+        callback.dropItem(coordinates, item)
+        MessageResult(s"You drop a ${item.displayName}.")
+      case None => NoResult
+    }
   }
 
   private def addExperience(xp: Int): List[ActionResult] = {
@@ -162,8 +173,6 @@ class Player(
   }
 
   private def resists(element: Element): Boolean = false
-
-  def isDead: Boolean = health < 0
 }
 object Player {
   private val Logger = LoggerFactory.getLogger(classOf[Player])
@@ -185,7 +194,7 @@ object Player {
       equipment = cls.startingEquipment(random),
       effects = Effects.none(),
       energy = Game.BaseEnergyUnit,
-      coordinates = Coordinates.Placeholder
+      coords = Coordinates.Placeholder
     )
   }
 }
@@ -205,6 +214,10 @@ class PlayerCallback(private val player: Player) {
   }
 
   def addMoney(amount: Int): Unit = player.money = player.money + amount
+
+  def dropItem(index: Int, callback: GameCallback): ActionResult = {
+    player.dropItem(index, callback)
+  }
 
   def logInventory(): Unit = PlayerCallback.Logger.info(s"Inventory: ${player.inventory}")
   def logEquipment(): Unit = PlayerCallback.Logger.info(s"Equipment: ${player.equipment}")

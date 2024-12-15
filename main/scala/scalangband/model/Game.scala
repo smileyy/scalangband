@@ -151,12 +151,20 @@ class GameCallback(private val game: Game) {
     
     tile match {
       case floor: Floor => floor.addItems(monster.inventory.toList)
-      // TODO #25: scatter the item nearby if it lands on the stairs
+      // TODO #25: scatter the item nearby if it lands on a non-Floor tile
       case _ => logger.info("Oops, an item disappeared into the aether")
     }
 
     game.queue.remove(monster)
     game.level(coordinates).asInstanceOf[OccupiableTile].clearOccupant()
+  }
+
+  def dropItem(coordinates: Coordinates, item: Item): Unit = {
+    game.level(coordinates) match {
+      case floor: Floor => floor.addItem(item)
+      // TODO #25: scatter the item nearby if it lands on a non-Floor tile
+      case _ => logger.info("Oops, an item disappeared into the aether")
+    }
   }
 
   def moveDownTo(newDepth: Int): Unit = {

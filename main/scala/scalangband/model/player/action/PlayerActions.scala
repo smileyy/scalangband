@@ -36,18 +36,6 @@ object GoUpStairsAction extends PhysicalAction {
   }
 }
 
-object PickUpItemAction extends PhysicalAction {
-  override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
-    accessor.playerTile match {
-      case floor: Floor if floor.items.nonEmpty =>
-        val item = floor.items.head
-        callback.playerPickup(floor, floor.items.head)
-        List(MessageResult(s"You pick up the ${item.displayName}."))
-      case _ => List(MessageResult("There is nothing to pick up."))
-    }
-  }
-}
-
 object ListInventoryAction extends InterfaceAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
     callback.player.logInventory()

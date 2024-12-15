@@ -20,18 +20,18 @@ class PlayerPane(game: Game, font: Font) {
     g.drawString(player.race.name, x, y + lineHeight * 2)
     g.drawString(player.cls.name, x, y + lineHeight * 3)
 
-    new LevelField().paint(player, g, font, 0, 4, PlayerPane.CharWidth)
-    new XpField().paint(player, g, font, 0, 5, PlayerPane.CharWidth)
-    new MoneyField().paint(player, g, font, 0, 6, PlayerPane.CharWidth)
+    new LevelField().paint(player, g, font, 0, 4, PlayerPane.WidthInChars)
+    new XpField().paint(player, g, font, 0, 5, PlayerPane.WidthInChars)
+    new MoneyField().paint(player, g, font, 0, 6, PlayerPane.WidthInChars)
 
-    new StatField("STR", stats => stats.str).paint(player, g, font, 0, 8, PlayerPane.CharWidth)
-    new StatField("INT", stats => stats.intg).paint(player, g, font, 0, 9, PlayerPane.CharWidth)
-    new StatField("WIS", stats => stats.wis).paint(player, g, font, 0, 10, PlayerPane.CharWidth)
-    new StatField("DEX", stats => stats.dex).paint(player, g, font, 0, 11, PlayerPane.CharWidth)
-    new StatField("CON", stats => stats.con).paint(player, g, font, 0, 12, PlayerPane.CharWidth)
+    new StatField("STR", stats => stats.str).paint(player, g, font, 0, 8, PlayerPane.WidthInChars)
+    new StatField("INT", stats => stats.intg).paint(player, g, font, 0, 9, PlayerPane.WidthInChars)
+    new StatField("WIS", stats => stats.wis).paint(player, g, font, 0, 10, PlayerPane.WidthInChars)
+    new StatField("DEX", stats => stats.dex).paint(player, g, font, 0, 11, PlayerPane.WidthInChars)
+    new StatField("CON", stats => stats.con).paint(player, g, font, 0, 12, PlayerPane.WidthInChars)
 
-    new ArmorClassField().paint(player, g, font, 0, 14, PlayerPane.CharWidth)
-    new HealthField().paint(player, g, font, 0, 15, PlayerPane.CharWidth)
+    new ArmorClassField().paint(player, g, font, 0, 14, PlayerPane.WidthInChars)
+    new HealthField().paint(player, g, font, 0, 15, PlayerPane.WidthInChars)
 
     g.setColor(White)
     g.drawString(levelDepthString, 0, lineHeight * 20)
@@ -49,16 +49,16 @@ class PlayerPane(game: Game, font: Font) {
   }
 
   private def playerNameString = {
-    if (player.name.length < PlayerPane.CharWidth) {
+    if (player.name.length < PlayerPane.WidthInChars) {
       player.name
     } else {
-      player.name.substring(0, PlayerPane.CharWidth - 1)
+      player.name.substring(0, PlayerPane.WidthInChars - 1)
     }
   }
 
 }
 object PlayerPane {
-  def CharWidth: Int = 12
+  def WidthInChars: Int = 12
 }
 
 trait LabeledField {
