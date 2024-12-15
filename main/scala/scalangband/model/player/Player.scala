@@ -79,6 +79,15 @@ class Player(
     }
   }
 
+  def takeOff(prefix: String, f: Equipment => Option[Item]): List[ActionResult] = {
+    f(equipment) match {
+      case Some(item) =>
+        inventory.addItem(item)
+        List(MessageResult(s"$prefix ${item.article}${item.displayName}."))
+      case None => List.empty
+    }
+  }
+
   private def addExperience(xp: Int): List[ActionResult] = {
     experience = experience + xp / level
     val newLevel = ExperienceTable.getLevel(race, experience.current)
@@ -218,6 +227,8 @@ class PlayerCallback(private val player: Player) {
   def dropItem(index: Int, callback: GameCallback): ActionResult = {
     player.dropItem(index, callback)
   }
+
+  def takeOff(prefix: String, f: Equipment => Option[Item]): List[ActionResult] = player.takeOff(prefix, f)
 
   def logInventory(): Unit = PlayerCallback.Logger.info(s"Inventory: ${player.inventory}")
   def logEquipment(): Unit = PlayerCallback.Logger.info(s"Equipment: ${player.equipment}")
