@@ -20,6 +20,7 @@ class EquipmentKeyHandler(overlay: GamePanelOverlay) extends KeyHandler {
   override def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay] = {
     event match {
       case KeyPressed(_, Key.Escape, _, _) => Left(None)
+      case KeyPressed(_, Key.Slash, _, _) => Right(InventoryListOverlay(game))
       case _ => Right(overlay)
     }
   }
