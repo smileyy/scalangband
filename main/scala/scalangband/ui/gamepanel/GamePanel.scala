@@ -34,12 +34,14 @@ class GamePanel(game: Game, renderer: Renderer, var maybeOverlay: Option[GamePan
       repaint()
     } else {
       messagePane.messages = List.empty
-      maybeOverlay.map(overlay => overlay.keyHandler).getOrElse(MainKeyHandler).handleKeyPressed(kp) match {
+      maybeOverlay.map(overlay => overlay.keyHandler).getOrElse(MainKeyHandler).handleKeyPressed(kp, game) match {
         case Left(None) =>
           maybeOverlay = None
+          repaint()
         case Left(Some(action)) =>
           maybeOverlay = None
           dispatchAction(action)
+          repaint()
         case Right(overlay) =>
           maybeOverlay = Some(overlay)
           overlay.message.foreach(message => messagePane.addMessage(message))
@@ -51,7 +53,6 @@ class GamePanel(game: Game, renderer: Renderer, var maybeOverlay: Option[GamePan
   private def dispatchAction(action: PlayerAction): Unit = {
     val results = game.takeTurn(action)
     results.foreach(result => applyResult(result))
-    repaint()
   }
 
   private def applyResult(result: ActionResult): Unit = result match {

@@ -3,16 +3,18 @@ package scalangband.ui.keys
 import scalangband.model.Game
 import scalangband.model.location.*
 import scalangband.model.player.action.*
-import scalangband.ui.gamepanel.overlay.{CloseOverlay, GamePanelOverlay, OpenOverlay}
+import scalangband.ui.gamepanel.overlay.{CharacterOverlay, CloseOverlay, GamePanelOverlay, OpenOverlay}
 
 import scala.swing.event.{Key, KeyPressed}
 
 object MainKeyHandler extends KeyHandler {
-  override def handleKeyPressed(event: KeyPressed): Either[Option[PlayerAction], GamePanelOverlay] = event match {
+  override def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay] = event match {
 //    case KeyPressed(_, Key.W, Key.Modifier.Control, _) =>
 //      game.enableDebug()
 //      callback.repaint()
 //      None
+
+    case KeyPressed(_, Key.C, Key.Modifier.Shift, _) => Right(new CharacterOverlay(game))
       
     case KeyPressed(_, Key.Key1, _, _) => Left(Some(PlayerMovementAction(DownLeftDirection)))
     case KeyPressed(_, Key.Key2, _, _) => Left(Some(PlayerMovementAction(DownDirection)))

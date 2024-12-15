@@ -11,7 +11,5 @@ trait GamePanelOverlay {
 }
 
 trait Paintable {
-  def x: Int
-  def y: Int
   def paint(g: Graphics2D, font: Font): Unit
 }

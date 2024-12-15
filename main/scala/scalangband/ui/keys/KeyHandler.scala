@@ -7,5 +7,5 @@ import scalangband.ui.gamepanel.overlay.GamePanelOverlay
 import scala.swing.event.KeyPressed
 
 trait KeyHandler {
-  def handleKeyPressed(event: KeyPressed): Either[Option[PlayerAction], GamePanelOverlay]
+  def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay]
 }
