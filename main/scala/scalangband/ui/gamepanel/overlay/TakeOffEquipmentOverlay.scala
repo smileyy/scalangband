@@ -25,11 +25,11 @@ class TakeOffEquipmentKeyHandler(game: Game, overlay: TakeOffEquipmentOverlay) e
       case KeyPressed(_, Key.Escape, _, _) => Left(None)
 
       case KeyPressed(_, Key.A, _, _) =>
-        equipmentActionOrOverlay(e => e.weapon, "You were wielding", e => e.unwieldWeapon(), overlay)
+        equipmentActionOrOverlay(e => e.weapon, e => e.unwieldWeapon(), overlay)
       case KeyPressed(_, Key.F, _, _) =>
-        equipmentActionOrOverlay(e => e.light, "You were holding", e => e.removeLight(), overlay)
+        equipmentActionOrOverlay(e => e.light, e => e.removeLight(), overlay)
       case KeyPressed(_, Key.G, _, _) =>
-        equipmentActionOrOverlay(e => e.body, "You were wearing", e => e.removeBodyArmor(), overlay)
+        equipmentActionOrOverlay(e => e.body, e => e.removeBodyArmor(), overlay)
 
       case _ => Right(overlay)
     }
@@ -37,11 +37,10 @@ class TakeOffEquipmentKeyHandler(game: Game, overlay: TakeOffEquipmentOverlay) e
 
   def equipmentActionOrOverlay(
       get: Equipment => Option[Item],
-      prefix: String,
       takeOff: Equipment => Option[Item],
       overlay: TakeOffEquipmentOverlay
   ): Either[Option[PlayerAction], GamePanelOverlay] = get(game.player.equipment) match {
-    case Some(item) => Left(Some(new TakeOffEquipmentAction(prefix, takeOff)))
+    case Some(item) => Left(Some(new TakeOffEquipmentAction(takeOff)))
     case None       => Right(overlay)
   }
 }

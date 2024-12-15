@@ -6,7 +6,7 @@ import scalangband.data.item.weapon.Fists
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.effect.{Effect, EffectType}
 import scalangband.model.element.Element
-import scalangband.model.item.armor.BodyArmor
+import scalangband.model.item.armor.{Armor, BodyArmor}
 import scalangband.model.item.lightsource.LightSource
 import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.item.weapon.Weapon
@@ -107,11 +107,15 @@ class Player(
     results
   }
 
-  def takeOff(prefix: String, f: Equipment => Option[Item]): List[ActionResult] = {
+  def takeOff(f: Equipment => Option[Item]): List[ActionResult] = {
     f(equipment) match {
       case Some(item) =>
         inventory.addItem(item)
-        List(MessageResult(s"$prefix ${item.article}${item.displayName}."))
+        item match {
+          case w: Weapon => List(MessageResult(s"You were wielding ${item.article}${item.displayName}."))
+          case l: LightSource => List(MessageResult(s"You were holding ${item.article}${item.displayName}."))
+          case a: Armor => List(MessageResult(s"You were wearing ${item.article}${item.displayName}."))
+        }
       case None => List.empty
     }
   }
@@ -261,7 +265,7 @@ class PlayerCallback(private val player: Player) {
   def dropItem(item: Item, callback: GameCallback): ActionResult = player.drop(item, callback)
 
   def wear(item: EquippableItem): List[ActionResult] = player.equip(item)
-  def takeOff(prefix: String, f: Equipment => Option[Item]): List[ActionResult] = player.takeOff(prefix, f)
+  def takeOff(f: Equipment => Option[Item]): List[ActionResult] = player.takeOff(f)
 
   def fullHeal(): List[ActionResult] = player.fullHeal()
   

@@ -5,8 +5,8 @@ import scalangband.model.item.Item
 import scalangband.model.player.Equipment
 import scalangband.model.{GameAccessor, GameCallback}
 
-class TakeOffEquipmentAction(prefix: String, f: Equipment => Option[Item]) extends PhysicalAction {
+class TakeOffEquipmentAction(f: Equipment => Option[Item]) extends PhysicalAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
-    callback.player.takeOff(prefix, f)
+    callback.player.takeOff(f)
   }
 }
