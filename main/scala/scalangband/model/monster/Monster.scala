@@ -49,7 +49,7 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
 }
 object Monster {
   def apply(spec: MonsterSpec, coordinates: Coordinates, random: Random): Monster = {
-    val awake = random.nextInt(256) < spec.sleepiness
+    val awake = random.nextInt(256) > spec.sleepiness
     val inventory = mutable.ListBuffer.from(spec.generateStartingInventory(random))
     new Monster(spec, coordinates, spec.health.roll(), awake, inventory)
   }
