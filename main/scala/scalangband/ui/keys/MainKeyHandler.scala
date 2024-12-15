@@ -34,10 +34,10 @@ object MainKeyHandler extends KeyHandler {
     case KeyPressed(_, Key.Comma, Key.Modifier.Shift, _) => Left(Some(GoUpStairsAction))
 
     case KeyPressed(_, Key.C, _, _) => Right(CloseOverlay)
-    case KeyPressed(_, Key.D, _, _) => Right(new InventoryOverlay(game, DropItemActionFactory, "Drop which item?"))
+    case KeyPressed(_, Key.D, _, _) => Right(DropItemInventoryOverlay(game))
     case KeyPressed(_, Key.E, _, _) => Right(new EquipmentOverlay(game))
     case KeyPressed(_, Key.G, _, _) => Left(Some(PickUpItemAction))
-    case KeyPressed(_, Key.I, _, _) => Right(new InventoryOverlay(game, ViewItemActionFactory, "Select Item:"))
+    case KeyPressed(_, Key.I, _, _) => Right(InventoryListOverlay(game))
     case KeyPressed(_, Key.O, _, _) => Right(OpenOverlay)
     case KeyPressed(_, Key.T, _, _) => Right(new TakeOffEquipmentOverlay(game))
     case KeyPressed(_, Key.W, _, _) => Right(new WearEquipmentOverlay(game))

@@ -17,10 +17,24 @@ class InventoryOverlay(game: Game, factory: InventoryActionFactory, prompt: Stri
   override def panel: Option[OverlayPanel] = Some(new InventoryPane(game, prompt))
 }
 
+object InventoryListOverlay {
+  def apply(game: Game): InventoryOverlay = {
+    new InventoryOverlay(game, ViewItemActionFactory, "Select Item: ")
+  }
+}
+
+object DropItemInventoryOverlay {
+  def apply(game: Game): InventoryOverlay = {
+    new InventoryOverlay(game, DropItemActionFactory, "Drop which item?")
+  }
+}
+
 class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, overlay: InventoryOverlay) extends KeyHandler {
   override def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay] = {
     event match {
       case KeyPressed(_, Key.Escape, _, _) => Left(None)
+
+      case KeyPressed(_, Key.Slash, _, _) => Right(new EquipmentOverlay(game))
       
       case KeyPressed(_, Key.A, _, _) => actionOrOverlay(game, 0)
       case KeyPressed(_, Key.B, _, _) => actionOrOverlay(game, 1)
