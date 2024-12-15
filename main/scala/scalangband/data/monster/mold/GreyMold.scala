@@ -1,7 +1,7 @@
 package scalangband.data.monster.mold
 
 import scalangband.bridge.rendering.TextColors
-import scalangband.model.monster.action.{MonsterActions, MeleeAttacksAction, MonsterAction, MonsterPassAction}
+import scalangband.model.monster.action.{MeleeAttacksAction, MonsterAction, MonsterActions, MonsterPassAction}
 import scalangband.model.monster.attack.SporeAttack
 import scalangband.model.monster.{Mold, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}

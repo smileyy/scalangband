@@ -2,8 +2,8 @@ package scalangband.model.monster
 
 import scalangband.model.Creature
 import scalangband.model.item.Item
-import scalangband.model.monster.action.{MonsterAction, MonsterActions}
-import scalangband.model.util.{DiceRoll, Weighted}
+import scalangband.model.monster.action.MonsterActions
+import scalangband.model.util.DiceRoll
 
 import scala.swing.Color
 import scala.util.Random

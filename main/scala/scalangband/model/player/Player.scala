@@ -1,15 +1,15 @@
 package scalangband.model.player
 
 import org.slf4j.LoggerFactory
-import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult, NoResult}
+import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult}
 import scalangband.data.item.weapon.Fists
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.effect.{Effect, EffectType}
 import scalangband.model.element.Element
 import scalangband.model.item.armor.{Armor, BodyArmor}
 import scalangband.model.item.lightsource.LightSource
-import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.item.weapon.Weapon
+import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
 import scalangband.model.player.playerclass.PlayerClass

@@ -8,7 +8,7 @@ import scalangband.model.effect.Effect
 import scalangband.model.location.Coordinates
 import scalangband.model.player.playerclass.{PlayerClass, Warrior}
 import scalangband.model.player.race.{Human, Race}
-import scalangband.model.player.{Effects, Equipment, Inventory, Player, Skills}
+import scalangband.model.player.*
 import scalangband.model.settings.Settings
 import scalangband.ui.NewGameWindow.Logger
 
