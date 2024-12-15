@@ -24,7 +24,7 @@ object RandomlyMumblingTownsperson extends MonsterFactory {
     experience = 0,
     sleepiness = 0,
     actions = actions,
-    inventory = Some(inventory),
+    inventory = inventory,
     color = TextColors.White
   )
 
@@ -41,11 +41,8 @@ object RandomlyMumblingTownsperson extends MonsterFactory {
     )
   )
 
-  def inventory: MonsterInventoryGenerator =
-    new MonsterInventoryGenerator(1, 2, generators)
-
-  def generators: Seq[Weighted[ItemGenerator]] = Seq(
-    Weighted(1, GarbageGenerator),
-    Weighted(1, MoneyGenerator)
+  def inventory: Seq[MonsterInventoryGenerator] = Seq(
+    new MonsterInventoryGenerator(100, Seq(Weighted(1, GarbageGenerator))),
+    new MonsterInventoryGenerator(100, Seq(Weighted(1, MoneyGenerator))),
   )
 }

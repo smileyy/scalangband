@@ -21,7 +21,7 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
 
   def speed: Int = spec.speed
   def armorClass: Int = spec.armorClass
-  
+
   def alive: Boolean = spec.alive
 
   def addItem(item: Item): Unit = {
@@ -32,25 +32,26 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
    * Anything that happens before a monster's next action.
    */
   def beforeNextAction(): List[ActionResult] = List.empty
-  
+
   override def onNextTurn(): Unit = {
     regenerateEnergy()
   }
 
   def getAction(game: GameAccessor): MonsterAction = spec.actions.select(this, game)
-  
+
   def color: Color = spec.color
 
   def displayName: String = name.toLowerCase
-  
+
   override def toString: String = {
     s"$name($health, ${inventory.mkString("[", ",", "]")})"
   }
 }
 object Monster {
   def apply(spec: MonsterSpec, coordinates: Coordinates, random: Random): Monster = {
-    val awake = random.nextInt(256) > spec.sleepiness
-    new Monster(spec, coordinates, spec.health.roll(), awake, mutable.ListBuffer.from(spec.generateStartingInventory(random)))
+    val awake = random.nextInt(256) < spec.sleepiness
+    val inventory = mutable.ListBuffer.from(spec.generateStartingInventory(random))
+    new Monster(spec, coordinates, spec.health.roll(), awake, inventory)
   }
 
   /**

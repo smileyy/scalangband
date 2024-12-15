@@ -22,11 +22,11 @@ class MonsterSpec(
     val sleepiness: Int,
     val alive: Boolean = true,
     val actions: MonsterActions,
-    val inventory: Option[MonsterInventoryGenerator] = None,
+    val inventory: Seq[MonsterInventoryGenerator] = Seq.empty,
     val color: Color
 ) {
-  def generateStartingInventory(random: Random): Seq[Item] = inventory match {
-    case Some(generator) => generator.generate(random, depth)
-    case None            => Seq.empty
+  def generateStartingInventory(random: Random): Seq[Item] = {
+    inventory.flatMap(generator => generator.generate(random, depth))
   }
+  
 }
