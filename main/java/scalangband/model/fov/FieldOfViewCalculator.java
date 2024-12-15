@@ -7,15 +7,8 @@ import scalangband.model.location.Coordinates;
  * Translated from http://www.adammil.net/blog/v125_roguelike_vision_algorithms.html
  */
 public class FieldOfViewCalculator {
-
-    private boolean debug = false;
-    
-    public void enableDebugging() {
-        this.debug = true;
-    }
-            
     public void recompute(Coordinates origin, DungeonLevel level, int range) {
-        if (debug) {
+        if (level.debug()) {
             level.setAllTilesVisible();
         }
         

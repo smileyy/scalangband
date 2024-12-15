@@ -210,6 +210,11 @@ class Player(
   }
 
   private def resists(element: Element): Boolean = false
+  
+  def fullHeal(): List[ActionResult] = {
+    health = maxHealth
+    List(MessageResult("You feel *much* better"))
+  }
 }
 object Player {
   private val Logger = LoggerFactory.getLogger(classOf[Player])
@@ -258,6 +263,8 @@ class PlayerCallback(private val player: Player) {
   def wear(item: EquippableItem): List[ActionResult] = player.equip(item)
   def takeOff(prefix: String, f: Equipment => Option[Item]): List[ActionResult] = player.takeOff(prefix, f)
 
+  def fullHeal(): List[ActionResult] = player.fullHeal()
+  
   def logEquipment(): Unit = PlayerCallback.Logger.info(s"Equipment: ${player.equipment}")
 }
 object PlayerCallback {

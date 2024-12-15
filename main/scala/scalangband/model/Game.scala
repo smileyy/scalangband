@@ -18,10 +18,8 @@ import scalangband.model.util.TileUtils.allCoordinatesFor
 import scala.annotation.tailrec
 import scala.util.Random
 
-class Game(seed: Long, val random: Random, val settings: Settings, val player: Player, val town: DungeonLevel, var level: DungeonLevel, var turn: Int) {
-  private val logger = LoggerFactory.getLogger(this.getClass)
-
-  private val fov = new FieldOfViewCalculator()
+class Game(seed: Long, val random: Random, val settings: Settings, val player: Player, val town: DungeonLevel, var level: DungeonLevel, var turn: Int, var debug: Boolean = false) {
+  val fov = new FieldOfViewCalculator()
   fov.recompute(player.coordinates, town, player.lightRadius)
 
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
@@ -38,7 +36,6 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     results = results ::: player.beforeNextAction()
     if (player.isDead) {
       // if they died from, e.g., poison or bleeding, we can exit early
-      results
     } else {
       results = playerAction.apply(accessor, callback) ::: results
 
@@ -107,12 +104,26 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     queue = SchedulerQueue(level.creatures)
   }
 
+  //
+  // Debugging
+  //
+  
   def enableDebug(): Unit = {
-    fov.enableDebugging()
-    fov.recompute(player.coordinates, level, 0) // range value doesn't matter
+    debug = true
+  }
+
+  def disableDebug(): Unit = {
+    debug = false
+  }
+  
+  def debugLevel(): Unit = {
+    level.debug = true
+    fov.recompute(player.coordinates, level, player.lightRadius)
   }
 }
 object Game {
+  private val Logger = LoggerFactory.getLogger(classOf[Game])
+  
   val BaseEnergyUnit: Int = 20
   val MaxDungeonDepth: Int = 100
 
@@ -192,5 +203,13 @@ class GameCallback(private val game: Game) {
   def playerPickup(tile: Floor, item: Item): ActionResult = {
     tile.removeItem(item)
     player.pickUp(item)
+  }
+  
+  def enableDebug(): Unit = {
+    game.enableDebug()
+  }
+  
+  def debugLevel(): Unit = {
+    game.debugLevel()
   }
 }

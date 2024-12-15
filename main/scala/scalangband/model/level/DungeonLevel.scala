@@ -10,6 +10,8 @@ import scalangband.model.tile.{OccupiableTile, Tile}
 import scalangband.model.util.CenteredRange
 
 class DungeonLevel(val depth: Int, val tiles: Array[Array[Tile]]) {
+  var debug = false
+  
   def height: Int = tiles.length
   def width: Int = tiles(0).length
 
