@@ -61,12 +61,15 @@ class TextRenderer(font: Font) extends Renderer {
   
   def renderMonster(monster: Monster, font: Font): TextTile = monster.archetype match {
     case Ant => TextTile('a', font, monster.color)
+    case Bat => TextTile('b', font, monster.color)
     case Bird => TextTile('B', font, monster.color)
     case Centipede => TextTile('c', font, monster.color)
     case IckyThing => TextTile('i', font, monster.color)
     case Mold => TextTile('m', font, monster.color)
     case Mushroom => TextTile(',', font, monster.color)
     case Person => TextTile('p', font, monster.color)
+    case Reptile => TextTile('R', font, monster.color)
+    case Snake => TextTile('S', font, monster.color)
   }
 } 
 object TextRenderer {

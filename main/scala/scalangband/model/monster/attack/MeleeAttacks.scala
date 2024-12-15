@@ -28,6 +28,14 @@ class CrawlAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory:
   }
 }
 
+class CrushAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory: Option[EffectFactory] = None)
+  extends BlowAttack(dmg, element, effectFactory) {
+
+  override def hitMessage(monster: Monster): Option[String] = {
+    Some(s"The ${monster.displayName} crushes you.")
+  }
+}
+
 class SporeAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory: Option[EffectFactory] = None)
   extends BlowAttack(dmg, element, effectFactory) {
 
