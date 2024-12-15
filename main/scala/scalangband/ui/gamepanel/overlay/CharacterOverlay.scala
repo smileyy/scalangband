@@ -5,8 +5,8 @@ import scalangband.model.Game
 import scalangband.model.player.action.PlayerAction
 import scalangband.ui.keys.KeyHandler
 
-import scala.swing.{Font, Graphics2D}
 import scala.swing.event.{Key, KeyPressed}
+import scala.swing.{Font, Graphics2D}
 
 class CharacterOverlay(game: Game) extends GamePanelOverlay {
   override def message: Option[String] = None

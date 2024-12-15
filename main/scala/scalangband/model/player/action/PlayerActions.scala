@@ -1,11 +1,11 @@
 package scalangband.model.player.action
 
 import org.slf4j.LoggerFactory
-import scalangband.model.player.action.PlayerMovementAction.Logger
 import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.model.effect.Confusion
 import scalangband.model.location.Direction
 import scalangband.model.monster.Monster
+import scalangband.model.player.action.PlayerMovementAction.Logger
 import scalangband.model.tile.*
 import scalangband.model.{GameAccessor, GameCallback}
 

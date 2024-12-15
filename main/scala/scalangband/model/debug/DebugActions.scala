@@ -1,8 +1,8 @@
 package scalangband.model.debug
 
 import scalangband.bridge.actionresult.{ActionResult, MessageResult}
-import scalangband.model.{GameAccessor, GameCallback}
 import scalangband.model.player.action.FreeAction
+import scalangband.model.{GameAccessor, GameCallback}
 
 object EnableDebugAction extends FreeAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {

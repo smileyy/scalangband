@@ -8,8 +8,8 @@ import scalangband.model.player.action.{PlayerAction, WearEquipmentAction}
 import scalangband.ui.gamepanel.{GamePanel, PlayerPane}
 import scalangband.ui.keys.KeyHandler
 
-import scala.swing.{Font, Graphics2D}
 import scala.swing.event.{Key, KeyPressed}
+import scala.swing.{Font, Graphics2D}
 
 class WearEquipmentOverlay(game: Game) extends GamePanelOverlay {
   override def message: Option[String] = None

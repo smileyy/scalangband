@@ -2,12 +2,10 @@ package scalangband.model.monster
 
 import scalangband.bridge.actionresult.ActionResult
 import scalangband.model.Creature.NormalSpeed
-import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.item.Item
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.action.MonsterAction
-import scalangband.model.util.Weighted
-import scalangband.model.{Creature, Game, GameAccessor}
+import scalangband.model.{Creature, GameAccessor}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer

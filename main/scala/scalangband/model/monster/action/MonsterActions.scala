@@ -1,7 +1,7 @@
 package scalangband.model.monster.action
 
 import org.slf4j.{Logger, LoggerFactory}
-import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult, NoResult}
+import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.model.location.*
 import scalangband.model.location.Direction.allDirections
 import scalangband.model.monster.Monster

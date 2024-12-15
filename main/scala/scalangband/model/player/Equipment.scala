@@ -1,9 +1,9 @@
 package scalangband.model.player
 
-import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.item.armor.BodyArmor
 import scalangband.model.item.lightsource.LightSource
 import scalangband.model.item.weapon.Weapon
+import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.player.StatBonuses.NoBonus
 
 class Equipment(

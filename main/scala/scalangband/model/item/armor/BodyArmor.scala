@@ -1,7 +1,5 @@
 package scalangband.model.item.armor
 
-import scalangband.model.item.EquippableItem
-
 import scala.util.Random
 
 class BodyArmor(val name: String, override val armorClass: Int, var armorToArmor: Int) extends Armor {
@@ -17,4 +15,3 @@ trait BodyArmorFactory {
   def baseArmorClass: Int
   def toArmor: Int = 0
 }
-

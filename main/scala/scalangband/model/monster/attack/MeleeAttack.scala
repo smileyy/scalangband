@@ -3,9 +3,9 @@ package scalangband.model.monster.attack
 import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.model.effect.{Effect, EffectFactory}
 import scalangband.model.element.Element
-import scalangband.model.{GameAccessor, GameCallback}
 import scalangband.model.monster.Monster
 import scalangband.model.util.DiceRoll
+import scalangband.model.{GameAccessor, GameCallback}
 
 import scala.util.Random
 

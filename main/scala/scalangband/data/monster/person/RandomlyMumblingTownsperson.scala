@@ -4,13 +4,7 @@ import scalangband.bridge.rendering.TextColors
 import scalangband.data.item.garbage.GarbageGenerator
 import scalangband.data.item.money.MoneyGenerator
 import scalangband.model.item.ItemGenerator
-import scalangband.model.monster.action.{
-  MonsterAction,
-  MonsterActions,
-  MonsterPassAction,
-  RandomMovementAction,
-  SpeakAction
-}
+import scalangband.model.monster.action.{MonsterActions, MonsterPassAction, RandomMovementAction, SpeakAction}
 import scalangband.model.monster.{MonsterFactory, MonsterInventoryGenerator, MonsterSpec, Person}
 import scalangband.model.util.{DiceRoll, Weighted}
 

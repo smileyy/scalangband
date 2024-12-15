@@ -1,12 +1,12 @@
 package scalangband.ui.render.text
 
+import scalangband.bridge.rendering.TextColors.*
+import scalangband.data.item.garbage.PotteryShard
+import scalangband.data.item.money.CopperCoins
 import scalangband.model.level.DungeonLevel
 import scalangband.model.monster.*
 import scalangband.model.player.Player
 import scalangband.model.tile.*
-import scalangband.bridge.rendering.TextColors.*
-import scalangband.data.item.garbage.PotteryShard
-import scalangband.data.item.money.CopperCoins
 import scalangband.ui.render.{RenderableTile, Renderer}
 
 import scala.swing.Font
