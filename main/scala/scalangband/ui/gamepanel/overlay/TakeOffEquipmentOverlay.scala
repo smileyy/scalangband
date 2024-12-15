@@ -14,7 +14,7 @@ import scala.swing.{Font, Graphics2D}
 class TakeOffEquipmentOverlay(game: Game) extends GamePanelOverlay {
   override def message: Option[String] = None
   override def keyHandler: KeyHandler = new TakeOffEquipmentKeyHandler(game, this)
-  override def paintable: Option[OverlayPanel] = Some(new TakeOffEquipmentPane(game))
+  override def panel: Option[OverlayPanel] = Some(new TakeOffEquipmentPane(game))
 }
 
 class TakeOffEquipmentKeyHandler(game: Game, overlay: TakeOffEquipmentOverlay) extends KeyHandler {

@@ -10,7 +10,7 @@ import scala.swing.event.{Key, KeyPressed}
 object WizardOverlay extends GamePanelOverlay {
   override def message: Option[String] = Some("Debug Command: ")
   override def keyHandler: KeyHandler = WizardKeyHandler
-  override def paintable: Option[OverlayPanel] = None
+  override def panel: Option[OverlayPanel] = None
 }
 
 object WizardKeyHandler extends KeyHandler {

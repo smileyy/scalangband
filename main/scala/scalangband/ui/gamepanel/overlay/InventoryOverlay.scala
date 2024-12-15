@@ -14,7 +14,7 @@ class InventoryOverlay(game: Game, factory: InventoryActionFactory, prompt: Stri
   override def message: Option[String] = None
   override def keyHandler: KeyHandler = new InventoryKeyHandler(game, factory, this)
 
-  override def paintable: Option[OverlayPanel] = Some(new InventoryPane(game, prompt))
+  override def panel: Option[OverlayPanel] = Some(new InventoryPane(game, prompt))
 }
 
 class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, overlay: InventoryOverlay) extends KeyHandler {

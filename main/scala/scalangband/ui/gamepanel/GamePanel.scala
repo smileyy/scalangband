@@ -72,7 +72,7 @@ class GamePanel(game: Game, renderer: Renderer, var maybeOverlay: Option[GamePan
 
     maybeOverlay match {
       case Some(overlay) =>
-        overlay.paintable.foreach(p => p.paint(g, font))
+        overlay.panel.foreach(p => p.paint(g, font))
       case None =>
     }
   }
