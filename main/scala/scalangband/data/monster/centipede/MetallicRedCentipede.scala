@@ -17,7 +17,6 @@ object MetallicRedCentipede extends MonsterFactory {
     experience = 12,
     sleepiness = 20,
     actions = actions,
-    inventory = None,
     color = TextColors.Red
   )
 
