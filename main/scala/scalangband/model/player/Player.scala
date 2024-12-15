@@ -6,7 +6,9 @@ import scalangband.data.item.weapon.Fists
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.effect.{Effect, EffectType}
 import scalangband.model.element.Element
-import scalangband.model.item.Item
+import scalangband.model.item.armor.BodyArmor
+import scalangband.model.item.lightsource.LightSource
+import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.item.weapon.Weapon
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Monster
@@ -69,14 +71,40 @@ class Player(
     regenerateEnergy()
     equipment.allEquipment.foreach(item => item.onNextTurn())
   }
+  
+  def pickUp(item: Item): ActionResult = {
+    inventory.addItem(item)
+    MessageResult(s"You pick up the ${item.displayName}.")
+  }
 
-  def dropItem(index: Int, callback: GameCallback): ActionResult = {
-    inventory.removeItem(index) match {
-      case Some(item) =>
-        callback.dropItem(coordinates, item)
-        MessageResult(s"You drop a ${item.displayName}.")
-      case None => NoResult
+  def drop(item: Item, callback: GameCallback): ActionResult = {
+    inventory.removeItem(item) 
+    callback.addItemToTile(coordinates, item)
+    MessageResult(s"You drop ${item.article}${item.displayName}.")
+  }
+  
+  def equip(item: EquippableItem): List[ActionResult] = {
+    var results: List[ActionResult] = List.empty
+
+    inventory.removeItem(item)
+
+    def equip(equip: Equipment => Option[EquippableItem], are: String, were: String): Unit = {
+      results = MessageResult(s"$are ${item.article}${item.displayName}") :: results
+      equip(equipment) match {
+        case Some(item) =>
+          inventory.addItem(item)
+          results = MessageResult(s"$were ${item.article}${item.displayName}") :: results
+        case None => 
+      }
     }
+    
+    item match {
+      case w: Weapon => equip(e => e.wield(w), "You are wielding", "You were wielding")
+      case l: LightSource => equip(e => e.wield(l), "Your light source is", "You were holding")
+      case b: BodyArmor => equip(e => e.wear(b), "You are wearing", "You were wearing")
+    }
+
+    results
   }
 
   def takeOff(prefix: String, f: Equipment => Option[Item]): List[ActionResult] = {
@@ -224,13 +252,12 @@ class PlayerCallback(private val player: Player) {
 
   def addMoney(amount: Int): Unit = player.money = player.money + amount
 
-  def dropItem(index: Int, callback: GameCallback): ActionResult = {
-    player.dropItem(index, callback)
-  }
+  def pickUp(item: Item): ActionResult = player.pickUp(item)
+  def dropItem(item: Item, callback: GameCallback): ActionResult = player.drop(item, callback)
 
+  def wear(item: EquippableItem): List[ActionResult] = player.equip(item)
   def takeOff(prefix: String, f: Equipment => Option[Item]): List[ActionResult] = player.takeOff(prefix, f)
 
-  def logInventory(): Unit = PlayerCallback.Logger.info(s"Inventory: ${player.inventory}")
   def logEquipment(): Unit = PlayerCallback.Logger.info(s"Equipment: ${player.equipment}")
 }
 object PlayerCallback {

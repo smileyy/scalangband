@@ -7,10 +7,10 @@ import scala.collection.mutable.ListBuffer
 
 class Inventory(val items: mutable.IndexedBuffer[Item]) {
   def size: Int = items.size
-  
+
   def addItem(item: Item): Unit = items += item
-  def getItem(index: Int): Option[Item] = if (index < items.size) Some(items(index)) else None
-  def removeItem(index: Int): Option[Item] = if (index < items.size) Some(items.remove(index)) else None
+  def getItem(idx: Int): Item = items(idx)
+  def removeItem(item: Item): Unit = items -= item
   
   override def toString: String = items.map(_.name).mkString("(", ",", ")")
 }

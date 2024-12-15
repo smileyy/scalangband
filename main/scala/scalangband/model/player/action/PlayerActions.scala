@@ -36,13 +36,6 @@ object GoUpStairsAction extends PhysicalAction {
   }
 }
 
-object ListInventoryAction extends InterfaceAction {
-  override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
-    callback.player.logInventory()
-    List.empty
-  }
-}
-
 object ListEquipmentAction extends InterfaceAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
     callback.player.logEquipment()

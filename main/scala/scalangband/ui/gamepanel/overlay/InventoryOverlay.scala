@@ -2,6 +2,7 @@ package scalangband.ui.gamepanel.overlay
 
 import scalangband.bridge.rendering.TextColors.*
 import scalangband.model.Game
+import scalangband.model.item.Item
 import scalangband.model.player.action.{DropInventoryItemAction, PlayerAction}
 import scalangband.ui.gamepanel.{GamePanel, PlayerPane}
 import scalangband.ui.keys.KeyHandler
@@ -11,12 +12,12 @@ import scala.swing.event.{Key, KeyPressed}
 
 class InventoryOverlay(game: Game, factory: InventoryActionFactory, prompt: String) extends GamePanelOverlay {
   override def message: Option[String] = None
-  override def keyHandler: KeyHandler = new InventoryKeyHandler(this, factory)
+  override def keyHandler: KeyHandler = new InventoryKeyHandler(game, factory, this)
 
-  override def paintable: Option[Paintable] = Some(new InventoryPane(game, prompt))
+  override def paintable: Option[OverlayPanel] = Some(new InventoryPane(game, prompt))
 }
 
-class InventoryKeyHandler(overlay: InventoryOverlay, factory: InventoryActionFactory) extends KeyHandler {
+class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, overlay: InventoryOverlay) extends KeyHandler {
   override def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay] = {
     event match {
       case KeyPressed(_, Key.Escape, _, _) => Left(None)
@@ -31,27 +32,29 @@ class InventoryKeyHandler(overlay: InventoryOverlay, factory: InventoryActionFac
       case KeyPressed(_, Key.H, _, _) => actionOrOverlay(game, 7)
       case KeyPressed(_, Key.I, _, _) => actionOrOverlay(game, 8)
       case KeyPressed(_, Key.J, _, _) => actionOrOverlay(game, 9)
-      case KeyPressed(_, Key.K, _, _) => actionOrOverlay(game, 1)
+      case KeyPressed(_, Key.K, _, _) => actionOrOverlay(game, 10)
       case KeyPressed(_, Key.L, _, _) => actionOrOverlay(game, 11)
       case KeyPressed(_, Key.M, _, _) => actionOrOverlay(game, 12)
       case KeyPressed(_, Key.N, _, _) => actionOrOverlay(game, 13)
       case KeyPressed(_, Key.O, _, _) => actionOrOverlay(game, 14)
       case KeyPressed(_, Key.P, _, _) => actionOrOverlay(game, 15)
       case KeyPressed(_, Key.Q, _, _) => actionOrOverlay(game, 16)
-      case KeyPressed(_, Key.R, _, _) => actionOrOverlay(game, 17)
-      case KeyPressed(_, Key.S, _, _) => actionOrOverlay(game, 18)
-      case KeyPressed(_, Key.T, _, _) => actionOrOverlay(game, 19)
       
       case _ => Right(overlay)
     }
   }
 
   private def actionOrOverlay(game: Game, idx: Int): Either[Option[PlayerAction], GamePanelOverlay] = {
-    if (game.player.inventory.size > idx) Left(factory(idx)) else Right(overlay)
+    if (game.player.inventory.size > idx) {
+      val item = game.player.inventory.getItem(idx)
+      Left(factory(item))
+    } else {
+      Right(overlay)
+    }
   }
 }
 
-class InventoryPane(game: Game, prompt: String) extends Paintable {
+class InventoryPane(game: Game, prompt: String) extends OverlayPanel {
   override def paint(g: Graphics2D, font: Font): Unit = {
     val fontMetrics = g.getFontMetrics(font)
     val lineHeight = fontMetrics.getHeight
@@ -72,13 +75,13 @@ class InventoryPane(game: Game, prompt: String) extends Paintable {
 }
 
 trait InventoryActionFactory {
-  def apply(index: Int): Option[PlayerAction]
+  def apply(item: Item): Option[PlayerAction]
 }
 
 object DropItemActionFactory extends InventoryActionFactory {
-  override def apply(index: Int): Option[PlayerAction] = Some(new DropInventoryItemAction(index))
+  override def apply(item: Item): Option[PlayerAction] = Some(new DropInventoryItemAction(item))
 }
 
 object ViewItemActionFactory extends InventoryActionFactory {
-  override def apply(index: Int): Option[PlayerAction] = None
+  override def apply(item: Item): Option[PlayerAction] = None
 }
