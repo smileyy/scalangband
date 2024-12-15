@@ -9,11 +9,11 @@ import scalangband.ui.keys.KeyHandler
 import scala.swing.{Font, Graphics2D}
 import scala.swing.event.{Key, KeyPressed}
 
-class InventoryOverlay(game: Game, factory: InventoryActionFactory) extends GamePanelOverlay {
+class InventoryOverlay(game: Game, factory: InventoryActionFactory, prompt: String) extends GamePanelOverlay {
   override def message: Option[String] = None
   override def keyHandler: KeyHandler = new InventoryKeyHandler(this, factory)
 
-  override def paintable: Option[Paintable] = Some(new InventoryPane(game))
+  override def paintable: Option[Paintable] = Some(new InventoryPane(game, prompt))
 }
 
 class InventoryKeyHandler(overlay: InventoryOverlay, factory: InventoryActionFactory) extends KeyHandler {
@@ -45,19 +45,11 @@ class InventoryKeyHandler(overlay: InventoryOverlay, factory: InventoryActionFac
   }
 
   private def actionOrOverlay(game: Game, idx: Int): Either[Option[PlayerAction], GamePanelOverlay] = {
-    if (game.player.inventory.size > idx) Left(Some(factory(idx))) else Right(overlay)
+    if (game.player.inventory.size > idx) Left(factory(idx)) else Right(overlay)
   }
 }
 
-trait InventoryActionFactory {
-  def apply(index: Int): PlayerAction
-}
-
-object DropItemActionFactory extends InventoryActionFactory {
-  override def apply(index: Int): PlayerAction = new DropInventoryItemAction(index)
-}
-
-class InventoryPane(game: Game) extends Paintable {
+class InventoryPane(game: Game, prompt: String) extends Paintable {
   override def paint(g: Graphics2D, font: Font): Unit = {
     val fontMetrics = g.getFontMetrics(font)
     val lineHeight = fontMetrics.getHeight
@@ -70,9 +62,21 @@ class InventoryPane(game: Game) extends Paintable {
     g.fillRect(startX, 0, 1024 - startX, (itemsByCharacter.size + 1) * lineHeight)
 
     g.setColor(White)
-    g.drawString("Drop which item?", 0, lineHeight)
+    g.drawString(prompt, 0, lineHeight)
     itemsByCharacter.foreach { (item, idx) =>
       g.drawString(s"${(idx + 'a').toChar}) a ${item.name}", startX, (idx + 2) * lineHeight)
     }
   }
+}
+
+trait InventoryActionFactory {
+  def apply(index: Int): Option[PlayerAction]
+}
+
+object DropItemActionFactory extends InventoryActionFactory {
+  override def apply(index: Int): Option[PlayerAction] = Some(new DropInventoryItemAction(index))
+}
+
+object ViewItemActionFactory extends InventoryActionFactory {
+  override def apply(index: Int): Option[PlayerAction] = None
 }
