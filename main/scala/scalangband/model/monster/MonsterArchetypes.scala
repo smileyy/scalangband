@@ -5,6 +5,7 @@ sealed trait MonsterArchetype
 object Ant extends MonsterArchetype
 object Bird extends MonsterArchetype
 object Centipede extends MonsterArchetype
+object IckyThing extends MonsterArchetype
 object Mold extends MonsterArchetype
 object Mushroom extends MonsterArchetype
 object Person extends MonsterArchetype

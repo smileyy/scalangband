@@ -3,6 +3,7 @@ package scalangband.model.monster
 import scalangband.data.monster.ant.*
 import scalangband.data.monster.bird.*
 import scalangband.data.monster.centipede.*
+import scalangband.data.monster.ickything.WhiteIckyThing
 import scalangband.data.monster.mold.*
 import scalangband.data.monster.mushroom.*
 import scalangband.model.location.Coordinates
@@ -26,6 +27,7 @@ object Bestiary {
     GreyMushroomPatch,
     GiantYellowCentipede,
     GiantWhiteCentipede,
+    WhiteIckyThing,
 
 
     // Level 2
