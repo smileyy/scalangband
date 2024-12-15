@@ -1,6 +1,7 @@
 package scalangband.ui.keys
 
 import scalangband.model.Game
+import scalangband.model.debug.EnableDebugAction
 import scalangband.model.location.*
 import scalangband.model.player.action.*
 import scalangband.ui.gamepanel.overlay.*
@@ -10,8 +11,9 @@ import scala.swing.event.{Key, KeyPressed}
 object MainKeyHandler extends KeyHandler {
   override def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay] = event match {
     case KeyPressed(_, Key.W, Key.Modifier.Control, _) =>
-      game.enableDebug()
-      Left(None)
+      Left(Some(EnableDebugAction))
+    case KeyPressed(_, Key.A, Key.Modifier.Control, _) => 
+      if (game.debug) Right(WizardOverlay) else Left(None)
 
     case KeyPressed(_, Key.C, Key.Modifier.Shift, _) => Right(new CharacterOverlay(game))
       

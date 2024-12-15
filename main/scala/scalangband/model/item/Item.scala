@@ -8,7 +8,7 @@ import scalangband.model.item.weapon.Weapon
 
 trait Item extends Representable {
   def name: String
-  def displayName: String
+  def displayName: String = name
   def article: String = this match {
     case w: Weapon => if (startsWithVowel(w)) "an " else "a "
     case a: Armor => ""
