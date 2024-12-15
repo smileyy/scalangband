@@ -3,7 +3,7 @@ package scalangband.ui.keys
 import scalangband.model.Game
 import scalangband.model.location.*
 import scalangband.model.player.action.*
-import scalangband.ui.gamepanel.overlay.{CharacterOverlay, CloseOverlay, GamePanelOverlay, OpenOverlay}
+import scalangband.ui.gamepanel.overlay.{CharacterOverlay, CloseOverlay, DropItemActionFactory, GamePanelOverlay, InventoryOverlay, OpenOverlay}
 
 import scala.swing.event.{Key, KeyPressed}
 
@@ -32,6 +32,7 @@ object MainKeyHandler extends KeyHandler {
     case KeyPressed(_, Key.Comma, Key.Modifier.Shift, _) => Left(Some(GoUpStairsAction))
 
     case KeyPressed(_, Key.C, _, _) => Right(CloseOverlay)
+    case KeyPressed(_, Key.D, _, _) => Right(new InventoryOverlay(game, DropItemActionFactory))
     case KeyPressed(_, Key.E, _, _) => Left(Some(ListEquipmentAction))
     case KeyPressed(_, Key.G, _, _) => Left(Some(PickUpItemAction))
     case KeyPressed(_, Key.I, _, _) => Left(Some(ListInventoryAction))

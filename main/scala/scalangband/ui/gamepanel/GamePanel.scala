@@ -3,10 +3,10 @@ package scalangband.ui.gamepanel
 import scalangband.Scalangband
 import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.model.Game
-import scalangband.model.player.action.{PlayerAction, PlayerMovementAction}
+import scalangband.model.player.action.PlayerAction
 import scalangband.ui.*
 import scalangband.ui.gamepanel.overlay.GamePanelOverlay
-import scalangband.ui.keys.{KeyHandler, MainKeyHandler}
+import scalangband.ui.keys.MainKeyHandler
 import scalangband.ui.render.Renderer
 
 import scala.swing.*
@@ -20,7 +20,7 @@ class GamePanel(game: Game, renderer: Renderer, var maybeOverlay: Option[GamePan
   private val playerPane = new PlayerPane(game, font)
   private val levelPane = new LevelPane(game, renderer)
 
-  preferredSize = new Dimension(1024, 768)
+  preferredSize = new Dimension(GamePanel.WidthInPixels, GamePanel.HeightInPixels)
   background = new Color(0, 0, 0)
 
   focusable = true
@@ -51,12 +51,12 @@ class GamePanel(game: Game, renderer: Renderer, var maybeOverlay: Option[GamePan
   }
 
   private def dispatchAction(action: PlayerAction): Unit = {
-    val results = game.takeTurn(action)
+    val results: List[ActionResult] = game.takeTurn(action)
     results.foreach(result => applyResult(result))
   }
 
   private def applyResult(result: ActionResult): Unit = result match {
-    case MessageResult(message) => messagePane.messages = message :: messagePane.messages
+    case MessageResult(message) => messagePane.addMessage(message)
     case NoResult               =>
   }
 
@@ -68,7 +68,7 @@ class GamePanel(game: Game, renderer: Renderer, var maybeOverlay: Option[GamePan
 
     messagePane.paint(g, 0, 0)
     playerPane.paint(g, 0, lineHeight)
-    levelPane.paint(g, (PlayerPane.CharWidth + 1) * charWidth, lineHeight * 2)
+    levelPane.paint(g, (PlayerPane.WidthInChars + 1) * charWidth, lineHeight * 2)
 
     maybeOverlay match {
       case Some(overlay) =>
@@ -78,6 +78,9 @@ class GamePanel(game: Game, renderer: Renderer, var maybeOverlay: Option[GamePan
   }
 }
 object GamePanel {
+  val WidthInPixels = 1024
+  val HeightInPixels = 768
+  
   def apply(game: Game, renderer: Renderer): GamePanel = {
     new GamePanel(game, renderer)
   }
