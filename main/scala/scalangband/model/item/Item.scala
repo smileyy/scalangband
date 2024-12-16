@@ -6,9 +6,16 @@ import scalangband.model.item.armor.Armor
 import scalangband.model.item.lightsource.LightSource
 import scalangband.model.item.weapon.Weapon
 
+import scala.swing.Color
+
 trait Item extends Representable {
   def name: String
+  def archetype: ItemArchetype
+  
+  def color: Color
+  
   def displayName: String = name
+  
   def article: String = this match {
     case w: Weapon => if (startsWithVowel(w)) "an " else "a "
     case a: Armor => ""

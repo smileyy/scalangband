@@ -2,7 +2,9 @@ package scalangband.ui.render.text
 
 import scalangband.bridge.rendering.TextColors.*
 import scalangband.data.item.garbage.PotteryShard
-import scalangband.data.item.money.CopperCoins
+import scalangband.data.item.money.{CopperCoins, Money}
+import scalangband.model.item.{Item, LightSource, Miscellaneous, MoneyArchetype, SoftBodyArmor, Sword}
+import scalangband.model.item.armor.BodyArmor
 import scalangband.model.level.DungeonLevel
 import scalangband.model.monster.*
 import scalangband.model.player.Player
@@ -16,7 +18,7 @@ class TextRenderer(font: Font) extends Renderer {
     level.tiles.map(row => renderRow(row))
   }
 
-  def renderRow(row: Array[Tile]): Array[RenderableTile] = {
+  private def renderRow(row: Array[Tile]): Array[RenderableTile] = {
     row.map(render)
   }
 
@@ -47,11 +49,10 @@ class TextRenderer(font: Font) extends Renderer {
 
         // items
         case PileOfItems => TextTile('&', font, White)
-
-        case PotteryShard => TextTile('~', font, LightBeige)
+        case item: Item => renderItem(item, font)
 
         // money
-        case _: CopperCoins => TextTile('$', font, Brown)
+        case m: Money => TextTile('$', font, m.color)
 
         // oops!
         case _ => TextTile('0', font, Red)
@@ -59,17 +60,26 @@ class TextRenderer(font: Font) extends Renderer {
     } else TextTile(' ', font, Black)
   }
   
-  def renderMonster(monster: Monster, font: Font): TextTile = monster.archetype match {
+  private def renderMonster(monster: Monster, font: Font): TextTile = monster.archetype match {
     case Ant => TextTile('a', font, monster.color)
     case Bat => TextTile('b', font, monster.color)
     case Bird => TextTile('B', font, monster.color)
     case Centipede => TextTile('c', font, monster.color)
     case IckyThing => TextTile('i', font, monster.color)
+    case Kobold => TextTile('k', font, monster.color)
     case Mold => TextTile('m', font, monster.color)
     case Mushroom => TextTile(',', font, monster.color)
     case Person => TextTile('p', font, monster.color)
     case Reptile => TextTile('R', font, monster.color)
     case Snake => TextTile('S', font, monster.color)
+  }
+
+  private def renderItem(item: Item, font: Font): TextTile = item.archetype match {
+    case SoftBodyArmor => TextTile('(', font, item.color)
+    case LightSource => TextTile('~', font, item.color)
+    case Miscellaneous => TextTile('~', font, item.color)
+    case MoneyArchetype => TextTile('$', font, item.color)
+    case Sword => TextTile('|', font, item.color)
   }
 } 
 object TextRenderer {

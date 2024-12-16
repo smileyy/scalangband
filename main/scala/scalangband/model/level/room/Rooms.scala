@@ -1,7 +1,7 @@
 package scalangband.model.level.room
 
 import org.slf4j.LoggerFactory
-import scalangband.model.level.LevelRanges
+import scalangband.model.level.Levels
 import scalangband.model.level.room.Room.Logger
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.{Bestiary, Monster}
@@ -45,9 +45,7 @@ trait Room {
   def addMonsters(random: Random, bestiary: Bestiary): Unit
 
   def generateMonster(random: Random, bestiary: Bestiary, depth: Int, coordinates: Coordinates): Monster = {
-    val monster = bestiary.generateMonster(random, depth, coordinates).get
-    Logger.debug(s"Generated $monster")
-    monster
+    bestiary.generateMonster(random, depth, coordinates)
   }
 }
 
@@ -76,9 +74,9 @@ abstract class AbstractRoom(val tiles: Array[Array[Tile]], val top: Int, val lef
         )
         .head
 
-      val monsterDepth: Int = LevelRanges.ranges(effectiveDepth).randomInRange(random)
+      val monsterDepth: Int = Levels(effectiveDepth).monsters.randomInRange(random)
 
-      val monster = generateMonster(random, bestiary, monsterDepth, Coordinates(row + top, col + left))
+      val monster = bestiary.generateMonster(random, monsterDepth, Coordinates(row + top, col + left))
       tiles(row)(col).asInstanceOf[OccupiableTile].setOccupant(monster)
     })
   }

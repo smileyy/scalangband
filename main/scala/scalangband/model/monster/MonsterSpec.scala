@@ -1,7 +1,7 @@
 package scalangband.model.monster
 
 import scalangband.model.Creature
-import scalangband.model.item.Item
+import scalangband.model.item.{Armory, Item, ItemFactory}
 import scalangband.model.monster.action.MonsterActions
 import scalangband.model.util.DiceRoll
 
@@ -25,8 +25,8 @@ class MonsterSpec(
     val inventory: Seq[MonsterInventoryGenerator] = Seq.empty,
     val color: Color
 ) {
-  def generateStartingInventory(random: Random): Seq[Item] = {
-    inventory.flatMap(generator => generator.generate(random, depth))
+  def generateStartingInventory(random: Random, armory: Armory): Seq[Item] = {
+    inventory.flatMap(generator => generator.generateItem(random, armory))
   }
   
 }

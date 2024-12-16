@@ -4,7 +4,7 @@ import scalangband.model.item.EquippableItem
 
 trait Armor extends EquippableItem {
   override def displayName: String = {
-    val toArmorString = if (toArmor >= 0) s"+$toArmor" else toArmor.toString
+    val toArmorString = if (toArmorBonus >= 0) s"+$toArmorBonus" else toArmorBonus.toString
     s"$name [$armorClass,$toArmorString]"
   }
 }

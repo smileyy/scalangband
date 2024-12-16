@@ -3,7 +3,7 @@ package scalangband.model
 import org.slf4j.LoggerFactory
 import scalangband.bridge.actionresult.ActionResult
 import scalangband.model.fov.FieldOfViewCalculator
-import scalangband.model.item.Item
+import scalangband.model.item.{Armory, Item}
 import scalangband.model.level.*
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.{Bestiary, Monster}
@@ -18,19 +18,29 @@ import scalangband.model.util.TileUtils.allCoordinatesFor
 import scala.annotation.tailrec
 import scala.util.Random
 
-class Game(seed: Long, val random: Random, val settings: Settings, val player: Player, val town: DungeonLevel, var level: DungeonLevel, var turn: Int, var debug: Boolean = false) {
+class Game(
+    seed: Long,
+    val random: Random,
+    val settings: Settings,
+    val armory: Armory,
+    val bestiary: Bestiary,
+    val player: Player,
+    val town: DungeonLevel,
+    var level: DungeonLevel,
+    var turn: Int,
+    var debug: Boolean = false
+) {
   val fov = new FieldOfViewCalculator()
   fov.recompute(player.coordinates, town, player.lightRadius)
 
   val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
-  val bestiary: Bestiary = Bestiary()
 
   var queue: SchedulerQueue = SchedulerQueue(level.creatures)
 
   val accessor: GameAccessor = new GameAccessor(this)
   val callback: GameCallback = new GameCallback(this)
 
-  def takeTurn(playerAction: PlayerAction): List[ActionResult] = {
+  def takeAction(playerAction: PlayerAction): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
     results = results ::: player.beforeNextAction()
@@ -66,7 +76,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     if (queue.peek.energy <= 0) startNextTurn()
 
     @tailrec
-    def loopUntilPlayerIsAtHeadOfQueue(results: List[ActionResult]= List.empty): List[ActionResult] = {
+    def loopUntilPlayerIsAtHeadOfQueue(results: List[ActionResult] = List.empty): List[ActionResult] = {
       queue.poll() match {
         case p: Player =>
           queue.push(p)
@@ -85,7 +95,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
           if (queue.peek.energy <= 0) startNextTurn()
 
           loopUntilPlayerIsAtHeadOfQueue(monsterActionResults ::: results)
-        case monster: Monster => 
+        case monster: Monster =>
           monster.deductEnergy(monster.speed)
           queue.insert(monster)
           if (queue.peek.energy <= 0) startNextTurn()
@@ -97,7 +107,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
     // in order to put the player's action result first
     loopUntilPlayerIsAtHeadOfQueue()
   }
-  
+
   def startNextTurn(): Unit = {
     turn = turn + 1
     level.startNextTurn()
@@ -107,7 +117,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
   //
   // Debugging
   //
-  
+
   def enableDebug(): Unit = {
     debug = true
   }
@@ -115,7 +125,7 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
   def disableDebug(): Unit = {
     debug = false
   }
-  
+
   def debugLevel(): Unit = {
     level.debug = true
     fov.recompute(player.coordinates, level, player.lightRadius)
@@ -123,17 +133,19 @@ class Game(seed: Long, val random: Random, val settings: Settings, val player: P
 }
 object Game {
   private val Logger = LoggerFactory.getLogger(classOf[Game])
-  
+
   val BaseEnergyUnit: Int = 20
   val MaxDungeonDepth: Int = 100
 
-  def newGame(seed: Long, random: Random, settings: Settings, player: Player): Game = {
-    val town: DungeonLevel = Town(random)
+  def apply(seed: Long, random: Random, settings: Settings, player: Player): Game = {
+    val armory: Armory = Armory()
+    val bestiary: Bestiary = Bestiary(armory)
+    val town: DungeonLevel = Town(random, armory)
 
     val start = randomElement(random, allCoordinatesFor(town.tiles, tile => tile.isInstanceOf[DownStairs]))
     town.addPlayer(start, player)
 
-    new Game(seed, random, settings, player, town, town, 0)
+    new Game(seed, random, settings, armory, bestiary, player, town, town, 0)
   }
 }
 
@@ -147,7 +159,7 @@ class GameAccessor(private val game: Game) {
 
 class GameCallback(private val game: Game) {
   private val logger = LoggerFactory.getLogger(getClass)
-  
+
   // this has to be a `def` since the current level of the game is mutable
   def level: LevelCallback = new LevelCallback(game.level)
   val player: PlayerCallback = game.player.callback
@@ -159,7 +171,7 @@ class GameCallback(private val game: Game) {
   def killMonster(monster: Monster): Unit = {
     val coordinates = monster.coordinates
     val tile = game.level(coordinates).asInstanceOf[OccupiableTile]
-    
+
     tile match {
       case floor: Floor => floor.addItems(monster.inventory.toList)
       // TODO #25: scatter the item nearby if it lands on a non-Floor tile
@@ -204,11 +216,11 @@ class GameCallback(private val game: Game) {
     tile.removeItem(item)
     player.pickUp(item)
   }
-  
+
   def enableDebug(): Unit = {
     game.enableDebug()
   }
-  
+
   def debugLevel(): Unit = {
     game.debugLevel()
   }

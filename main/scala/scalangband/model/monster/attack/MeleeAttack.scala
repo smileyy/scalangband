@@ -1,7 +1,8 @@
 package scalangband.model.monster.attack
 
+import org.slf4j.LoggerFactory
 import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
-import scalangband.model.effect.{Effect, EffectFactory}
+import scalangband.model.effect.Effect
 import scalangband.model.element.Element
 import scalangband.model.monster.Monster
 import scalangband.model.util.DiceRoll
@@ -16,8 +17,10 @@ trait MeleeAttack {
     val toHit = Math.max(monster.level, 1) * 3 + power
 
     if (Random.nextInt(toHit) > game.player.armorClass) {
+      val damageDone = damage.roll()
+      MeleeAttack.Logger.info(s"${monster.name} hit player for $damageDone")
       results = hitMessage(monster).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
-      results = callback.player.takeDamage(damage.roll(), maybeElement, maybeEffect) ::: results
+      results = callback.player.takeDamage(damageDone, maybeElement, maybeEffect) ::: results
     } else {
       results = missMessage(monster).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
     }
@@ -41,4 +44,7 @@ trait MeleeAttack {
   def missMessage(monster: Monster): Option[String] = Some(s"The ${monster.displayName} misses you.")
 
   override def toString: String = s"${getClass.getSimpleName}($damage)}"
+}
+object MeleeAttack {
+  private val Logger = LoggerFactory.getLogger(classOf[MeleeAttack])
 }

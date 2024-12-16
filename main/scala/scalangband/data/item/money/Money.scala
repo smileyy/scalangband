@@ -1,14 +1,11 @@
 package scalangband.data.item.money
 
-import scalangband.model.item.Item
+import scalangband.model.item.{Item, ItemArchetype, MoneyArchetype}
 
-trait Money extends Item {
-  def amount: Int
-  def material: String
-}
+import scala.swing.Color
 
-case class CopperCoins(amount: Int) extends Money {
-  override def name: String = "Pile of copper coins"
-  override def displayName: String = "pile of copper coins"
-  override def material: String = "copper"
+class Money(val name: String, val amount: Int, val color: Color, val material: String) extends Item {
+  override def archetype: ItemArchetype = MoneyArchetype
+
+  override def displayName: String = s"Pile of $material"
 }

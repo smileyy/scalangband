@@ -1,11 +1,10 @@
 package scalangband.data.monster.person
 
 import scalangband.bridge.rendering.TextColors
-import scalangband.data.item.garbage.GarbageGenerator
-import scalangband.data.item.money.MoneyGenerator
-import scalangband.model.item.ItemGenerator
+import scalangband.data.item.garbage.PotteryShard
+import scalangband.data.item.money.CopperCoins
+import scalangband.model.monster.*
 import scalangband.model.monster.action.{MonsterActions, MonsterPassAction, RandomMovementAction, SpeakAction}
-import scalangband.model.monster.{MonsterFactory, MonsterInventoryGenerator, MonsterSpec, Person}
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object RandomlyMumblingTownsperson extends MonsterFactory {
@@ -36,7 +35,7 @@ object RandomlyMumblingTownsperson extends MonsterFactory {
   )
 
   def inventory: Seq[MonsterInventoryGenerator] = Seq(
-    new MonsterInventoryGenerator(100, Seq(Weighted(1, GarbageGenerator))),
-    new MonsterInventoryGenerator(100, Seq(Weighted(1, MoneyGenerator))),
+    new FixedInventoryGenerator(CopperCoins),
+    new FixedInventoryGenerator(PotteryShard),
   )
 }

@@ -2,7 +2,6 @@ package scalangband.model.player
 
 import org.slf4j.LoggerFactory
 import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult}
-import scalangband.data.item.weapon.Fists
 import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.effect.{Effect, EffectType}
 import scalangband.model.element.Element
@@ -52,7 +51,6 @@ class Player(
   def speed: Int = BaseEnergyUnit
 
   def lightRadius: Int = equipment.light.map(_.radius).getOrElse(0)
-  def weapon: Weapon = equipment.weapon.getOrElse(Fists)
 
   private def savingThrow: Int = cls.savingThrow(level) + 3 * equipment.allEquipment.map(_.toHit).sum
 
@@ -153,7 +151,11 @@ class Player(
   private def handleHit(monster: Monster, callback: GameCallback): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
-    val damage = Math.max(weapon.damage.roll() + toDamage, 0)
+    val damageDice = equipment.weapon match {
+      case Some(weapon) => weapon.damage
+      case None => DiceRoll("1d1")
+    }
+    val damage = Math.max(damageDice.roll() + toDamage, 1)
     monster.health = monster.health - damage
     monster.awake = true
 
