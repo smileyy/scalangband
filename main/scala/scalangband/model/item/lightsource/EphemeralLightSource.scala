@@ -1,6 +1,6 @@
 package scalangband.model.item.lightsource
 
-import scalangband.model.item.{EquippableItem, ItemArchetype, ItemFactory, ItemQuality, LightSource, NormalQuality}
+import scalangband.model.item.*
 
 import scala.swing.Color
 import scala.util.Random

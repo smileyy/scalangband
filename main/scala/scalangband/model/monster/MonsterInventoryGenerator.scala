@@ -1,8 +1,7 @@
 package scalangband.model.monster
 
-import scalangband.model.item.{Armory, Item, ItemArchetype, ItemFactory, ItemQuality, NormalQuality}
+import scalangband.model.item.*
 import scalangband.model.util.Weighted
-import scalangband.model.util.Weighted.selectFrom
 
 import scala.util.Random
 

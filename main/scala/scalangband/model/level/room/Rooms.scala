@@ -2,7 +2,6 @@ package scalangband.model.level.room
 
 import org.slf4j.LoggerFactory
 import scalangband.model.level.Levels
-import scalangband.model.level.room.Room.Logger
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.{Bestiary, Monster}
 import scalangband.model.tile.{OccupiableTile, Tile}

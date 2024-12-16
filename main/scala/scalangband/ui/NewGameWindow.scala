@@ -6,9 +6,9 @@ import scalangband.data.item.weapon.Dagger
 import scalangband.model.Game
 import scalangband.model.effect.Effect
 import scalangband.model.location.Coordinates
+import scalangband.model.player.*
 import scalangband.model.player.playerclass.{PlayerClass, Warrior}
 import scalangband.model.player.race.{Human, Race}
-import scalangband.model.player.*
 import scalangband.model.settings.Settings
 import scalangband.ui.NewGameWindow.Logger
 
