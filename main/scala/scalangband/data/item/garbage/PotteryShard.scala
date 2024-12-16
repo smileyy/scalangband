@@ -1,7 +1,15 @@
 package scalangband.data.item.garbage
 
-import scalangband.model.item.Item
+import scalangband.bridge.rendering.TextColors.LightUmber
+import scalangband.model.item.{BasicItem, Item, ItemArchetype, ItemFactory, ItemQuality, Miscellaneous}
 
-object PotteryShard extends Item {
-  override def name: String = "Pottery Shard"
+import scala.util.Random
+
+object PotteryShard extends ItemFactory {
+  override def apply(random: Random = new Random(), quality: ItemQuality): Item =
+    new BasicItem("Pottery Shard", Miscellaneous, LightUmber)
+
+  override val archetype: ItemArchetype = Miscellaneous
+  override val levels: Range = 0 to 0
+  override val commonness: Int = 0
 }

@@ -2,7 +2,7 @@ package scalangband.model.monster
 
 import scalangband.bridge.actionresult.ActionResult
 import scalangband.model.Creature.NormalSpeed
-import scalangband.model.item.Item
+import scalangband.model.item.{Armory, Item}
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.action.MonsterAction
 import scalangband.model.{Creature, GameAccessor}
@@ -46,9 +46,9 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
   }
 }
 object Monster {
-  def apply(spec: MonsterSpec, coordinates: Coordinates, random: Random): Monster = {
+  def apply(random: Random, spec: MonsterSpec, coordinates: Coordinates, armory: Armory): Monster = {
     val awake = random.nextInt(256) > spec.sleepiness
-    val inventory = mutable.ListBuffer.from(spec.generateStartingInventory(random))
+    val inventory = mutable.ListBuffer.from(spec.generateStartingInventory(random, armory))
     new Monster(spec, coordinates, spec.health.roll(), awake, inventory)
   }
 

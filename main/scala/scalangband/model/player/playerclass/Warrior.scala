@@ -1,7 +1,7 @@
 package scalangband.model.player.playerclass
 
 import scalangband.data.item.armor.body.SoftLeatherArmor
-import scalangband.data.item.lightsource.Torch
+import scalangband.data.item.lightsource.WoodenTorch
 import scalangband.data.item.weapon.Dagger
 import scalangband.model.player.{Equipment, Inventory, StatBonuses, Stats}
 import scalangband.model.util.DiceRoll
@@ -20,9 +20,9 @@ object Warrior extends PlayerClass {
   override def savingThrow(level: Int): Int = 18 + level
 
   override def startingEquipment(random: Random): Equipment = new Equipment(
-    weapon = Some(Dagger(random, 0)),
-    light = Some(Torch()),
-    body = Some(SoftLeatherArmor(random, 0))
+    weapon = Some(Dagger()),
+    light = Some(WoodenTorch()),
+    body = Some(SoftLeatherArmor())
   )
 
   override def startingInventory(random: Random): Inventory = Inventory.empty()

@@ -51,7 +51,7 @@ class GamePanel(game: Game, renderer: Renderer, var maybeOverlay: Option[GamePan
   }
 
   private def dispatchAction(action: PlayerAction): Unit = {
-    val results: List[ActionResult] = game.takeTurn(action)
+    val results: List[ActionResult] = game.takeAction(action)
     results.foreach(result => applyResult(result))
   }
 

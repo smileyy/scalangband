@@ -84,10 +84,3 @@ class LevelCallback(private val level: DungeonLevel) {
   def replaceTile(coordinates: Coordinates, tile: Tile): Unit = level.replaceTile(coordinates, tile)
   def tryToMoveMonster(monster: Monster, direction: Direction): Unit = level.tryToMoveMonster(monster, direction)
 }
-
-object LevelRanges {
-  val ranges: Map[Int, CenteredRange] = Map(
-    1 -> CenteredRange(1, 1 to 3),
-    2 -> CenteredRange(2, 1 to 5)
-  )
-}

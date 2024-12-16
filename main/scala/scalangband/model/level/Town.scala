@@ -1,6 +1,7 @@
 package scalangband.model.level
 
 import scalangband.data.monster.person.RandomlyMumblingTownsperson
+import scalangband.model.item.Armory
 import scalangband.model.tile.{Floor, Tile}
 
 import scala.util.Random
@@ -10,7 +11,7 @@ object Town {
   private val TownHeight = 36
   private val TownWidth = 80
 
-  def apply(random: Random): Town = {
+  def apply(random: Random, armory: Armory): Town = {
     val builder = DungeonLevelBuilder(TownHeight, TownWidth, 0)
 
     for (row <- 1 until TownHeight - 1) {
@@ -19,7 +20,7 @@ object Town {
       }
     }
 
-    builder.addMonster(1, 1, coords => RandomlyMumblingTownsperson(coords, random))
+    builder.addMonster(1, 1, coords => RandomlyMumblingTownsperson(random, coords, armory))
     
     builder.build(random, (depth, tiles) => new Town(tiles)).asInstanceOf[Town]
   }

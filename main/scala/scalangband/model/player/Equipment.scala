@@ -54,7 +54,7 @@ class Equipment(
   def allEquipment: Seq[EquippableItem] = Seq(weapon, light, body).flatten
 
   def armorClass: Int = allEquipment.map(_.armorClass).sum
-  def toArmor: Int = allEquipment.map(_.toArmor).sum
+  def toArmor: Int = allEquipment.map(_.toArmorBonus).sum
   def totalArmor: Int = armorClass + toArmor
   
   def toHit: Int = allEquipment.map(_.toHit).sum

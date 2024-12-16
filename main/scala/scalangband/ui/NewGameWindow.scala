@@ -75,11 +75,9 @@ class NewGameWindow extends Frame {
     val random = new Random(seed)
 
     val name = nameTextBox.text
-    val cls = Warrior
-
     val player = Player.newPlayer(random, name, race, cls)
 
-    val game = Game.newGame(seed, random, new Settings(), player)
+    val game = Game(seed, random, new Settings(), player)
     Scalangband.startGame(game)
   }
 

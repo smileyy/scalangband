@@ -5,9 +5,9 @@ import scalangband.model.item.Item
 import scalangband.model.{Creature, Representable}
 
 import scala.annotation.tailrec
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable
 
-class Floor(occ: Option[Creature], val items: ListBuffer[Item]) extends OccupiableTile(occ) {
+class Floor(occ: Option[Creature], val items: mutable.ListBuffer[Item]) extends OccupiableTile(occ) {
   def addItem(item: Item): Unit = {
     this.items += item
   }
@@ -43,7 +43,7 @@ class Floor(occ: Option[Creature], val items: ListBuffer[Item]) extends Occupiab
   }
 }
 object Floor {
-  def empty() = new Floor(None, ListBuffer.empty[Item])
+  def empty() = new Floor(None, mutable.ListBuffer.empty[Item])
 }
 
 object PileOfItems extends Representable

@@ -36,6 +36,10 @@ class CrushAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory:
   }
 }
 
+class PlainAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory: Option[EffectFactory] = None)
+  extends BlowAttack(dmg, element, effectFactory) {
+}
+
 class SporeAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory: Option[EffectFactory] = None)
   extends BlowAttack(dmg, element, effectFactory) {
 
