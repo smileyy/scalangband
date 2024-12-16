@@ -1,7 +1,7 @@
 package scalangband.data.item.garbage
 
 import scalangband.bridge.rendering.TextColors.LightUmber
-import scalangband.model.item.{BasicItem, Item, ItemArchetype, ItemFactory, ItemQuality, Miscellaneous}
+import scalangband.model.item.*
 
 import scala.util.Random
 

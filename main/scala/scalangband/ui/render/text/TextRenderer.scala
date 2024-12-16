@@ -1,10 +1,8 @@
 package scalangband.ui.render.text
 
 import scalangband.bridge.rendering.TextColors.*
-import scalangband.data.item.garbage.PotteryShard
-import scalangband.data.item.money.{CopperCoins, Money}
-import scalangband.model.item.{Item, LightSource, Miscellaneous, MoneyArchetype, SoftBodyArmor, Sword}
-import scalangband.model.item.armor.BodyArmor
+import scalangband.data.item.money.Money
+import scalangband.model.item.*
 import scalangband.model.level.DungeonLevel
 import scalangband.model.monster.*
 import scalangband.model.player.Player

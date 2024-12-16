@@ -1,6 +1,6 @@
 package scalangband.model.level
 
-import scalangband.model.item.{Artifact, GoodQuality, GreatQuality, ItemQuality, NormalQuality}
+import scalangband.model.item.*
 import scalangband.model.util.{CenteredRange, Weighted}
 
 object Levels {

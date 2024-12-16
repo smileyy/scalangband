@@ -1,7 +1,7 @@
 package scalangband.model.monster
 
 import scalangband.model.Creature
-import scalangband.model.item.{Armory, Item, ItemFactory}
+import scalangband.model.item.{Armory, Item}
 import scalangband.model.monster.action.MonsterActions
 import scalangband.model.util.DiceRoll
 

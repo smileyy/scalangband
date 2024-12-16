@@ -1,7 +1,7 @@
 package scalangband.data.item.money
 
 import scalangband.bridge.rendering.TextColors.{Copper, Umber}
-import scalangband.model.item.{Item, ItemArchetype, ItemFactory, ItemQuality, MoneyArchetype, NormalQuality}
+import scalangband.model.item.*
 import scalangband.model.util.DiceRoll
 
 import scala.util.Random
