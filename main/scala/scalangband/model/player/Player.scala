@@ -253,6 +253,7 @@ class PlayerAccessor(private val player: Player) {
   def coordinates: Coordinates = player.coordinates
   def armorClass: Int = player.armorClass
   def hasEffect(effectType: EffectType): Boolean = player.hasEffect(effectType)
+  def canSeeInvisible: Boolean = player.canSeeInvisible
 }
 
 class PlayerCallback(private val player: Player) {

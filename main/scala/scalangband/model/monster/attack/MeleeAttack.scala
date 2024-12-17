@@ -5,6 +5,7 @@ import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.model.effect.Effect
 import scalangband.model.element.Element
 import scalangband.model.monster.Monster
+import scalangband.model.player.PlayerAccessor
 import scalangband.model.util.DiceRoll
 import scalangband.model.{GameAccessor, GameCallback}
 
@@ -19,10 +20,10 @@ trait MeleeAttack {
     if (Random.nextInt(toHit) > game.player.armorClass) {
       val damageDone = damage.roll()
       MeleeAttack.Logger.info(s"${monster.name} hit player for $damageDone")
-      results = hitMessage(monster).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
+      results = hitMessage(monster, game.player).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
       results = callback.player.takeDamage(damageDone, maybeElement, maybeEffect) ::: results
     } else {
-      results = missMessage(monster).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
+      results = missMessage(monster, game.player).map(msg => MessageResult(msg)).getOrElse(NoResult) :: results
     }
 
     results
@@ -40,8 +41,19 @@ trait MeleeAttack {
   def maybeElement: Option[Element]
   def maybeEffect: Option[Effect]
 
-  def hitMessage(monster: Monster): Option[String] = Some(s"The ${monster.displayName} hits you.")
-  def missMessage(monster: Monster): Option[String] = Some(s"The ${monster.displayName} misses you.")
+  def monsterDescription(monster: Monster, player: PlayerAccessor): String = {
+    if (!monster.invisible || player.canSeeInvisible) s"The ${monster.displayName}" else "It"
+  }
+  def hitDescription: Option[String] = Some("hits you")
+  def missDescription: Option[String] = Some("misses you")
+  
+  def hitMessage(monster: Monster, player: PlayerAccessor): Option[String] = {
+    hitDescription.map(desc => s"${monsterDescription(monster, player)} $desc.")
+  }
+
+  def missMessage(monster: Monster, player: PlayerAccessor): Option[String] = {
+    missDescription.map(desc => s"${monsterDescription(monster, player)} $desc.")
+  }
 
   override def toString: String = s"${getClass.getSimpleName}($damage)}"
 }
