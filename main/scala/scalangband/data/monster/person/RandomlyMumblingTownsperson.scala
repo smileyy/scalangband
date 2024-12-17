@@ -8,7 +8,7 @@ import scalangband.model.monster.action.{MonsterActions, MonsterPassAction, Rand
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object RandomlyMumblingTownsperson extends MonsterFactory {
-  override def spec: MonsterSpec = new MonsterSpec(
+  override val spec: MonsterSpec = new MonsterSpec(
     name = "Randomly Mumbling Townsperson",
     archetype = Person,
     depth = 0,

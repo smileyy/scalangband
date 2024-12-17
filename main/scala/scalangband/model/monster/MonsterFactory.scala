@@ -7,7 +7,7 @@ import scala.util.Random
 
 trait MonsterFactory {
   def apply(random: Random, coordinates: Coordinates, armory: Armory): Monster = {
-    Monster(random, spec, coordinates, armory)
+    Monster(random, this, coordinates, armory)
   }
   
   def spec: MonsterSpec

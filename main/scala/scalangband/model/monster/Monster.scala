@@ -5,14 +5,22 @@ import scalangband.model.Creature.NormalSpeed
 import scalangband.model.item.{Armory, Item}
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.action.MonsterAction
-import scalangband.model.{Creature, GameAccessor}
+import scalangband.model.{Creature, GameAccessor, GameCallback}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.swing.Color
 import scala.util.Random
 
-class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, var awake: Boolean, val inventory: mutable.ListBuffer[Item] = ListBuffer.empty) extends Creature(spec.name, coordinates, Monster.startingEnergy()) {
+class Monster(
+    val factory: MonsterFactory,
+    coordinates: Coordinates,
+    var health: Int,
+    var awake: Boolean,
+    val inventory: mutable.ListBuffer[Item] = ListBuffer.empty
+) extends Creature(factory.spec.name, coordinates, Monster.startingEnergy()) {
+  private def spec = factory.spec
+
   def archetype: MonsterArchetype = spec.archetype
   def level: Int = spec.depth
   def experience: Int = spec.experience * level
@@ -23,15 +31,32 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
   def alive: Boolean = spec.alive
   def invisible: Boolean = spec.invisible
   def clear: Boolean = spec.clear
+  def breeds: Boolean = spec.breeds
 
   def addItem(item: Item): Unit = {
     inventory += item
   }
 
-  /**
-   * Anything that happens before a monster's next action.
-   */
-  def beforeNextAction(): List[ActionResult] = List.empty
+  /** Anything that happens before a monster's next action.
+    */
+  def beforeNextAction(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
+    var results: List[ActionResult] = List.empty
+
+    if (breeds) {
+      results = maybeBreed(accessor, callback) ::: results
+    }
+
+    results
+  }
+
+  private def maybeBreed(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
+    // 1 in 8 chance of breeding
+    if (Random.nextInt(8) == 0) {
+      println("I should have bred")
+    }
+
+    List.empty
+  }
 
   override def onNextTurn(): Unit = {
     regenerateEnergy()
@@ -48,14 +73,14 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
   }
 }
 object Monster {
-  def apply(random: Random, spec: MonsterSpec, coordinates: Coordinates, armory: Armory): Monster = {
-    val awake = spec.sleepiness == 0
-    val inventory = mutable.ListBuffer.from(spec.generateStartingInventory(random, armory))
-    new Monster(spec, coordinates, spec.health.roll(), awake, inventory)
+
+  def apply(random: Random, factory: MonsterFactory, coordinates: Coordinates, armory: Armory): Monster = {
+    val awake = factory.spec.sleepiness == 0
+    val inventory = mutable.ListBuffer.from(factory.spec.generateStartingInventory(random, armory))
+    new Monster(factory, coordinates, factory.spec.health.roll(), awake, inventory)
   }
 
-  /**
-   * All monsters start with some energy,  less than the player enters a level with.
-   */
+  /** All monsters start with some energy,  less than the player enters a level with.
+    */
   def startingEnergy(): Int = Random.nextInt(NormalSpeed - 1) + 1
 }
