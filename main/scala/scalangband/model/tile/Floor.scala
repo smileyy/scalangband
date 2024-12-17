@@ -20,11 +20,12 @@ class Floor(occ: Option[Creature], val items: mutable.ListBuffer[Item]) extends 
     items -= item
   }
   
-  override def representation: Representable = {
-    if (occupied) occupant.get
-    else if (items.size == 1) items.head
-    else if (items.size > 1) PileOfItems
-    else this
+  override def representation: Seq[Representable] = {
+    val occupantRepresentation = occupant
+    val itemRepresentation = if (items.size > 1) Some(PileOfItems) else if (items.size == 1) Some(items.head) else None
+    val floorRepresentation = Some(this)
+
+    (occupantRepresentation :: itemRepresentation :: floorRepresentation :: Nil).flatten
   }
   
   def money: Seq[Money] = {

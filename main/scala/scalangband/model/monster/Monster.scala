@@ -21,7 +21,9 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
   def armorClass: Int = spec.armorClass
 
   def alive: Boolean = spec.alive
-
+  def invisible: Boolean = spec.invisible
+  def clear: Boolean = spec.clear
+  
   def addItem(item: Item): Unit = {
     inventory += item
   }

@@ -54,6 +54,8 @@ class Player(
 
   private def savingThrow: Int = cls.savingThrow(level) + 3 * equipment.allEquipment.map(_.toHit).sum
 
+  def canSeeInvisible = false
+  
   def beforeNextAction(): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
@@ -251,6 +253,7 @@ class PlayerAccessor(private val player: Player) {
   def coordinates: Coordinates = player.coordinates
   def armorClass: Int = player.armorClass
   def hasEffect(effectType: EffectType): Boolean = player.hasEffect(effectType)
+  def canSeeInvisible: Boolean = player.canSeeInvisible
 }
 
 class PlayerCallback(private val player: Player) {

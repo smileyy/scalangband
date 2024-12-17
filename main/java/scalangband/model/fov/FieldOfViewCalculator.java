@@ -10,6 +10,8 @@ public class FieldOfViewCalculator {
     public void recompute(Coordinates origin, DungeonLevel level, int range) {
         if (level.debug()) {
             level.setAllTilesVisible();
+        } else {
+            level.setAllTilesInvisible();
         }
         
         level.apply(origin).setVisible(true);

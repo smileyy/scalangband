@@ -41,6 +41,7 @@ object Bestiary {
     GiantYellowCentipede,
     GiantWhiteCentipede,
     WhiteIckyThing,
+    ClearIckyThing,
     LargeWhiteSnake,
     SmallKobold,
     SoldierAnt,

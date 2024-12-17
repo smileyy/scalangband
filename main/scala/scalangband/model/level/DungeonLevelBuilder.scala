@@ -23,20 +23,19 @@ class DungeonLevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
     this(row, col).asInstanceOf[OccupiableTile].setOccupant(monster)
     monster
   }
-  
+
   def addItem(row: Int, col: Int, item: Item): Unit = {
     this(row, col).asInstanceOf[Floor].addItems(List(item))
   }
-  
+
   def build(random: Random, createTown: (Int, Array[Array[Tile]]) => DungeonLevel): DungeonLevel = {
     enforceStairInvariants(random)
 
     createTown(depth, tiles)
   }
 
-  /**
-   * Enforces the correct number of up and down stairs for the level's depth
-   */
+  /** Enforces the correct number of up and down stairs for the level's depth
+    */
   private def enforceStairInvariants(random: Random): Unit = {
     enforceUpStairsInvariants(random)
     enforceDownStairsInvariants(random)
@@ -49,7 +48,10 @@ class DungeonLevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
       upStairs.foreach(coords => setTile(coords, Floor.empty()))
     } else if (upStairs.length == 0) {
       (0 until desiredNumberOfUpStairs(random)).foreach { _ =>
-        val floor = randomElement(random, allCoordinatesFor(tiles, tile => tile.isInstanceOf[Floor] && !tile.occupied))
+        val floor = randomElement(
+          random,
+          allCoordinatesFor(tiles, tile => tile.isInstanceOf[Floor] && !tile.asInstanceOf[Floor].occupied)
+        )
         setTile(floor, new UpStairs())
       }
     }
@@ -66,7 +68,10 @@ class DungeonLevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
       downStairs.foreach(coords => setTile(coords, Floor.empty()))
     } else if (downStairs.length == 0) {
       (0 until desiredNumberOfDownStairs(depth, random)).foreach { _ =>
-        val floor = randomElement(random, allCoordinatesFor(tiles, tile => tile.isInstanceOf[Floor] && !tile.occupied))
+        val floor = randomElement(
+          random,
+          allCoordinatesFor(tiles, tile => tile.isInstanceOf[Floor] && !tile.asInstanceOf[Floor].occupied)
+        )
         setTile(floor, new DownStairs())
       }
     }
@@ -78,17 +83,20 @@ class DungeonLevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
 }
 object DungeonLevelBuilder {
 
-  /**
-   * Creates a new builder of the given height and width. The builder starts out as a boundary of a [[PermanentWall]],
-   * filled by [[RemovableWall]]s.
-   */
+  /** Creates a new builder of the given height and width. The builder starts out as a boundary of a [[PermanentWall]],
+    * filled by [[RemovableWall]]s.
+    */
   def apply(height: Int, width: Int, depth: Int): DungeonLevelBuilder = {
     val tiles = Array.ofDim[Tile](height, width)
 
     for (row <- 0 until height) {
       for (col <- 0 until width) {
         tiles(row)(col) = {
-          if (row == 0 || col == 0 || row == height - 1 || col == width - 1) new PermanentWall() else new RemovableWall()
+          if (row == 0 || col == 0 || row == height - 1 || col == width - 1) {
+            new PermanentWall()
+          } else {
+            new RemovableWall()
+          }
         }
       }
     }
@@ -96,9 +104,8 @@ object DungeonLevelBuilder {
     new DungeonLevelBuilder(tiles, depth)
   }
 
-  /**
-   * Generates a level builder with a pleasing width : height ratio
-   */
+  /** Generates a level builder with a pleasing width : height ratio
+    */
   def randomSizedLevelBuilder(random: Random, depth: Int): DungeonLevelBuilder = {
     val minWidth: Int = 80
     val maxWidth: Int = 120
