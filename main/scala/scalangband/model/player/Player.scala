@@ -55,7 +55,7 @@ class Player(
   private def savingThrow: Int = cls.savingThrow(level) + 3 * equipment.allEquipment.map(_.toHit).sum
 
   def canSeeInvisible = false
-  
+
   def beforeNextAction(): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
@@ -181,6 +181,7 @@ class Player(
   }
 
   def takeDamage(damage: Int, maybeElement: Option[Element], maybeEffect: Option[Effect]): List[ActionResult] = {
+    println(s"Player is taking $damage points of damage")
     var results: List[ActionResult] = List.empty
 
     val actualDamage = maybeElement match {
@@ -212,7 +213,7 @@ class Player(
 
     results
   }
-  
+
   def incapacitated: Boolean = {
     hasEffect(Paralysis)
   }
@@ -264,7 +265,7 @@ class PlayerCallback(private val player: Player) {
   def attack(monster: Monster, callback: GameCallback): List[ActionResult] = player.attack(monster, callback)
   def resetEnergy(): Unit = player.energy = player.speed
 
-  def takeDamage(damage: Int, element: Option[Element], effect: Option[Effect]): List[ActionResult] = {
+  def takeDamage(damage: Int, element: Option[Element] = None, effect: Option[Effect] = None): List[ActionResult] = {
     player.takeDamage(damage, element, effect)
   }
 

@@ -3,8 +3,10 @@ package scalangband.model.effect
 import scalangband.bridge.actionresult.{ActionResult, NoResult}
 import scalangband.model.player.PlayerCallback
 
-class Effect(val effectType: EffectType, var turns: Int) {
-  def onNewTurn(callback: PlayerCallback): ActionResult = NoResult
+class Effect(val effectType: EffectType, val strength: Int, var turns: Int) {
+  def onNewTurn(callback: PlayerCallback): Unit = {
+    effectType.impactPlayer(strength, callback)
+  }
 
   def +(effect: Effect): Unit = {
     turns = turns + effect.turns
