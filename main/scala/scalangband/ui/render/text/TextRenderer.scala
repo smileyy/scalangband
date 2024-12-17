@@ -37,7 +37,7 @@ class TextRenderer(font: Font) extends Renderer {
       }
     }  else TextTile(' ', font, Black)
   }
-  
+
   private def render(representations: Seq[Representable], player: Player): TextTile = {
     representations.head match {
       case p: Player =>
@@ -69,9 +69,12 @@ class TextRenderer(font: Font) extends Renderer {
       case _ => TextTile('0', font, Red)
     }
   }
-  
+
   private def renderMonster(monster: Monster, player: Player, representations: Seq[Representable]): TextTile = {
     if (!monster.invisible || player.canSeeInvisible) {
+
+      if (monster.clear) monster.color else monster.color
+
       monster.archetype match {
         case Ant => TextTile('a', font, monster.color)
         case Bat => TextTile('b', font, monster.color)

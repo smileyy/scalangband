@@ -16,6 +16,7 @@ object ClearIckyThing extends MonsterFactory {
     experience = 2,
     sleepiness = 10,
     invisible = true,
+    clear = true,
     actions = actions,
     color = White // this doesn't matter, so just gotta pick one
   )
