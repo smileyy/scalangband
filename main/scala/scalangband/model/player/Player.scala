@@ -54,6 +54,8 @@ class Player(
 
   private def savingThrow: Int = cls.savingThrow(level) + 3 * equipment.allEquipment.map(_.toHit).sum
 
+  def canSeeInvisible = false
+  
   def beforeNextAction(): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 

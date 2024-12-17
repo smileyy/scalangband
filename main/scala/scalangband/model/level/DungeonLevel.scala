@@ -38,7 +38,7 @@ class DungeonLevel(val depth: Int, val tiles: Array[Array[Tile]]) {
 
     val occupant = fromTile.occupant.get
 
-    fromTile.clearOccupant()
+    fromTile.removeOccupant()
     toTile.setOccupant(occupant)
 
     occupant.coordinates = to

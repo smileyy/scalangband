@@ -17,13 +17,17 @@ abstract class Tile extends Representable {
     this.visible = visible
   }
 
-  def occupant: Option[Creature]
+  def occupant: Option[Creature] = None
   def occupied: Boolean = occupant.isDefined
 
-  def representation: Representable = if (occupant.isDefined) occupant.get else this
+  def representation: Seq[Representable] = Seq(this)
 }
 
-abstract class OccupiableTile(var occupant: Option[Creature]) extends Tile {
-  def setOccupant(occupant: Creature): Unit = this.occupant = Some(occupant)
-  def clearOccupant(): Unit = this.occupant = None
+abstract class OccupiableTile(var creature: Option[Creature]) extends Tile {
+  override def occupant: Option[Creature] = creature
+
+  def setOccupant(newOccupant: Creature): Unit = creature = Some(newOccupant)
+  def removeOccupant(): Unit = creature = None
+  
+  override def representation: Seq[Representable] = Seq(occupant, Some(this)).flatten
 }

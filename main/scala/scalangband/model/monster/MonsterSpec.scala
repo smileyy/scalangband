@@ -21,6 +21,7 @@ class MonsterSpec(
     val experience: Int,
     val sleepiness: Int,
     val alive: Boolean = true,
+    val invisible: Boolean = false,
     val actions: MonsterActions,
     val inventory: Seq[MonsterInventoryGenerator] = Seq.empty,
     val color: Color

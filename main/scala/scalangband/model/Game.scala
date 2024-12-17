@@ -179,7 +179,7 @@ class GameCallback(private val game: Game) {
     }
 
     game.queue.remove(monster)
-    game.level(coordinates).asInstanceOf[OccupiableTile].clearOccupant()
+    game.level(coordinates).asInstanceOf[OccupiableTile].removeOccupant()
   }
 
   def addItemToTile(coordinates: Coordinates, item: Item): Unit = {
