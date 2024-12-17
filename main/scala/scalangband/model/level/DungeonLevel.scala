@@ -62,14 +62,18 @@ class DungeonLevel(val depth: Int, val tiles: Array[Array[Tile]]) {
   def replaceTile(coordinates: Coordinates, tile: Tile): Unit = {
     tiles(coordinates.row)(coordinates.col) = tile
   }
-
-  def setAllTilesVisible(): Unit = {
+  
+  def setAllTilesInvisible(): Unit = forEachTile(tile => tile.setVisible(false))
+  def setAllTilesVisible(): Unit = forEachTile(tile => tile.setVisible(true))
+  
+  private def forEachTile(f: Tile => Unit): Unit = {
     for (row <- 0 until height) {
       for (col <- 0 until width) {
-        tiles(row)(col).setVisible(true)
+        f(tiles(row)(col))
       }
     }
   }
+
 }
 object DungeonLevel {
   private val Logger = LoggerFactory.getLogger(classOf[DungeonLevel])

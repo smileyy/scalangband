@@ -7,7 +7,7 @@ import scala.swing.{Font, Graphics2D}
 
 class LevelPane(game: Game, renderer: Renderer) {
   def paint(g: Graphics2D, x: Int, y: Int): Unit = {
-    val tiles = renderer.render(game.level)
+    val tiles = renderer.render(game.player, game.level)
 
     for (row <- tiles.indices) {
       for (col <- tiles(row).indices) {
