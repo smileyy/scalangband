@@ -24,13 +24,14 @@ class Effects(effectsByType: mutable.Map[EffectType, Effect]) {
   def beforeNextAction(callback: PlayerCallback): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
+    println(this)
     effectsByType.values.foreach { effect =>
       effect.turns = effect.turns - 1
       if (effect.turns <= 0) {
         effectsByType.remove(effect.effectType)
         results = effect.effectType.clearedResult :: results
       } else {
-        results = effect.onNewTurn(callback) :: results
+        effect.onNewTurn(callback)
       }
     }
 

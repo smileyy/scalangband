@@ -5,14 +5,15 @@ import scalangband.data.monster.ant.*
 import scalangband.data.monster.bat.*
 import scalangband.data.monster.bird.*
 import scalangband.data.monster.centipede.*
-import scalangband.data.monster.eye.FloatingEye
+import scalangband.data.monster.eye.*
 import scalangband.data.monster.ickything.*
-import scalangband.data.monster.kobold.SmallKobold
+import scalangband.data.monster.kobold.*
 import scalangband.data.monster.mold.*
 import scalangband.data.monster.mushroom.*
-import scalangband.data.monster.reptile.RockLizard
-import scalangband.data.monster.rodent.GiantWhiteMouse
+import scalangband.data.monster.reptile.*
+import scalangband.data.monster.rodent.*
 import scalangband.data.monster.snake.*
+import scalangband.data.monster.worm.*
 import scalangband.model.item.Armory
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.Bestiary.Logger
@@ -48,6 +49,7 @@ object Bestiary {
     GiantWhiteMouse,
     LargeWhiteSnake,
     SmallKobold,
+    WhiteWormMass,
     FloatingEye,
     RockLizard,
     SoldierAnt,

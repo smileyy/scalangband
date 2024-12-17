@@ -59,7 +59,6 @@ class Game(
         case _ =>
           if (playerAction.energyRequired > 0) {
             val player = queue.poll().asInstanceOf[Player]
-            val beforePlayerActionResults = player.beforeNextAction()
             player.deductEnergy(playerAction.energyRequired)
             queue.insert(player)
 
