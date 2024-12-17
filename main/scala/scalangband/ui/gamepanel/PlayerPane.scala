@@ -35,6 +35,7 @@ class PlayerPane(game: Game, font: Font) {
 
     g.setColor(White)
     g.drawString(levelDepthString, 0, lineHeight * 20)
+    g.drawString(s"T ${game.turn}", 0, lineHeight * 21)
   }
 
   private def levelDepthString = {

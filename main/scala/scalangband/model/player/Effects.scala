@@ -21,7 +21,7 @@ class Effects(effectsByType: mutable.Map[EffectType, Effect]) {
     effectsByType.contains(effectType)
   }
 
-  def onNewTurn(callback: PlayerCallback): List[ActionResult] = {
+  def beforeNextAction(callback: PlayerCallback): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
     effectsByType.values.foreach { effect =>

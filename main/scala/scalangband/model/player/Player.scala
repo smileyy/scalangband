@@ -3,7 +3,7 @@ package scalangband.model.player
 import org.slf4j.LoggerFactory
 import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult}
 import scalangband.model.Game.BaseEnergyUnit
-import scalangband.model.effect.{Effect, EffectType}
+import scalangband.model.effect.{Effect, EffectType, Paralysis}
 import scalangband.model.element.Element
 import scalangband.model.item.armor.{Armor, BodyArmor}
 import scalangband.model.item.lightsource.LightSource
@@ -59,7 +59,7 @@ class Player(
   def beforeNextAction(): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
-    results = effects.onNewTurn(callback) ::: results
+    results = effects.beforeNextAction(callback) ::: results
     if (isDead) {
       results = DeathResult() :: results
     }
@@ -211,6 +211,10 @@ class Player(
     }
 
     results
+  }
+  
+  def incapacitated: Boolean = {
+    hasEffect(Paralysis)
   }
 
   def hasEffect(effectType: EffectType): Boolean = {

@@ -6,6 +6,7 @@ object Ant extends MonsterArchetype
 object Bat extends MonsterArchetype
 object Bird extends MonsterArchetype
 object Centipede extends MonsterArchetype
+object Eye extends MonsterArchetype
 object IckyThing extends MonsterArchetype
 object Kobold extends MonsterArchetype
 object Mold extends MonsterArchetype
