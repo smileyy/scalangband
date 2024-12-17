@@ -2,7 +2,6 @@ package scalangband.model.monster.attack
 
 import scalangband.model.effect.{Effect, EffectFactory}
 import scalangband.model.element.Element
-import scalangband.model.monster.Monster
 import scalangband.model.util.DiceRoll
 
 abstract class BlowAttack(

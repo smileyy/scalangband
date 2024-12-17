@@ -181,7 +181,7 @@ class Player(
   }
 
   def takeDamage(damage: Int, maybeElement: Option[Element], maybeEffect: Option[Effect]): List[ActionResult] = {
-    println(s"Player is taking $damage points of damage")
+    Player.Logger.info(s"Player took $damage damage of element $maybeEffect and effect $maybeEffect")
     var results: List[ActionResult] = List.empty
 
     val actualDamage = maybeElement match {

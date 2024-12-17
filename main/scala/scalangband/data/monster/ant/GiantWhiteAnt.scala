@@ -1,7 +1,7 @@
 package scalangband.data.monster.ant
 
 import scalangband.bridge.rendering.TextColors
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterAction, MonsterActions, RandomMovementAction}
+import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, RandomMovementAction}
 import scalangband.model.monster.attack.BiteAttack
 import scalangband.model.monster.{Ant, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}

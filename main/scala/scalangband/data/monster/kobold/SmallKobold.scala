@@ -1,9 +1,9 @@
 package scalangband.data.monster.kobold
 
 import scalangband.bridge.rendering.TextColors.Yellow
+import scalangband.model.monster.*
 import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, RandomMovementAction}
 import scalangband.model.monster.attack.PlainAttack
-import scalangband.model.monster.*
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object SmallKobold extends MonsterFactory {

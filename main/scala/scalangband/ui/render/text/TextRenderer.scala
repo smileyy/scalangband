@@ -1,7 +1,6 @@
 package scalangband.ui.render.text
 
 import scalangband.bridge.rendering.TextColors.*
-import scalangband.data.item.money.Money
 import scalangband.model.Representable
 import scalangband.model.item.*
 import scalangband.model.level.DungeonLevel

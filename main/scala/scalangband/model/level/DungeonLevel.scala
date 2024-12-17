@@ -1,13 +1,11 @@
 package scalangband.model.level
 
 import org.slf4j.LoggerFactory
-import scalangband.bridge.actionresult.ActionResult
 import scalangband.model.Creature
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.Monster
 import scalangband.model.player.Player
 import scalangband.model.tile.{Floor, OccupiableTile, Tile}
-import scalangband.model.util.CenteredRange
 
 import scala.util.Random
 

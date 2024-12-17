@@ -1,6 +1,6 @@
 package scalangband.data.item.money
 
-import scalangband.bridge.rendering.TextColors.{Copper, Umber}
+import scalangband.bridge.rendering.TextColors.Umber
 import scalangband.model.item.*
 import scalangband.model.util.DiceRoll
 
