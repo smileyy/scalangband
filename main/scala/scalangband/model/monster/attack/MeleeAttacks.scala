@@ -33,6 +33,13 @@ class CrushAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory:
   override def hitDescription: Option[String] = Some("crushes you")
 }
 
+class GazeAttack(dmg: DiceRoll, element: Option[Element] = None, effect: Option[EffectFactory] = None)
+  extends BlowAttack(dmg, element, effect) {
+
+  override def hitDescription: Option[String] = Some("gazes at you")
+  override def missDescription: Option[String] = None
+}
+
 class PlainAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory: Option[EffectFactory] = None)
     extends BlowAttack(dmg, element, effectFactory) {}
 

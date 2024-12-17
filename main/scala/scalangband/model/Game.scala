@@ -2,12 +2,13 @@ package scalangband.model
 
 import org.slf4j.LoggerFactory
 import scalangband.bridge.actionresult.ActionResult
+import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.fov.FieldOfViewCalculator
 import scalangband.model.item.{Armory, Item}
 import scalangband.model.level.*
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.{Bestiary, Monster}
-import scalangband.model.player.action.{GoDownStairsAction, GoUpStairsAction, PlayerAction}
+import scalangband.model.player.action.{GoDownStairsAction, GoUpStairsAction, PlayerAction, PlayerPassAction}
 import scalangband.model.player.{Player, PlayerAccessor, PlayerCallback}
 import scalangband.model.scheduler.SchedulerQueue
 import scalangband.model.settings.Settings
@@ -105,7 +106,13 @@ class Game(
 
     // this will be in reverse order (most recent action first), but we reverse everything at the end of all the
     // in order to put the player's action result first
-    loopUntilPlayerIsAtHeadOfQueue()
+    var results = loopUntilPlayerIsAtHeadOfQueue()
+
+    if (player.incapacitated) {
+      results = takeAction(PlayerPassAction) ::: results
+    }
+
+    results
   }
 
   def startNextTurn(): Unit = {

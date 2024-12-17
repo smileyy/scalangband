@@ -73,21 +73,22 @@ class TextRenderer(font: Font) extends Renderer {
   private def renderMonster(monster: Monster, player: Player, representations: Seq[Representable]): TextTile = {
     if (!monster.invisible || player.canSeeInvisible) {
 
-      if (monster.clear) monster.color else monster.color
+      val color = if (monster.clear) monster.color else monster.color
 
       monster.archetype match {
-        case Ant => TextTile('a', font, monster.color)
-        case Bat => TextTile('b', font, monster.color)
-        case Bird => TextTile('B', font, monster.color)
-        case Centipede => TextTile('c', font, monster.color)
-        case IckyThing => TextTile('i', font, monster.color)
-        case Kobold => TextTile('k', font, monster.color)
-        case Mold => TextTile('m', font, monster.color)
-        case Mushroom => TextTile(',', font, monster.color)
-        case Person => TextTile('p', font, monster.color)
-        case Reptile => TextTile('R', font, monster.color)
-        case Rodent => TextTile('r', font, monster.color)
-        case Snake => TextTile('S', font, monster.color)
+        case Ant => TextTile('a', font, color)
+        case Bat => TextTile('b', font, color)
+        case Bird => TextTile('B', font, color)
+        case Centipede => TextTile('c', font, color)
+        case Eye => TextTile('e', font, color)
+        case IckyThing => TextTile('i', font, color)
+        case Kobold => TextTile('k', font, color)
+        case Mold => TextTile('m', font, color)
+        case Mushroom => TextTile(',', font, color)
+        case Person => TextTile('p', font, color)
+        case Reptile => TextTile('R', font, color)
+        case Rodent => TextTile('r', font, color)
+        case Snake => TextTile('S', font, color)
       }
     } else {
       render(representations, player)
