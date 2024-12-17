@@ -7,7 +7,7 @@ import scalangband.model.monster.{Mold, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object GreyMold extends MonsterFactory {
-  override def spec: MonsterSpec = MonsterSpec(
+  override val spec: MonsterSpec = MonsterSpec(
     name = "Grey Mold",
     archetype = Mold,
     depth = 1,

@@ -7,7 +7,7 @@ import scalangband.model.monster.*
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object SmallKobold extends MonsterFactory {
-  override def spec: MonsterSpec = MonsterSpec(
+  override val spec: MonsterSpec = MonsterSpec(
     name = "Small Kobold",
     archetype = Kobold,
     depth = 1,
@@ -20,12 +20,12 @@ object SmallKobold extends MonsterFactory {
     color = Yellow
   )
 
-  private val actions = new MonsterActions(
+  private def actions = new MonsterActions(
     adjacent = Seq(Weighted(100, MeleeAttacksAction(new PlainAttack(DiceRoll("1d5"))))),
     otherwise = Seq(Weighted(100, RandomMovementAction))
   )
 
-  private val inventory = Seq(
+  private def inventory = Seq(
     new ProbabilisticInventoryGenerator(60, ArmoryInventoryGenerator(1))
   )
 }

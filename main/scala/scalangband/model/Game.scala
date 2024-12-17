@@ -84,7 +84,7 @@ class Game(
         case monster: Monster if monster.awake =>
           var monsterActionResults: List[ActionResult] = List.empty
 
-          monsterActionResults = monster.beforeNextAction() ::: monsterActionResults
+          monsterActionResults = monster.beforeNextAction(accessor, callback) ::: monsterActionResults
 
           val action = monster.getAction(accessor)
           monsterActionResults = action.apply(monster, accessor, callback) ::: monsterActionResults
@@ -154,6 +154,7 @@ class GameAccessor(private val game: Game) {
   def level: DungeonLevelAccessor = new DungeonLevelAccessor(game.level)
   val player: PlayerAccessor = new PlayerAccessor(game.player)
 
+  def armory: Armory = game.armory
   def playerTile: OccupiableTile = level.tile(player.coordinates).asInstanceOf[OccupiableTile]
 }
 

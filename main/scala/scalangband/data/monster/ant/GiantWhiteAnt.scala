@@ -7,7 +7,7 @@ import scalangband.model.monster.{Ant, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object GiantWhiteAnt extends MonsterFactory {
-  override def spec: MonsterSpec = MonsterSpec(
+  override val spec: MonsterSpec = MonsterSpec(
     name = "Giant White Ant",
     archetype = Ant,
     depth = 3,

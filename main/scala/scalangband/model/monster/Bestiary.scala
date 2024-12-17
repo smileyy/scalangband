@@ -9,6 +9,7 @@ import scalangband.data.monster.ickything.*
 import scalangband.data.monster.kobold.SmallKobold
 import scalangband.data.monster.mold.*
 import scalangband.data.monster.mushroom.*
+import scalangband.data.monster.rodent.GiantWhiteMouse
 import scalangband.data.monster.snake.*
 import scalangband.model.item.Armory
 import scalangband.model.location.Coordinates
@@ -42,6 +43,7 @@ object Bestiary {
     GiantWhiteCentipede,
     WhiteIckyThing,
     ClearIckyThing,
+    GiantWhiteMouse,
     LargeWhiteSnake,
     SmallKobold,
     SoldierAnt,

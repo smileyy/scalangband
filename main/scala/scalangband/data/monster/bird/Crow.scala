@@ -7,7 +7,7 @@ import scalangband.model.monster.{Bird, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object Crow extends MonsterFactory {
-  override def spec: MonsterSpec = MonsterSpec(
+  override val spec: MonsterSpec = MonsterSpec(
     name = "Crow",
     archetype = Bird,
     depth = 2,

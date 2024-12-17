@@ -12,5 +12,6 @@ object Mold extends MonsterArchetype
 object Mushroom extends MonsterArchetype
 object Person extends MonsterArchetype
 object Reptile extends MonsterArchetype
+object Rodent extends MonsterArchetype
 object Snake extends MonsterArchetype
 

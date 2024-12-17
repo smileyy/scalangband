@@ -86,6 +86,7 @@ class TextRenderer(font: Font) extends Renderer {
         case Mushroom => TextTile(',', font, monster.color)
         case Person => TextTile('p', font, monster.color)
         case Reptile => TextTile('R', font, monster.color)
+        case Rodent => TextTile('r', font, monster.color)
         case Snake => TextTile('S', font, monster.color)
       }
     } else {

@@ -6,8 +6,10 @@ import scalangband.model.Creature
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.Monster
 import scalangband.model.player.Player
-import scalangband.model.tile.{OccupiableTile, Tile}
+import scalangband.model.tile.{Floor, OccupiableTile, Tile}
 import scalangband.model.util.CenteredRange
+
+import scala.util.Random
 
 class DungeonLevel(val depth: Int, val tiles: Array[Array[Tile]]) {
   var debug = false
@@ -62,16 +64,25 @@ class DungeonLevel(val depth: Int, val tiles: Array[Array[Tile]]) {
   def replaceTile(coordinates: Coordinates, tile: Tile): Unit = {
     tiles(coordinates.row)(coordinates.col) = tile
   }
-  
+
   def setAllTilesInvisible(): Unit = forEachTile(tile => tile.setVisible(false))
   def setAllTilesVisible(): Unit = forEachTile(tile => tile.setVisible(true))
-  
+
   private def forEachTile(f: Tile => Unit): Unit = {
     for (row <- 0 until height) {
       for (col <- 0 until width) {
         f(tiles(row)(col))
       }
     }
+  }
+
+  def emptyAdjacentFloorTileCoordinates(coordinates: Coordinates): Option[Coordinates] = {
+    new Random().shuffle(Direction.allDirections)
+      .map(dir => coordinates + dir)
+      .find(coords => {
+        val tile = apply(coords)
+        tile.isInstanceOf[Floor] && !tile.occupied
+      })
   }
 
 }
@@ -82,6 +93,9 @@ object DungeonLevel {
 class DungeonLevelAccessor(private val level: DungeonLevel) {
   def depth: Int = level.depth
   def tile(coordinates: Coordinates): Tile = level(coordinates)
+  def emptyAdjacentFloorTileCoordinates(coordinates: Coordinates): Option[Coordinates] = {
+    level.emptyAdjacentFloorTileCoordinates(coordinates)
+  }
 }
 
 class LevelCallback(private val level: DungeonLevel) {
