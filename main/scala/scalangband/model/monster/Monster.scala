@@ -5,6 +5,7 @@ import scalangband.model.Creature.NormalSpeed
 import scalangband.model.item.{Armory, Item}
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.action.MonsterAction
+import scalangband.model.tile.Floor
 import scalangband.model.{Creature, GameAccessor, GameCallback}
 
 import scala.collection.mutable
@@ -52,7 +53,14 @@ class Monster(
   private def maybeBreed(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
     // 1 in 8 chance of breeding
     if (Random.nextInt(8) == 0) {
-      println("I should have bred")
+      accessor.level.emptyAdjacentFloorTileCoordinates(coordinates) match {
+        case Some(coordinates) =>
+          accessor.level
+            .tile(coordinates)
+            .asInstanceOf[Floor]
+            .setOccupant(factory(new Random(), coordinates, accessor.armory))
+        case None =>
+      }
     }
 
     List.empty

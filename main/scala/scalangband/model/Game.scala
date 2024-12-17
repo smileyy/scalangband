@@ -154,6 +154,7 @@ class GameAccessor(private val game: Game) {
   def level: DungeonLevelAccessor = new DungeonLevelAccessor(game.level)
   val player: PlayerAccessor = new PlayerAccessor(game.player)
 
+  def armory: Armory = game.armory
   def playerTile: OccupiableTile = level.tile(player.coordinates).asInstanceOf[OccupiableTile]
 }
 
