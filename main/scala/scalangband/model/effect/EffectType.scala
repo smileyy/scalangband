@@ -1,7 +1,6 @@
 package scalangband.model.effect
 
 import scalangband.bridge.actionresult.{ActionResult, MessageResult}
-import scalangband.model.element.Element
 import scalangband.model.player.PlayerCallback
 import scalangband.model.util.DiceRoll
 

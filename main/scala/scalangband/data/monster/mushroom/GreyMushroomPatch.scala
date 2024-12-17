@@ -2,7 +2,7 @@ package scalangband.data.monster.mushroom
 
 import scalangband.bridge.rendering.TextColors
 import scalangband.model.effect.Confusion
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterAction, MonsterActions, MonsterPassAction}
+import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, MonsterPassAction}
 import scalangband.model.monster.attack.SporeAttack
 import scalangband.model.monster.{MonsterFactory, MonsterSpec, Mushroom}
 import scalangband.model.util.{DiceRoll, Weighted}

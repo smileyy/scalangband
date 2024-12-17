@@ -2,7 +2,6 @@ package scalangband.model
 
 import org.slf4j.LoggerFactory
 import scalangband.bridge.actionresult.ActionResult
-import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.fov.FieldOfViewCalculator
 import scalangband.model.item.{Armory, Item}
 import scalangband.model.level.*

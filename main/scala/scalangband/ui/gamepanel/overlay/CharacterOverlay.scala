@@ -17,9 +17,7 @@ class CharacterOverlay(game: Game) extends GamePanelOverlay {
 class CharacterOverlayKeyHandler(overlay: CharacterOverlay) extends KeyHandler {
   override def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay] = {
     event match {
-      case KeyPressed(_, Key.Escape, _, _) =>
-        println("Escape")
-        Left(None)
+      case KeyPressed(_, Key.Escape, _, _) => Left(None)
       case _ => Right(overlay)
     }
   }

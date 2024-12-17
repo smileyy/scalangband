@@ -1,6 +1,5 @@
 package scalangband.model.effect
 
-import scalangband.bridge.actionresult.{ActionResult, NoResult}
 import scalangband.model.player.PlayerCallback
 
 class Effect(val effectType: EffectType, val strength: Int, var turns: Int) {
