@@ -23,7 +23,7 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
   def alive: Boolean = spec.alive
   def invisible: Boolean = spec.invisible
   def clear: Boolean = spec.clear
-  
+
   def addItem(item: Item): Unit = {
     inventory += item
   }
@@ -49,7 +49,7 @@ class Monster(val spec: MonsterSpec, coordinates: Coordinates, var health: Int, 
 }
 object Monster {
   def apply(random: Random, spec: MonsterSpec, coordinates: Coordinates, armory: Armory): Monster = {
-    val awake = random.nextInt(256) > spec.sleepiness
+    val awake = spec.sleepiness == 0
     val inventory = mutable.ListBuffer.from(spec.generateStartingInventory(random, armory))
     new Monster(spec, coordinates, spec.health.roll(), awake, inventory)
   }
