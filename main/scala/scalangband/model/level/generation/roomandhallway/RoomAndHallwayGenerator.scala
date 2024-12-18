@@ -20,9 +20,7 @@ import scala.util.Random
   * This probably ought to be updated to be weighted by depth as well as you don't want a Greater Checkerboard Vault to
   * show up on level 1.
   *
-  * The algorithm is inspired by https://roguebasin.com/index.php/Dungeon-Building_Algorithm, but starts in the upper
-  * left hand corner of the map, generating successive rooms down and to the right. There's a bit of a "downward slope"
-  * bias, but if you try enough times, you'll eventually get something in that upper right corner.
+  * The algorithm is inspired by https://roguebasin.com/index.php/Dungeon-Building_Algorithm.
   */
 class RoomAndHallwayGenerator(roomGenerators: Seq[Weighted[RoomGenerator]]) extends DungeonLevelGenerator { outer =>
   override def generateLevel(random: Random, depth: Int, armory: Armory, bestiary: Bestiary): DungeonLevel = {
