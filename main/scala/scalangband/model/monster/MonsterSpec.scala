@@ -8,9 +8,9 @@ import scalangband.model.util.DiceRoll
 import scala.swing.Color
 import scala.util.Random
 
-/** The idea of this type is that it will allow monster recall to be generated from it while serving as a source of 
- * immutable monster data 
- */
+/** The idea of this type is that it will allow monster recall to be generated from it while serving as a source of
+  * immutable monster data
+  */
 class MonsterSpec(
     val name: String,
     val archetype: MonsterArchetype,
@@ -26,10 +26,18 @@ class MonsterSpec(
     val breeds: Boolean = false,
     val actions: MonsterActions,
     val inventory: Seq[MonsterInventoryGenerator] = Seq.empty,
+    val friends: Seq[MonsterFriendSpec] = Seq.empty,
     val color: Color
 ) {
   def generateStartingInventory(random: Random, armory: Armory): Seq[Item] = {
     inventory.flatMap(generator => generator.generateItem(random, armory))
   }
-  
 }
+
+trait MonsterFriendSpec {
+  def probability: Int
+  def number: DiceRoll
+}
+
+class MonsterFactoryFriendSpec(val probability: Int, val number: DiceRoll, val factory: MonsterFactory)
+    extends MonsterFriendSpec
