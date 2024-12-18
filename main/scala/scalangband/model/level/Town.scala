@@ -2,6 +2,7 @@ package scalangband.model.level
 
 import scalangband.data.monster.person.RandomlyMumblingTownsperson
 import scalangband.model.item.Armory
+import scalangband.model.level.generation.roomandhallway.DungeonLevelBuilder
 import scalangband.model.monster.Bestiary
 import scalangband.model.tile.{Floor, RemovableWall, Tile}
 
@@ -15,9 +16,9 @@ object Town {
   def apply(random: Random, armory: Armory, bestiary: Bestiary): Town = {
     val builder = DungeonLevelBuilder(random, armory, bestiary, TownHeight, TownWidth)
 
-    builder.getCanvas(1, 1, TownHeight - 2, TownWidth - 2).foreach { canvas =>
-      canvas.fill(factory = () => Floor.empty()).addMonster(0, 0, RandomlyMumblingTownsperson)
-    }
+    builder.getCanvas()
+      .fill(factory = () => Floor.empty())
+      .addMonster(0, 0, RandomlyMumblingTownsperson)
 
     builder.build(random, 0, tiles => new Town(tiles))
   }

@@ -5,6 +5,7 @@ import scalangband.bridge.actionresult.ActionResult
 import scalangband.model.fov.FieldOfViewCalculator
 import scalangband.model.item.{Armory, Item}
 import scalangband.model.level.*
+import scalangband.model.level.generation.{DungeonLevelGenerator, RandomWeightedLevelGenerator}
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.{Bestiary, Monster}
 import scalangband.model.player.action.{GoDownStairsAction, GoUpStairsAction, PlayerAction, PlayerPassAction}

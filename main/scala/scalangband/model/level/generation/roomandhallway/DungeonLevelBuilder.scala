@@ -1,7 +1,8 @@
-package scalangband.model.level
+package scalangband.model.level.generation.roomandhallway
 
 import scalangband.model.Game.MaxDungeonDepth
 import scalangband.model.item.{Armory, Item}
+import scalangband.model.level.DungeonLevel
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.{Bestiary, Monster, MonsterFactory}
 import scalangband.model.tile.*
@@ -18,10 +19,12 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
   def setTile(coordinates: Coordinates, tile: Tile): Unit = setTile(coordinates.row, coordinates.col, tile)
   def setTile(row: Int, col: Int, tile: Tile): Unit = tiles(row)(col) = tile
 
-  def getCanvas(row: Int, col: Int, height: Int, width: Int): Option[DungeonLevelCanvas] = {
-    if (wouldNotOverlap(row, col, height, width)) {
-      Some(new Canvas(row, col, height, width))
-    } else None
+  def slice(top: Int, left: Int, height: Int, width: Int): Array[Array[Tile]] = {
+    tiles.slice(top, top + height).map(row => row.slice(left, left + width))
+  }
+
+  def getCanvas(row: Int = 1, col: Int = 1, height: Int = height - 2, width: Int = width - 2): DungeonLevelCanvas = {
+    new Canvas(row, col, height, width)
   }
 
   private class Canvas(dy: Int, dx: Int, val height: Int, val width: Int) extends DungeonLevelCanvas {
@@ -38,12 +41,6 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
 
       this
     }
-  }
-
-  private def wouldNotOverlap(row: Int, col: Int, height: Int, width: Int): Boolean = {
-    tiles.slice(row, row + height)
-      .flatMap(row => row.slice(col, col + width))
-      .forall(tile => tile.isInstanceOf[RemovableWall])
   }
 
   def build[T <: DungeonLevel](random: Random, depth: Int, createLevel: Array[Array[Tile]] => T): T = {
@@ -102,9 +99,15 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
 object DungeonLevelBuilder {
 
   /** Creates a new builder of the given height and width. The builder starts out as a boundary of a [[PermanentWall]],
-   * filled by [[RemovableWall]]s.
-   */
-  def apply(random: Random, armory: Armory, bestiary: Bestiary, height: Int = 50, width: Int = 100): DungeonLevelBuilder = {
+    * filled by [[RemovableWall]]s.
+    */
+  def apply(
+      random: Random,
+      armory: Armory,
+      bestiary: Bestiary,
+      height: Int = 50,
+      width: Int = 100
+  ): DungeonLevelBuilder = {
     val tiles = Array.ofDim[Tile](height, width)
 
     for (row <- 0 until height) {
@@ -130,7 +133,13 @@ trait DungeonLevelCanvas {
   def setTile(row: Int, col: Int, tile: Tile): DungeonLevelCanvas
   def getTile(row: Int, col: Int): Tile
 
-  def fill(row: Int = 0, col: Int = 0, height: Int = height, width: Int = width, factory: () => Tile): DungeonLevelCanvas = {
+  def fill(
+      row: Int = 0,
+      col: Int = 0,
+      height: Int = height,
+      width: Int = width,
+      factory: () => Tile
+  ): DungeonLevelCanvas = {
     for (rowIdx <- row until height) {
       for (colIdx <- col until width) {
         setTile(rowIdx, colIdx, factory())

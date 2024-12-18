@@ -13,8 +13,17 @@ object Direction {
     DownRightDirection,
     DownDirection, 
     DownLeftDirection, 
-    LeftDirection, UpLeftDirection
+    LeftDirection, 
+    UpLeftDirection
   )
+  
+  val cardinalDirections: Seq[Direction] = IndexedSeq(
+    UpDirection, DownDirection, LeftDirection, RightDirection
+  )
+  
+  def randomCardinalDirection(random: Random = new Random()): Direction = {
+    cardinalDirections(random.nextInt(cardinalDirections.size))
+  }
   
   def randomDirection(): Direction = allDirections(Random.nextInt(8))
 }

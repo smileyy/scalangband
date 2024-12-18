@@ -1,6 +1,8 @@
-package scalangband.model.level
+package scalangband.model.level.generation
 
 import scalangband.model.item.Armory
+import scalangband.model.level.DungeonLevel
+import scalangband.model.level.generation.roomandhallway.RoomAndHallwayGenerator
 import scalangband.model.monster.Bestiary
 
 import scala.util.Random
