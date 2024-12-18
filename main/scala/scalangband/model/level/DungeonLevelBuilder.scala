@@ -1,16 +1,16 @@
 package scalangband.model.level
 
 import scalangband.model.Game.MaxDungeonDepth
-import scalangband.model.item.Item
+import scalangband.model.item.{Armory, Item}
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.Monster
+import scalangband.model.monster.{Bestiary, Monster, MonsterFactory}
 import scalangband.model.tile.*
 import scalangband.model.util.RandomUtils.randomElement
 import scalangband.model.util.TileUtils.allCoordinatesFor
 
 import scala.util.Random
 
-class DungeonLevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
+class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory: Armory, bestiary: Bestiary) { outer =>
   def height: Int = tiles.length
   def width: Int = tiles(0).length
 
@@ -18,30 +18,48 @@ class DungeonLevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
   def setTile(coordinates: Coordinates, tile: Tile): Unit = setTile(coordinates.row, coordinates.col, tile)
   def setTile(row: Int, col: Int, tile: Tile): Unit = tiles(row)(col) = tile
 
-  def addMonster(row: Int, col: Int, createMonster: Coordinates => Monster): Monster = {
-    val monster = createMonster(Coordinates(row, col))
-    this(row, col).asInstanceOf[OccupiableTile].setOccupant(monster)
-    monster
+  def getCanvas(row: Int, col: Int, height: Int, width: Int): Option[DungeonLevelCanvas] = {
+    if (wouldNotOverlap(row, col, height, width)) {
+      Some(new Canvas(row, col, height, width))
+    } else None
   }
 
-  def addItem(row: Int, col: Int, item: Item): Unit = {
-    this(row, col).asInstanceOf[Floor].addItems(List(item))
+  private class Canvas(dy: Int, dx: Int, val height: Int, val width: Int) extends DungeonLevelCanvas {
+    override def getTile(row: Int, col: Int): Tile = tiles(row + dy)(col + dx)
+
+    override def setTile(row: Int, col: Int, tile: Tile): DungeonLevelCanvas = {
+      outer.tiles(row + dy)(col + dx) = tile
+      this
+    }
+
+    override def addMonster(row: Int, col: Int, factory: MonsterFactory): DungeonLevelCanvas = {
+      val monster = factory.apply(outer.random, Coordinates(row + dy, col + dx), armory)
+      getTile(row, col).asInstanceOf[OccupiableTile].setOccupant(monster)
+
+      this
+    }
   }
 
-  def build(random: Random, createTown: (Int, Array[Array[Tile]]) => DungeonLevel): DungeonLevel = {
-    enforceStairInvariants(random)
+  private def wouldNotOverlap(row: Int, col: Int, height: Int, width: Int): Boolean = {
+    tiles.slice(row, row + height)
+      .flatMap(row => row.slice(col, col + width))
+      .forall(tile => tile.isInstanceOf[RemovableWall])
+  }
 
-    createTown(depth, tiles)
+  def build[T <: DungeonLevel](random: Random, depth: Int, createLevel: Array[Array[Tile]] => T): T = {
+    enforceStairInvariants(random, depth)
+
+    createLevel(tiles)
   }
 
   /** Enforces the correct number of up and down stairs for the level's depth
     */
-  private def enforceStairInvariants(random: Random): Unit = {
-    enforceUpStairsInvariants(random)
-    enforceDownStairsInvariants(random)
+  private def enforceStairInvariants(random: Random, depth: Int): Unit = {
+    enforceUpStairsInvariants(random, depth)
+    enforceDownStairsInvariants(random, depth)
   }
 
-  private def enforceUpStairsInvariants(random: Random): Unit = {
+  private def enforceUpStairsInvariants(random: Random, depth: Int): Unit = {
     val upStairs = allCoordinatesFor(tiles, _.isInstanceOf[UpStairs])
     if (depth == 0) {
       // replace any up stairs on the town level with floor tiles
@@ -61,13 +79,13 @@ class DungeonLevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
     random.nextInt(2) + 1
   }
 
-  private def enforceDownStairsInvariants(random: Random): Unit = {
+  private def enforceDownStairsInvariants(random: Random, depth: Int): Unit = {
     val downStairs = allCoordinatesFor(tiles, _.isInstanceOf[DownStairs])
     if (depth == MaxDungeonDepth) {
       // replace any up stairs on the bottom level with floor tiles
       downStairs.foreach(coords => setTile(coords, Floor.empty()))
     } else if (downStairs.length == 0) {
-      (0 until desiredNumberOfDownStairs(depth, random)).foreach { _ =>
+      (0 until desiredNumberOfDownStairs(random, depth)).foreach { _ =>
         val floor = randomElement(
           random,
           allCoordinatesFor(tiles, tile => tile.isInstanceOf[Floor] && !tile.asInstanceOf[Floor].occupied)
@@ -77,16 +95,16 @@ class DungeonLevelBuilder(val tiles: Array[Array[Tile]], val depth: Int) {
     }
   }
 
-  private def desiredNumberOfDownStairs(depth: Int, random: Random) = {
+  private def desiredNumberOfDownStairs(random: Random, depth: Int) = {
     if (depth == 0) 1 else random.nextInt(3) + 1
   }
 }
 object DungeonLevelBuilder {
 
   /** Creates a new builder of the given height and width. The builder starts out as a boundary of a [[PermanentWall]],
-    * filled by [[RemovableWall]]s.
-    */
-  def apply(height: Int, width: Int, depth: Int): DungeonLevelBuilder = {
+   * filled by [[RemovableWall]]s.
+   */
+  def apply(random: Random, armory: Armory, bestiary: Bestiary, height: Int = 50, width: Int = 100): DungeonLevelBuilder = {
     val tiles = Array.ofDim[Tile](height, width)
 
     for (row <- 0 until height) {
@@ -101,20 +119,25 @@ object DungeonLevelBuilder {
       }
     }
 
-    new DungeonLevelBuilder(tiles, depth)
+    new DungeonLevelBuilder(random, tiles, armory, bestiary)
+  }
+}
+
+trait DungeonLevelCanvas {
+  def height: Int
+  def width: Int
+
+  def setTile(row: Int, col: Int, tile: Tile): DungeonLevelCanvas
+  def getTile(row: Int, col: Int): Tile
+
+  def fill(row: Int = 0, col: Int = 0, height: Int = height, width: Int = width, factory: () => Tile): DungeonLevelCanvas = {
+    for (rowIdx <- row until height) {
+      for (colIdx <- col until width) {
+        setTile(rowIdx, colIdx, factory())
+      }
+    }
+    this
   }
 
-  /** Generates a level builder with a pleasing width : height ratio
-    */
-  def randomSizedLevelBuilder(random: Random, depth: Int): DungeonLevelBuilder = {
-    val minWidth: Int = 80
-    val maxWidth: Int = 120
-    val increments = 4
-
-    val increment = random.nextInt((maxWidth - minWidth) / increments)
-    val width = minWidth + (increment * increments)
-    val height = width / 2
-
-    DungeonLevelBuilder(50, 100, depth)
-  }
+  def addMonster(row: Int, col: Int, factory: MonsterFactory): DungeonLevelCanvas
 }

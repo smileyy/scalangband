@@ -2,6 +2,7 @@ package scalangband.model.level
 
 import org.slf4j.LoggerFactory
 import scalangband.model.Creature
+import scalangband.model.item.Item
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.Monster
 import scalangband.model.player.Player
@@ -98,5 +99,17 @@ class DungeonLevelAccessor(private val level: DungeonLevel) {
 
 class LevelCallback(private val level: DungeonLevel) {
   def replaceTile(coordinates: Coordinates, tile: Tile): Unit = level.replaceTile(coordinates, tile)
+
+  def addItemToTile(coordinates: Coordinates, item: Item): Unit = {
+    level(coordinates) match {
+      case floor: Floor => floor.addItem(item)
+      // TODO #25: scatter the item nearby if it lands on a non-Floor tile
+      case _ => LevelCallback.Logger.info("Oops, an item disappeared into the aether")
+    }
+  }
+
   def tryToMoveMonster(monster: Monster, direction: Direction): Unit = level.tryToMoveMonster(monster, direction)
+}
+object LevelCallback {
+  private val Logger = LoggerFactory.getLogger(classOf[LevelCallback])
 }

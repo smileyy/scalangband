@@ -79,7 +79,7 @@ class Player(
 
   def drop(item: Item, callback: GameCallback): ActionResult = {
     inventory.removeItem(item) 
-    callback.addItemToTile(coordinates, item)
+    callback.level.addItemToTile(coordinates, item)
     MessageResult(s"You drop ${item.article}${item.displayName}.")
   }
   

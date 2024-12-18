@@ -33,7 +33,7 @@ class Game(
   val fov = new FieldOfViewCalculator()
   fov.recompute(player.coordinates, town, player.lightRadius)
 
-  val levelGenerator: LevelGenerator = RandomWeightedLevelGenerator()
+  val levelGenerator: DungeonLevelGenerator = RandomWeightedLevelGenerator()
 
   var queue: SchedulerQueue = SchedulerQueue(level.creatures)
 
@@ -145,7 +145,7 @@ object Game {
   def apply(seed: Long, random: Random, settings: Settings, player: Player): Game = {
     val armory: Armory = Armory()
     val bestiary: Bestiary = Bestiary(armory)
-    val town: DungeonLevel = Town(random, armory)
+    val town: DungeonLevel = Town(random, armory, bestiary)
 
     val start = randomElement(random, allCoordinatesFor(town.tiles, tile => tile.isInstanceOf[DownStairs]))
     town.addPlayer(start, player)
@@ -188,16 +188,8 @@ class GameCallback(private val game: Game) {
     game.level(coordinates).asInstanceOf[OccupiableTile].removeOccupant()
   }
 
-  def addItemToTile(coordinates: Coordinates, item: Item): Unit = {
-    game.level(coordinates) match {
-      case floor: Floor => floor.addItem(item)
-      // TODO #25: scatter the item nearby if it lands on a non-Floor tile
-      case _ => logger.info("Oops, an item disappeared into the aether")
-    }
-  }
-
   def moveDownTo(newDepth: Int): Unit = {
-    val newLevel = game.levelGenerator.generateLevel(game.random, newDepth, game.bestiary)
+    val newLevel = game.levelGenerator.generateLevel(game.random, newDepth, game.armory, game.bestiary)
     val startingCoordinates =
       randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[UpStairs]))
     newLevel.addPlayer(startingCoordinates, game.player)
@@ -209,7 +201,7 @@ class GameCallback(private val game: Game) {
     val newLevel = if (newDepth == 0) {
       game.town
     } else {
-      game.levelGenerator.generateLevel(game.random, newDepth, game.bestiary)
+      game.levelGenerator.generateLevel(game.random, newDepth, game.armory, game.bestiary)
     }
     val startingCoordinates =
       randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[DownStairs]))

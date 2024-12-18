@@ -1,10 +1,12 @@
 package scalangband.model.level
 
+import scalangband.model.item.Armory
 import scalangband.model.level.room.rectangle.*
 import scalangband.model.level.room.{Room, RoomGenerator}
 import scalangband.model.location.*
 import scalangband.model.monster.Bestiary
 import scalangband.model.tile.*
+import scalangband.model.util.Weighted
 
 import scala.util.Random
 
@@ -13,15 +15,13 @@ import scala.util.Random
   * This probably ought to be updated to be weighted by depth as well as you don't want a Greater Checkerboard Vault to
   * show up on level 1.
   *
-  * The algorithm in use is inspired by https://roguebasin.com/index.php/Dungeon-Building_Algorithm, but starts in the
-  * upper left hand corner of the map, generating successive rooms down and to the right. There's a bit of a "downward
-  * slope" bias, but if you try enough times, you'll eventually get something in that upper right corner.
+  * The algorithm is inspired by https://roguebasin.com/index.php/Dungeon-Building_Algorithm, but starts in the upper
+  * left hand corner of the map, generating successive rooms down and to the right. There's a bit of a "downward slope"
+  * bias, but if you try enough times, you'll eventually get something in that upper right corner.
   */
-class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) extends LevelGenerator {
-  private val totalWeights = weightedGenerators.map(_._2).sum
-
-  override def generateLevel(random: Random, depth: Int, bestiary: Bestiary): DungeonLevel = {
-    val builder = DungeonLevelBuilder.randomSizedLevelBuilder(random, depth)
+class RoomAndHallwayGenerator(weightedGenerators: Seq[Weighted[RoomGenerator]]) extends DungeonLevelGenerator {
+  override def generateLevel(random: Random, depth: Int, armory: Armory, bestiary: Bestiary): DungeonLevel = {
+    val builder = DungeonLevelBuilder(random, armory, bestiary)
 
     val firstRoom = generateRoom(random, depth, random.nextInt(4) + 2, random.nextInt(8) + 2)
     applyRoom(builder, firstRoom)
@@ -32,7 +32,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
       val startingRoom = rooms(random.nextInt(rooms.size))
       val (direction, start) = chooseDirectionAndStart(random, startingRoom)
 
-      tryToCreateRoom(random, builder, start, direction) match {
+      tryToCreateRoom(random, builder, depth, start, direction) match {
         case Some(room) =>
           rooms = room :: rooms
           applyRoom(builder, room)
@@ -43,7 +43,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
       }
     }
 
-    builder.build(random, (depth, tiles) => new DungeonLevel(depth, tiles))
+    builder.build(random, depth, tiles => new DungeonLevel(depth, tiles))
   }
 
   private def chooseDirectionAndStart(random: Random, room: Room): (Direction, Coordinates) = {
@@ -54,10 +54,11 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   }
 
   private def tryToCreateRoom(
-                               random: Random,
-                               builder: DungeonLevelBuilder,
-                               start: Coordinates,
-                               offsetDir: Direction
+      random: Random,
+      builder: DungeonLevelBuilder,
+      depth: Int,
+      start: Coordinates,
+      offsetDir: Direction
   ): Option[Room] = {
     val (rowOffset, colOffset) = offsetDir match {
       // TODO: Explain why these numbers lead to decent, if short, hallways
@@ -65,7 +66,7 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
       case DownDirection  => (random.nextInt(8) + 4, -(random.nextInt(4) + 1))
     }
 
-    val room = generateRoom(random, builder.depth, start.row + rowOffset, start.col + colOffset)
+    val room = generateRoom(random, depth, start.row + rowOffset, start.col + colOffset)
 
     if (inLevelBound(room, builder) && doesNotOverwriteAnything(room, builder)) Some(room) else None
   }
@@ -96,11 +97,11 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   }
 
   private def attachRoom(
-                          random: Random,
-                          builder: DungeonLevelBuilder,
-                          room: Room,
-                          start: Coordinates,
-                          startingDirection: Direction
+      random: Random,
+      builder: DungeonLevelBuilder,
+      room: Room,
+      start: Coordinates,
+      startingDirection: Direction
   ): Unit = {
     startingDirection match {
       case RightDirection => drawRight(random, builder, room, start)
@@ -169,29 +170,17 @@ class RoomAndHallwayGenerator(weightedGenerators: Seq[(RoomGenerator, Int)]) ext
   }
 
   private def selectRoomGenerator(random: Random, depth: Int): RoomGenerator = {
-    var selection = random.nextInt(totalWeights)
-
-    var result = weightedGenerators.head._1
-
-    for ((generator, weight) <- weightedGenerators) {
-      if (selection < weight) {
-        result = generator
-      } else {
-        selection = selection - weight
-      }
-    }
-
-    result
+    Weighted.selectFrom(random, weightedGenerators)
   }
 }
 object RoomAndHallwayGenerator {
   def apply(): RoomAndHallwayGenerator = {
     new RoomAndHallwayGenerator(
       Seq(
-        (RectangularRoomGenerator, 100),
-        (EmptyMoatedRoomGenerator, 10),
-        (CheckerboardMoatedRoomGenerator, 2),
-        (FourBoxesMoatedRoomGenerator, 2)
+        Weighted(100, RectangularRoomGenerator),
+        Weighted(10, EmptyMoatedRoomGenerator),
+        Weighted(2, CheckerboardMoatedRoomGenerator),
+        Weighted(2, FourBoxesMoatedRoomGenerator)
       )
     )
   }
