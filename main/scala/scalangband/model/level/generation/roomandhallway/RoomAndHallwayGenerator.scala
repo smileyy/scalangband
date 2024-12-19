@@ -169,8 +169,8 @@ object RoomAndHallwayGenerator {
     new RoomAndHallwayGenerator(
       Seq(
 //        Weighted(100, RandomSizedRectangularRoom),
-        Weighted(10, StandardMoatedRoom),
-//        Weighted(2, CheckerboardMoatedRoomGenerator),
+//        Weighted(10, StandardMoatedRoom),
+        Weighted(2, CheckerboardMoatedRoom),
 //        Weighted(2, FourBoxesMoatedRoomGenerator)
       )
     )
