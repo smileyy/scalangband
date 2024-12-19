@@ -12,7 +12,7 @@ class RoomBuilder(val top: Int, val left: Int, val width: Int, val height: Int, 
     UpDirection -> List.empty,
     DownDirection -> List.empty,
     LeftDirection -> List.empty,
-    RightDirection -> List.empt)
+    RightDirection -> List.empty
   )
 
   private var currentRow = 0
