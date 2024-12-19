@@ -1,16 +1,24 @@
-package scalangband.model.level.generation.roomandhallway.room.rectangle
+package scalangband.data.level.rooms.rectangle
 
-import scalangband.model.level.generation.roomandhallway.DungeonLevelCanvas
-import scalangband.model.level.generation.roomandhallway.room.rectangle.StandardMoatedRoom.{InteriorHeight, InteriorWidth}
-import scalangband.model.level.generation.roomandhallway.room.{Room, RoomGenerator}
-import scalangband.model.level.generation.terrain.{CheckerboardTerrainGenerator, EmptyFloorTerrainGenerator, RectangularMoatTerrainGenerator, TerrainGenerator}
+import scalangband.model.level.generation.room.{Room, RoomGenerator}
+import StandardMoatedRoom.{
+  InteriorHeight,
+  InteriorWidth
+}
+import scalangband.model.level.generation.DungeonLevelCanvas
+import scalangband.model.level.generation.terrain.{
+  CheckerboardTerrainGenerator,
+  EmptyFloorTerrainGenerator,
+  RectangularMoatTerrainGenerator,
+  TerrainGenerator
+}
 import scalangband.model.tile.{ClosedDoor, RemovableWall}
 
 import scala.util.Random
 
 object StandardMoatedRoom extends RoomGenerator {
   val InteriorHeight = 5
-  val InteriorWidth = 13
+  val InteriorWidth = 17
 
   override def generateRoom(random: Random, top: Int, left: Int, depth: Int): Room = new BasicRectangularRoom(
     top,
@@ -31,7 +39,7 @@ object CheckerboardMoatedRoom extends RoomGenerator {
     depth,
     EmptyFloorTerrainGenerator +
       new RectangularMoatTerrainGenerator(true) +
-      new CheckerboardTerrainGenerator(2, 2, 5, 13)
+      new CheckerboardTerrainGenerator(4, 4, InteriorHeight, InteriorWidth)
   )
 }
 
@@ -49,13 +57,13 @@ object FourBoxesMoatedRoom extends RoomGenerator {
 
   object FourBoxesTerrainGenerator extends TerrainGenerator {
     override def generate(random: Random, canvas: DungeonLevelCanvas): Unit = {
-      canvas.drawHLine(canvas.height / 2, 2, InteriorWidth, () => new RemovableWall())
-      canvas.drawVLine(2, canvas.width / 2, InteriorHeight, () => new RemovableWall())
+      canvas.drawHLine(canvas.height / 2, 4, InteriorWidth, () => new RemovableWall())
+      canvas.drawVLine(4, canvas.width / 2, InteriorHeight, () => new RemovableWall())
 
-      canvas.setTile(2, 1, new ClosedDoor())
-      canvas.setTile(2, InteriorWidth + 2, new ClosedDoor())
-      canvas.setTile(InteriorHeight + 1, 1, new ClosedDoor())
-      canvas.setTile(InteriorHeight + 1, InteriorWidth + 2, new ClosedDoor())
+      canvas.setTile(4, 3, new ClosedDoor())
+      canvas.setTile(4, InteriorWidth + 4, new ClosedDoor())
+      canvas.setTile(InteriorHeight + 3, 3, new ClosedDoor())
+      canvas.setTile(InteriorHeight + 3, InteriorWidth + 4, new ClosedDoor())
     }
   }
 }

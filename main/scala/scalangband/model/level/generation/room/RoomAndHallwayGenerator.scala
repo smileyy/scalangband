@@ -1,15 +1,14 @@
-package scalangband.model.level.generation.roomandhallway
+package scalangband.model.level.generation.room
 
+import scalangband.data.level.rooms.rectangle.{CheckerboardMoatedRoom, FourBoxesMoatedRoom, RandomSizedRectangularRoom, StandardMoatedRoom, TinyChamberRoom}
 import scalangband.model.item.Armory
 import scalangband.model.level.DungeonLevel
-import scalangband.model.level.generation.DungeonLevelGenerator
-import scalangband.model.level.generation.roomandhallway.RoomAndHallwayGenerator.FailureThreshold
-import scalangband.model.level.generation.roomandhallway.room.rectangle.*
-import scalangband.model.level.generation.roomandhallway.room.{Room, RoomGenerator}
-import scalangband.model.location.Direction.randomCardinalDirection
+import scalangband.model.level.generation.room.RoomAndHallwayGenerator.FailureThreshold
+import scalangband.model.level.generation.{DungeonLevelBuilder, DungeonLevelGenerator}
 import scalangband.model.location.*
+import scalangband.model.location.Direction.randomCardinalDirection
 import scalangband.model.monster.Bestiary
-import scalangband.model.tile.{BrokenDoor, ClosedDoor, Floor, OpenDoor, RemovableWall, Tile}
+import scalangband.model.tile.*
 import scalangband.model.util.Weighted
 
 import scala.annotation.tailrec
@@ -42,17 +41,19 @@ class RoomAndHallwayGenerator(roomGenerators: Seq[Weighted[RoomGenerator]]) exte
     }
 
     @tailrec
-    private def addRoom(rooms: List[Room] = List.empty, failures: Int = 0): Unit = {
-      if (failures < FailureThreshold) {
-        if (rooms.isEmpty) {
-          placeFirstRoom() match {
-            case Some(room) => addRoom(List(room))
-            case None => addRoom()
-          }
-        } else {
-          extend(rooms(random.nextInt(rooms.size)), randomCardinalDirection(random)) match {
-            case Some(room) => addRoom(room :: rooms)
-            case None => addRoom(rooms, failures + 1)
+    private def addRoom(rooms: List[Room] = List.empty, failures: Int = 0, limit: Int = 1000): Unit = {
+      if (rooms.size < limit) {
+        if (failures < FailureThreshold) {
+          if (rooms.isEmpty) {
+            placeFirstRoom() match {
+              case Some(room) => addRoom(List(room), limit = limit)
+              case None => addRoom(limit = limit)
+            }
+          } else {
+            extend(rooms(random.nextInt(rooms.size)), randomCardinalDirection(random)) match {
+              case Some(room) => addRoom(room :: rooms, limit = limit)
+              case None => addRoom(rooms, failures + 1, limit = limit)
+            }
           }
         }
       }
@@ -81,10 +82,8 @@ class RoomAndHallwayGenerator(roomGenerators: Seq[Weighted[RoomGenerator]]) exte
       val room = generateNewRoom(top, left)
 
       if (isInLevel(room) && doesNotOverlap(room)) {
-        // The canvas starts with the "inside" of the room, inside of the two-wall border of the room
-        val canvas = builder.getCanvas(room.top + 2, room.left + 2, room.height - 4, room.width - 4)
-        room.addTerrain(random, canvas)
-        room.addMonsters(random, canvas)
+        val canvas = builder.getCanvas(room.top, room.left, room.height, room.width)
+        room.addToLevel(random, canvas)
         Some(room)
       } else None
     }
@@ -172,7 +171,8 @@ object RoomAndHallwayGenerator {
         Weighted(100, RandomSizedRectangularRoom),
         Weighted(10, StandardMoatedRoom),
         Weighted(2, CheckerboardMoatedRoom),
-        Weighted(2, FourBoxesMoatedRoom)
+        Weighted(2, FourBoxesMoatedRoom),
+        Weighted(2, TinyChamberRoom)
       )
     )
   }

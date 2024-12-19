@@ -1,10 +1,11 @@
-package scalangband.model.level.generation.roomandhallway.room.rectangle
+package scalangband.data.level.rooms.rectangle
 
 import scalangband.model.item.Armory
-import scalangband.model.level.generation.roomandhallway.DungeonLevelCanvas
-import scalangband.model.level.generation.roomandhallway.room.{Room, RoomGenerator}
+import scalangband.model.level.generation.DungeonLevelCanvas
+import scalangband.model.level.generation.monster.{MonsterGeneration, RandomMonsterGeneration}
+import scalangband.model.level.generation.room.{Room, RoomGenerator}
 import scalangband.model.level.generation.terrain.{EmptyFloorTerrainGenerator, TerrainGenerator}
-import scalangband.model.location.{Coordinates, Direction, DownDirection, LeftDirection, RightDirection, UpDirection}
+import scalangband.model.location.*
 import scalangband.model.monster.Bestiary
 import scalangband.model.tile.Floor
 
@@ -31,6 +32,21 @@ trait RectangularRoom extends Room {
     case LeftDirection  => Coordinates(random.between(top + 2, bottom - 2), left + 1)
     case RightDirection => Coordinates(random.between(top + 2, bottom - 2), right - 1)
   }
+
+  override def addToLevel(random: Random, canvas: DungeonLevelCanvas): Unit = {
+    addTerrain(random, canvas)
+    addMonsters(random, canvas)
+  }
+
+  def terrain: TerrainGenerator = EmptyFloorTerrainGenerator
+  def addTerrain(random: Random, canvas: DungeonLevelCanvas): Unit = {
+    terrain.generate(random, canvas)
+  }
+
+  def monsters: MonsterGeneration = RandomMonsterGeneration
+  def addMonsters(random: Random, canvas: DungeonLevelCanvas): Unit = {
+    monsters.addMonsters(random, canvas, depth)
+  }
 }
 
 class BasicRectangularRoom(
@@ -39,5 +55,6 @@ class BasicRectangularRoom(
     val height: Int,
     val width: Int,
     val depth: Int,
-    override val terrain: TerrainGenerator = EmptyFloorTerrainGenerator
+    override val terrain: TerrainGenerator = EmptyFloorTerrainGenerator,
+    override val monsters: MonsterGeneration = RandomMonsterGeneration
 ) extends RectangularRoom

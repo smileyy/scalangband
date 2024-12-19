@@ -2,7 +2,7 @@ package scalangband.model.level
 
 import scalangband.data.monster.person.RandomlyMumblingTownsperson
 import scalangband.model.item.Armory
-import scalangband.model.level.generation.roomandhallway.DungeonLevelBuilder
+import scalangband.model.level.generation.DungeonLevelBuilder
 import scalangband.model.monster.Bestiary
 import scalangband.model.tile.{Floor, RemovableWall, Tile}
 
