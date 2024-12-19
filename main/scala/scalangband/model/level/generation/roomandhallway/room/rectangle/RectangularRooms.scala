@@ -17,8 +17,7 @@ object RandomSizedRectangularRoom extends RoomGenerator {
   private val MinWidth = 8
   private val MaxWidth = 24
 
-  override def generateRoom(random: Random, top: Int, left: Int, depth: Int
-  ): Room = {
+  override def generateRoom(random: Random, top: Int, left: Int, depth: Int): Room = {
     val height = random.between(MinHeight, MaxHeight + 1)
     val width = random.between(MinWidth, MaxWidth + 1)
     new BasicRectangularRoom(top, left, height, width, depth)

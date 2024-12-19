@@ -84,6 +84,7 @@ class RoomAndHallwayGenerator(roomGenerators: Seq[Weighted[RoomGenerator]]) exte
         // The canvas starts with the "inside" of the room, inside of the two-wall border of the room
         val canvas = builder.getCanvas(room.top + 2, room.left + 2, room.height - 4, room.width - 4)
         room.addTerrain(random, canvas)
+        room.addMonsters(random, canvas)
         Some(room)
       } else None
     }

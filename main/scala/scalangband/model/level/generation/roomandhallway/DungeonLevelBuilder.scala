@@ -6,6 +6,7 @@ import scalangband.model.level.DungeonLevel
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.{Bestiary, Monster, MonsterFactory}
 import scalangband.model.tile.*
+import scalangband.model.util.RandomUtils
 import scalangband.model.util.RandomUtils.randomElement
 import scalangband.model.util.TileUtils.allCoordinatesFor
 
@@ -33,6 +34,24 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
     override def setTile(row: Int, col: Int, tile: Tile): DungeonLevelCanvas = {
       outer.tiles(row + dy)(col + dx) = tile
       this
+    }
+
+    override def addMonster(depth: Int): Unit = {
+      val (row, col) = RandomUtils.randomPairs(random, height, width)
+        .filter((r, c) =>
+          getTile(r, c) match {
+            case ot: OccupiableTile if !ot.occupied => true
+            case _ => false
+          }
+        )
+        .head
+      
+      addMonster(row, col, depth)
+    }
+
+    override def addMonster(row: Int, col: Int, depth: Int): Unit = {
+      val monster = bestiary.generateMonster(random, depth, Coordinates(row + dy, col + dx))
+      getTile(row, col).asInstanceOf[OccupiableTile].setOccupant(monster)
     }
 
     override def addMonster(row: Int, col: Int, factory: MonsterFactory): Unit = {
@@ -151,5 +170,7 @@ trait DungeonLevelCanvas {
     }
   }
 
+  def addMonster(depth: Int): Unit
+  def addMonster(row: Int, col: Int, depth: Int): Unit
   def addMonster(row: Int, col: Int, factory: MonsterFactory): Unit
 }
