@@ -1,7 +1,7 @@
-package scalangband.model.level.generation.roomandhallway.room
+package scalangband.model.level.generation.room
 
+import scalangband.data.level.rooms.rectangle.BasicRectangularRoom
 import scalangband.model.item.Armory
-import scalangband.model.level.generation.roomandhallway.room.rectangle.BasicRectangularRoom
 import scalangband.model.monster.Bestiary
 
 import scala.util.Random

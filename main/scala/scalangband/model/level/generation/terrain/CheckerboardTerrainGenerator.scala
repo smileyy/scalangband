@@ -1,6 +1,6 @@
 package scalangband.model.level.generation.terrain
 
-import scalangband.model.level.generation.roomandhallway.DungeonLevelCanvas
+import scalangband.model.level.generation.DungeonLevelCanvas
 import scalangband.model.tile.RemovableWall
 
 import scala.util.Random
