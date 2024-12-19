@@ -23,7 +23,7 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
     tiles.slice(top, top + height).map(row => row.slice(left, left + width))
   }
 
-  def getCanvas(row: Int = 1, col: Int = 1, height: Int = height - 2, width: Int = width - 2): DungeonLevelCanvas = {
+  def getCanvas(row: Int, col: Int, height: Int, width: Int): DungeonLevelCanvas = {
     new Canvas(row, col, height, width)
   }
 
@@ -133,15 +133,15 @@ trait DungeonLevelCanvas {
   def setTile(row: Int, col: Int, tile: Tile): DungeonLevelCanvas
   def getTile(row: Int, col: Int): Tile
 
-  def fill(
+  def fillRect(
       row: Int = 0,
       col: Int = 0,
-      height: Int = height,
-      width: Int = width,
+      rectHeight: Int = height,
+      rectWidth: Int = width,
       factory: () => Tile
   ): DungeonLevelCanvas = {
-    for (rowIdx <- row until height) {
-      for (colIdx <- col until width) {
+    for (rowIdx <- row until row + rectHeight) {
+      for (colIdx <- col until col + rectWidth) {
         setTile(rowIdx, colIdx, factory())
       }
     }

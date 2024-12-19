@@ -3,6 +3,7 @@ package scalangband.model.level.generation.roomandhallway.room
 import org.slf4j.LoggerFactory
 import scalangband.model.level.Levels
 import scalangband.model.level.generation.roomandhallway.DungeonLevelCanvas
+import scalangband.model.level.generation.terrain.{EmptyFloorTerrainGenerator, TerrainGenerator}
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.{Bestiary, Monster}
 import scalangband.model.tile.{OccupiableTile, Tile}
@@ -20,7 +21,10 @@ trait Room {
   def bottom: Int = top + height - 1
   def right: Int = left + width - 1
 
-  def attachmentPoint(direction: Direction): Coordinates
-
-  def paint(canvas: DungeonLevelCanvas): Unit
+  def attachmentPoint(random: Random, direction: Direction): Coordinates
+  
+  def terrain: TerrainGenerator = EmptyFloorTerrainGenerator
+  def addTerrain(random: Random, canvas: DungeonLevelCanvas): Unit = {
+    terrain.generate(random, canvas)    
+  }
 }

@@ -63,7 +63,7 @@ class RoomAndHallwayGenerator(roomGenerators: Seq[Weighted[RoomGenerator]]) exte
     }
 
     private def extend(room: Room, direction: Direction): Option[Room] = {
-      val start = room.attachmentPoint(direction)
+      val start = room.attachmentPoint(random, direction)
 
       val (top, left) = direction match {
         case UpDirection => (start.row + random.between(-24, -12), start.col + random.between(-4, 4))
@@ -73,7 +73,7 @@ class RoomAndHallwayGenerator(roomGenerators: Seq[Weighted[RoomGenerator]]) exte
       }
 
       val maybeRoom = tryToPlaceRoom(top, left)
-      maybeRoom.foreach(room => connect(start, room.attachmentPoint(direction.opposite), direction))
+      maybeRoom.foreach(room => connect(start, room.attachmentPoint(random, direction.opposite), direction))
       maybeRoom
     }
 
@@ -81,7 +81,9 @@ class RoomAndHallwayGenerator(roomGenerators: Seq[Weighted[RoomGenerator]]) exte
       val room = generateNewRoom(top, left)
 
       if (isInLevel(room) && doesNotOverlap(room)) {
-        room.paint(builder.getCanvas(room.top, room.left, room.height, room.width))
+        // The canvas starts with the "inside" of the room, inside of the two-wall border of the room
+        val canvas = builder.getCanvas(room.top + 2, room.left + 2, room.height - 4, room.width - 4)
+        room.addTerrain(random, canvas)
         Some(room)
       } else None
     }
@@ -156,7 +158,7 @@ class RoomAndHallwayGenerator(roomGenerators: Seq[Weighted[RoomGenerator]]) exte
     }
 
     private def generateNewRoom(top: Int, left: Int) = {
-      Weighted.selectFrom(random, roomGenerators).generateRoom(random, top, left, depth, armory, bestiary)
+      Weighted.selectFrom(random, roomGenerators).generateRoom(random, top, left, depth)
     }
   }
 }
@@ -166,8 +168,8 @@ object RoomAndHallwayGenerator {
   def apply(): RoomAndHallwayGenerator = {
     new RoomAndHallwayGenerator(
       Seq(
-        Weighted(100, RectangularRoomGenerator),
-//        Weighted(10, EmptyMoatedRoomGenerator),
+//        Weighted(100, RandomSizedRectangularRoom),
+        Weighted(10, StandardMoatedRoom),
 //        Weighted(2, CheckerboardMoatedRoomGenerator),
 //        Weighted(2, FourBoxesMoatedRoomGenerator)
       )

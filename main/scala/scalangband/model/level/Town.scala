@@ -16,8 +16,8 @@ object Town {
   def apply(random: Random, armory: Armory, bestiary: Bestiary): Town = {
     val builder = DungeonLevelBuilder(random, armory, bestiary, TownHeight, TownWidth)
 
-    builder.getCanvas()
-      .fill(factory = () => Floor.empty())
+    builder.getCanvas(1, 1, TownHeight - 2, TownWidth - 2)
+      .fillRect(0, 0, TownHeight - 2, TownWidth - 2, factory = () => Floor.empty())
       .addMonster(0, 0, RandomlyMumblingTownsperson)
 
     builder.build(random, 0, tiles => new Town(tiles))
