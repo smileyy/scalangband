@@ -1,7 +1,7 @@
-package scalangband.model.level.generation.roomandhallway.room
+package scalangband.model.level.generation.room
 
+import scalangband.model.level.generation.DungeonLevelCanvas
 import scalangband.model.level.generation.monster.{MonsterGeneration, RandomMonsterGeneration}
-import scalangband.model.level.generation.roomandhallway.DungeonLevelCanvas
 import scalangband.model.level.generation.terrain.{EmptyFloorTerrainGenerator, TerrainGenerator}
 import scalangband.model.location.{Coordinates, Direction}
 
@@ -22,13 +22,5 @@ trait Room {
 
   def attachmentPoint(random: Random, direction: Direction): Coordinates
 
-  def terrain: TerrainGenerator = EmptyFloorTerrainGenerator
-  def addTerrain(random: Random, canvas: DungeonLevelCanvas): Unit = {
-    terrain.generate(random, canvas)
-  }
-
-  def monsters: MonsterGeneration = RandomMonsterGeneration
-  def addMonsters(random: Random, canvas: DungeonLevelCanvas): Unit = {
-    monsters.addMonsters(random, canvas, depth)
-  }
+  def addToLevel(random: Random, canvas: DungeonLevelCanvas): Unit
 }

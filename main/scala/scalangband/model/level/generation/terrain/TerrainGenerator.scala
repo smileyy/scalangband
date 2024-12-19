@@ -1,6 +1,6 @@
 package scalangband.model.level.generation.terrain
 
-import scalangband.model.level.generation.roomandhallway.DungeonLevelCanvas
+import scalangband.model.level.generation.DungeonLevelCanvas
 import scalangband.model.tile.Floor
 
 import scala.util.Random
@@ -24,6 +24,6 @@ class CompositeTerrainGenerator(val generators: Seq[TerrainGenerator]) extends T
 
 object EmptyFloorTerrainGenerator extends TerrainGenerator {
   override def generate(random: Random, canvas: DungeonLevelCanvas): Unit = {
-    canvas.fillRect(0, 0, canvas.height, canvas.width, factory = () => Floor.empty())
+    canvas.fillRect(2, 2, canvas.height - 4, canvas.width - 4, factory = () => Floor.empty())
   }
 }
