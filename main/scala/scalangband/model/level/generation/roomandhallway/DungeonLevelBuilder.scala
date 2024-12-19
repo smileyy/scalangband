@@ -35,11 +35,9 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
       this
     }
 
-    override def addMonster(row: Int, col: Int, factory: MonsterFactory): DungeonLevelCanvas = {
+    override def addMonster(row: Int, col: Int, factory: MonsterFactory): Unit = {
       val monster = factory.apply(outer.random, Coordinates(row + dy, col + dx), armory)
       getTile(row, col).asInstanceOf[OccupiableTile].setOccupant(monster)
-
-      this
     }
   }
 
@@ -133,20 +131,25 @@ trait DungeonLevelCanvas {
   def setTile(row: Int, col: Int, tile: Tile): DungeonLevelCanvas
   def getTile(row: Int, col: Int): Tile
 
-  def fillRect(
-      row: Int = 0,
-      col: Int = 0,
-      rectHeight: Int = height,
-      rectWidth: Int = width,
-      factory: () => Tile
-  ): DungeonLevelCanvas = {
-    for (rowIdx <- row until row + rectHeight) {
-      for (colIdx <- col until col + rectWidth) {
+  def fillRect(row: Int = 0, col: Int = 0, height: Int = height, width: Int = width, factory: () => Tile): Unit = {
+    for (rowIdx <- row until row + height) {
+      for (colIdx <- col until col + width) {
         setTile(rowIdx, colIdx, factory())
       }
     }
-    this
+  }
+  
+  def drawHLine(row: Int, col: Int, length: Int, factory: () => Tile): Unit = {
+    for (colIdx <- col until col + length) {
+      setTile(row, colIdx, factory())
+    }
   }
 
-  def addMonster(row: Int, col: Int, factory: MonsterFactory): DungeonLevelCanvas
+  def drawVLine(row: Int, col: Int, length: Int, factory: () => Tile): Unit = {
+    for (rowIdx <- row until row + length) {
+      setTile(rowIdx, col, factory())
+    }
+  }
+
+  def addMonster(row: Int, col: Int, factory: MonsterFactory): Unit
 }
