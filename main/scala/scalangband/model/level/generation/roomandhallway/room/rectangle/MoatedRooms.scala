@@ -10,7 +10,7 @@ import scala.util.Random
 
 object StandardMoatedRoom extends RoomGenerator {
   val InteriorHeight = 5
-  val InteriorWidth = 11
+  val InteriorWidth = 13
 
   override def generateRoom(random: Random, top: Int, left: Int, depth: Int): Room = new BasicRectangularRoom(
     top,
@@ -31,7 +31,7 @@ object CheckerboardMoatedRoom extends RoomGenerator {
     depth,
     EmptyFloorTerrainGenerator +
       new RectangularMoatTerrainGenerator(true) +
-      new CheckerboardTerrainGenerator(2, 2, 5, 11)
+      new CheckerboardTerrainGenerator(2, 2, 5, 13)
   )
 }
 
