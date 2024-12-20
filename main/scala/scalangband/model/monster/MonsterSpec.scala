@@ -24,6 +24,7 @@ class MonsterSpec(
     val invisible: Boolean = false,
     val clear: Boolean = false,
     val breeds: Boolean = false,
+    val bashesDoors: Boolean = false,
     val actions: MonsterActions,
     val inventory: Seq[MonsterInventoryGenerator] = Seq.empty,
     val friends: Seq[MonsterFriendSpec] = Seq.empty,

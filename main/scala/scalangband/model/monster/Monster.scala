@@ -33,24 +33,19 @@ class Monster(
   def invisible: Boolean = spec.invisible
   def clear: Boolean = spec.clear
   def breeds: Boolean = spec.breeds
-
-  def addItem(item: Item): Unit = {
-    inventory += item
-  }
+  def bashesDoors: Boolean = spec.bashesDoors
 
   /** Anything that happens before a monster's next action.
     */
   def beforeNextAction(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
-    var results: List[ActionResult] = List.empty
-
     if (breeds) {
-      results = maybeBreed(accessor, callback) ::: results
+      maybeBreed(accessor, callback)
     }
 
-    results
+    List.empty
   }
 
-  private def maybeBreed(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
+  private def maybeBreed(accessor: GameAccessor, callback: GameCallback): Unit = {
     // 1 in 8 chance of breeding
     if (Random.nextInt(8) == 0) {
       accessor.level.emptyAdjacentFloorTileCoordinates(coordinates) match {

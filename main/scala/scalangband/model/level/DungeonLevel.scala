@@ -7,7 +7,7 @@ import scalangband.model.item.Item
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.Monster
 import scalangband.model.player.Player
-import scalangband.model.tile.{Floor, OccupiableTile, Tile}
+import scalangband.model.tile.{BrokenDoor, ClosedDoor, Floor, OccupiableTile, Tile}
 
 import scala.util.Random
 
@@ -48,11 +48,16 @@ class DungeonLevel(val depth: Int, val tiles: Array[Array[Tile]]) extends Tiled 
 
   /** Tries to move the monster in the given direction. If the monster can't move in that direction, nothing happens
     */
-  def tryToMoveMonster(monster: Monster, direction: Direction): Unit = {
+  def tryToMoveMonster(monster: Monster, direction: Direction): ActionResult = {
     val targetCoordinates: Coordinates = monster.coordinates + direction
     this(targetCoordinates) match {
-      case ot: OccupiableTile if !ot.occupied => moveOccupant(monster.coordinates, targetCoordinates)
-      case _                                  =>
+      case ot: OccupiableTile if !ot.occupied =>
+        moveOccupant(monster.coordinates, targetCoordinates)
+        NoResult
+      case door: ClosedDoor if monster.bashesDoors =>
+        replaceTile(targetCoordinates, new BrokenDoor())
+        MessageResult("You hear a door burst open!")
+      case _ => NoResult
     }
   }
 
@@ -123,5 +128,6 @@ class DungeonLevelCallback(private val level: DungeonLevel) {
   def addItemToTile(coordinates: Coordinates, item: Item): ActionResult = level.addItemToTile(coordinates, item)
   def addItemsToTile(coordinates: Coordinates, items: Iterable[Item]): List[ActionResult] =
     level.addItemsToTile(coordinates, items)
-  def tryToMoveMonster(monster: Monster, direction: Direction): Unit = level.tryToMoveMonster(monster, direction)
+  def tryToMoveMonster(monster: Monster, direction: Direction): ActionResult =
+    level.tryToMoveMonster(monster, direction)
 }

@@ -42,21 +42,9 @@ object RandomMovementAction extends MonsterAction {
   val Logger: Logger = LoggerFactory.getLogger(classOf[RandomMovementAction.type])
 
   override def apply(monster: Monster, accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
-    val direction: Direction = Random.nextInt(8) match {
-      case 0 => UpDirection
-      case 1 => DownDirection
-      case 2 => LeftDirection
-      case 3 => RightDirection
-      case 4 => UpLeftDirection
-      case 5 => UpRightDirection
-      case 6 => DownLeftDirection
-      case 7 => DownRightDirection
-    }
-
+    val direction: Direction = Direction.randomDirection()
     Logger.debug(s"${monster.name} is trying to move $direction")
-    callback.level.tryToMoveMonster(monster, direction)
-    
-    List(NoResult)
+    List(callback.level.tryToMoveMonster(monster, direction))
   }
 }
 
