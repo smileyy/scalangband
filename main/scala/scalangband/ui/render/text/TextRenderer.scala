@@ -99,10 +99,11 @@ class TextRenderer(font: Font) extends Renderer {
   }
 
   private def renderItem(item: Item): TextTile = item.archetype match {
-    case SoftBodyArmor => TextTile('(', font, item.color)
+    case FoodArchetype => TextTile(',', font, item.color)
     case LightSource => TextTile('~', font, item.color)
     case Miscellaneous => TextTile('~', font, item.color)
     case MoneyArchetype => TextTile('$', font, item.color)
+    case SoftBodyArmor => TextTile('(', font, item.color)
     case Sword => TextTile('|', font, item.color)
   }
 } 

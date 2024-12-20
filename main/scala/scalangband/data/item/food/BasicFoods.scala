@@ -9,8 +9,8 @@ import scala.util.Random
 object Apple extends FoodFactory {
   override def spec: FoodSpec = FoodSpec(
     name = "Apple",
-    color = LightRed,
-    satiety = IncreaseSatietyBy(500)
+    satiety = IncreaseSatietyBy(500),
+    color = LightRed
   )
 
   override def levels: Range = 0 to 20
@@ -20,8 +20,8 @@ object Apple extends FoodFactory {
 object RationOfFood extends FoodFactory {
   override def spec: FoodSpec = FoodSpec(
     name = "Ration of Food",
-    color = LightUmber,
-    satiety = IncreaseSatietyBy(1500)
+    satiety = IncreaseSatietyBy(1500),
+    color = LightUmber
   )
 
   override def levels: Range = 0 to 50

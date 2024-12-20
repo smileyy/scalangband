@@ -65,7 +65,7 @@ class Player(
     if (isDead) {
       results = DeathResult() :: results
     }
-    
+
     results = reduceSatiety() ::: results
 
     results
@@ -217,12 +217,20 @@ class Player(
 
     results
   }
-  
-  def eat(food: Food): List[ActionResult] = {
+
+  def eat(food: Food, fromInventory: Boolean = true): List[ActionResult] = {
+    var results: List[ActionResult] = List.empty
+
     satiety = food.satiety.whenEaten(satiety)
-    List.empty
+    results = MessageResult(food.message) :: results
+
+    if (fromInventory) {
+      inventory.removeItem(food)
+    }
+
+    results
   }
-  
+
   def reduceSatiety(amount: Int = 1): List[ActionResult] = {
     satiety = if (satiety - amount < 0) 0 else satiety - amount
     List.empty
@@ -270,10 +278,11 @@ object Player {
 }
 
 class PlayerAccessor(private val player: Player) {
-  def coordinates: Coordinates = player.coordinates
   def armorClass: Int = player.armorClass
-  def hasEffect(effectType: EffectType): Boolean = player.hasEffect(effectType)
   def canSeeInvisible: Boolean = player.canSeeInvisible
+  def coordinates: Coordinates = player.coordinates
+  def hasEffect(effectType: EffectType): Boolean = player.hasEffect(effectType)
+  def satiety: Int = player.satiety
 }
 
 class PlayerCallback(private val player: Player) {

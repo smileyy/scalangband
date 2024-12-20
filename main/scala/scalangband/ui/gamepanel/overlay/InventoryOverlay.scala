@@ -3,18 +3,24 @@ package scalangband.ui.gamepanel.overlay
 import scalangband.bridge.rendering.TextColors.*
 import scalangband.model.Game
 import scalangband.model.item.Item
-import scalangband.model.player.action.{DropInventoryItemAction, PlayerAction}
+import scalangband.model.item.food.Food
+import scalangband.model.player.action.{DropInventoryItemAction, EatFoodAction, PlayerAction}
 import scalangband.ui.gamepanel.{GamePanel, PlayerPane}
 import scalangband.ui.keys.KeyHandler
 
 import scala.swing.event.{Key, KeyPressed}
 import scala.swing.{Font, Graphics2D}
 
-class InventoryOverlay(game: Game, factory: InventoryActionFactory, prompt: String) extends GamePanelOverlay {
+class InventoryOverlay(
+    game: Game,
+    factory: InventoryActionFactory,
+    prompt: String,
+    filter: InventoryFilter = AllInventoryFilter
+) extends GamePanelOverlay {
   override def message: Option[String] = None
   override def keyHandler: KeyHandler = new InventoryKeyHandler(game, factory, this)
 
-  override def panel: Option[OverlayPanel] = Some(new InventoryPane(game, prompt))
+  override def panel: Option[OverlayPanel] = Some(new InventoryPane(game, prompt, filter))
 }
 
 object InventoryListOverlay {
@@ -35,7 +41,7 @@ class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, overlay: 
       case KeyPressed(_, Key.Escape, _, _) => Left(None)
 
       case KeyPressed(_, Key.Slash, _, _) => Right(new EquipmentOverlay(game))
-      
+
       case KeyPressed(_, Key.A, _, _) => actionOrOverlay(game, 0)
       case KeyPressed(_, Key.B, _, _) => actionOrOverlay(game, 1)
       case KeyPressed(_, Key.C, _, _) => actionOrOverlay(game, 2)
@@ -53,7 +59,7 @@ class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, overlay: 
       case KeyPressed(_, Key.O, _, _) => actionOrOverlay(game, 14)
       case KeyPressed(_, Key.P, _, _) => actionOrOverlay(game, 15)
       case KeyPressed(_, Key.Q, _, _) => actionOrOverlay(game, 16)
-      
+
       case _ => Right(overlay)
     }
   }
@@ -68,13 +74,13 @@ class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, overlay: 
   }
 }
 
-class InventoryPane(game: Game, prompt: String) extends OverlayPanel {
+class InventoryPane(game: Game, prompt: String, filter: InventoryFilter) extends OverlayPanel {
   override def paint(g: Graphics2D, font: Font): Unit = {
     val fontMetrics = g.getFontMetrics(font)
     val lineHeight = fontMetrics.getHeight
     val charWidth = fontMetrics.charWidth(' ')
 
-    val itemsByCharacter = game.player.inventory.items.zipWithIndex
+    val itemsByCharacter = game.player.inventory.items.zipWithIndex.filter((item, idx) => filter(item))
 
     g.setColor(Black)
     val startX = (PlayerPane.WidthInChars + 1) * charWidth
@@ -82,8 +88,10 @@ class InventoryPane(game: Game, prompt: String) extends OverlayPanel {
 
     g.setColor(White)
     g.drawString(prompt, 0, lineHeight)
+    var line = 0
     itemsByCharacter.foreach { (item, idx) =>
-      g.drawString(s"${(idx + 'a').toChar}) a ${item.displayName}", startX, (idx + 2) * lineHeight)
+      g.drawString(s"${(idx + 'a').toChar}) a ${item.displayName}", startX, (line + 2) * lineHeight)
+      line = line + 1
     }
   }
 }
@@ -96,6 +104,22 @@ object DropItemActionFactory extends InventoryActionFactory {
   override def apply(item: Item): Option[PlayerAction] = Some(new DropInventoryItemAction(item))
 }
 
+object EatFoodActionFactory extends InventoryActionFactory {
+  override def apply(item: Item): Option[PlayerAction] = Some(new EatFoodAction(item.asInstanceOf[Food]))
+}
+
 object ViewItemActionFactory extends InventoryActionFactory {
   override def apply(item: Item): Option[PlayerAction] = None
+}
+
+trait InventoryFilter {
+  def apply(item: Item): Boolean
+}
+
+object AllInventoryFilter extends InventoryFilter {
+  override def apply(item: Item): Boolean = true
+}
+
+object FoodFilter extends InventoryFilter {
+  override def apply(item: Item): Boolean = item.isInstanceOf[Food]
 }

@@ -8,9 +8,11 @@ class Food(spec: FoodSpec) extends Item {
   override def name: String = spec.name
   override def archetype: ItemArchetype = FoodArchetype
 
+  def satiety: Satiety = spec.satiety
+
+  def message: String = spec.message
   override def color: Color = spec.color
 
-  def satiety: Satiety = spec.satiety
 }
 object Food {
   val MaxSatiety: Int = 5000
