@@ -20,6 +20,8 @@ abstract class Tile extends Representable {
   def occupant: Option[Creature] = None
   def occupied: Boolean = occupant.isDefined
 
+  def passable: Boolean
+  
   def representation: Seq[Representable] = Seq(this)
 }
 
@@ -28,6 +30,8 @@ abstract class OccupiableTile(var creature: Option[Creature]) extends Tile {
 
   def setOccupant(newOccupant: Creature): Unit = creature = Some(newOccupant)
   def removeOccupant(): Unit = creature = None
-  
+
+  override def passable: Boolean = true
+
   override def representation: Seq[Representable] = Seq(occupant, Some(this)).flatten
 }

@@ -163,7 +163,7 @@ class RoomAndHallwayGenerator(roomGenerators: Seq[Weighted[RoomGenerator]]) exte
   }
 }
 object RoomAndHallwayGenerator {
-  private val FailureThreshold = 50
+  private val FailureThreshold = 1000
 
   def apply(): RoomAndHallwayGenerator = {
     new RoomAndHallwayGenerator(

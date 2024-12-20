@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import scalangband.data.monster.ant.*
 import scalangband.data.monster.bat.*
 import scalangband.data.monster.bird.*
+import scalangband.data.monster.canine.*
 import scalangband.data.monster.centipede.*
 import scalangband.data.monster.eye.*
 import scalangband.data.monster.ickything.*
@@ -15,8 +16,8 @@ import scalangband.data.monster.rodent.*
 import scalangband.data.monster.snake.*
 import scalangband.data.monster.worm.*
 import scalangband.model.item.Armory
+import scalangband.model.level.DungeonLevels
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.Bestiary.Logger
 
 import scala.util.Random
 
@@ -25,12 +26,14 @@ class Bestiary(factories: Seq[MonsterFactory], armory: Armory) {
     .groupBy((level, _) => level)
     .map((level, seq) => (level, seq.map((_, factory) => factory).toIndexedSeq))
 
+  def getMonsterFactory(random: Random, depth: Int): MonsterFactory = {
+    val actualDepth = DungeonLevels(depth).monsters.randomInRange(random)
+    val factoriesForLevel = factoriesByLevel(actualDepth)
+    factoriesForLevel(random.nextInt(factoriesForLevel.size))
+  }
+
   def generateMonster(random: Random, depth: Int, coordinates: Coordinates): Monster = {
-    val factoriesForLevel = factoriesByLevel(depth)
-    val factory: MonsterFactory = factoriesForLevel(random.nextInt(factoriesForLevel.size))
-    val monster = factory(random, coordinates, armory)
-    Logger.debug(s"Generated $monster")
-    monster
+    getMonsterFactory(random, depth)(random, coordinates, armory)
   }
 }
 object Bestiary {
@@ -52,6 +55,7 @@ object Bestiary {
     WhiteWormMass,
     FloatingEye,
     RockLizard,
+    WildDog,
     SoldierAnt,
     FruitBat,
 
