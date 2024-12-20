@@ -13,7 +13,6 @@ object MainKeyHandler extends KeyHandler {
     event match {
       case KeyPressed(_, Key.A, Key.Modifier.Control, _) => if (game.debug) Right(WizardOverlay) else Left(None)
       case KeyPressed(_, Key.W, Key.Modifier.Control, _) => Left(Some(EnableDebugAction))
-      case KeyPressed(_, Key.H, Key.Modifier.Control, _) => Left(Some(DisplaySatietyAction))
       
       case KeyPressed(_, Key.C, Key.Modifier.Shift, _) => Right(new CharacterOverlay(game))
       case KeyPressed(_, Key.E, Key.Modifier.Shift, _) =>

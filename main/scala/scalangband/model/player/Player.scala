@@ -275,6 +275,8 @@ object Player {
       coords = Coordinates.Placeholder
     )
   }
+
+  val MaxSatiety: Int = 5000
 }
 
 class PlayerAccessor(private val player: Player) {

@@ -23,10 +23,3 @@ object DebugLevelAction extends FreeAction {
     List.empty
   }
 }
-
-
-object DisplaySatietyAction extends FreeAction {
-  override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
-    List(MessageResult(s"You have ${accessor.player.satiety} satiety."))
-  }
-}

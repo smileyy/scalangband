@@ -10,6 +10,7 @@ class GameWindow(game: Game, panel: GamePanel) extends Frame {
   title = "Scalangband"
 
   contents = panel
+  resizable = false
   pack()
 }
 object GameWindow {

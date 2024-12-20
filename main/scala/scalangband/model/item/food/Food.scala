@@ -14,6 +14,3 @@ class Food(spec: FoodSpec) extends Item {
   override def color: Color = spec.color
 
 }
-object Food {
-  val MaxSatiety: Int = 5000
-}

@@ -14,6 +14,5 @@ class LevelPane(game: Game, renderer: Renderer) {
         tiles(row)(col).render(g, x, y, col, row)
       }
     }
-
   }
 }
