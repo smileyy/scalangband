@@ -7,6 +7,7 @@ import scalangband.data.monster.bird.*
 import scalangband.data.monster.canine.*
 import scalangband.data.monster.centipede.*
 import scalangband.data.monster.eye.*
+import scalangband.data.monster.feline.*
 import scalangband.data.monster.ickything.*
 import scalangband.data.monster.kobold.*
 import scalangband.data.monster.mold.*
@@ -61,6 +62,7 @@ object Bestiary {
 
     // Level 2
     Kobold,
+    WildCat,
     Crow,
 
     // Level 3

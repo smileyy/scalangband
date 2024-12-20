@@ -8,6 +8,7 @@ object Bird extends MonsterArchetype
 object Canine extends MonsterArchetype
 object Centipede extends MonsterArchetype
 object Eye extends MonsterArchetype
+object Feline extends MonsterArchetype
 object IckyThing extends MonsterArchetype
 object Kobold extends MonsterArchetype
 object Mold extends MonsterArchetype

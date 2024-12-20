@@ -20,6 +20,12 @@ class BiteAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory: 
   override def hitDescription: Option[String] = Some("bites you")
 }
 
+class ClawAttack(dmg: DiceRoll, element: Option[Element] = None, effectFactory: Option[EffectFactory] = None)
+    extends BlowAttack(dmg, element, effectFactory) {
+
+  override def hitDescription: Option[String] = Some("claws you")
+}
+
 class CrawlAttack(dmg: DiceRoll, element: Option[Element] = None, effect: Option[EffectFactory] = None)
     extends BlowAttack(dmg, element, effect) {
 
