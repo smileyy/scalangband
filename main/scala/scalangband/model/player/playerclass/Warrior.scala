@@ -1,6 +1,7 @@
 package scalangband.model.player.playerclass
 
 import scalangband.data.item.armor.body.SoftLeatherArmor
+import scalangband.data.item.food.RationOfFood
 import scalangband.data.item.lightsource.WoodenTorch
 import scalangband.data.item.weapon.Dagger
 import scalangband.model.item.GoodQuality
@@ -26,5 +27,9 @@ object Warrior extends PlayerClass {
     body = Some(SoftLeatherArmor())
   )
 
-  override def startingInventory(random: Random): Inventory = Inventory.empty()
+  override def startingInventory(random: Random): Inventory = {
+    val inventory = Inventory.empty()
+    (1 to DiceRoll("1d3").roll()).foreach(_ => inventory.addItem(RationOfFood()))
+    inventory
+  }
 }
