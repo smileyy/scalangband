@@ -1,5 +1,6 @@
 package scalangband.model.monster
 
+import scalangband.model.Legendarium
 import scalangband.model.item.Armory
 import scalangband.model.location.Coordinates
 

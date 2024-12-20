@@ -1,6 +1,7 @@
 package scalangband.model.level.generation.room
 
 import scalangband.data.level.rooms.rectangle.{CheckerboardMoatedRoom, FourBoxesMoatedRoom, RandomSizedRectangularRoom, StandardMoatedRoom, TinyChamberRoom}
+import scalangband.model.Legendarium
 import scalangband.model.item.Armory
 import scalangband.model.level.DungeonLevel
 import scalangband.model.level.generation.room.RoomAndHallwayGenerator.FailureThreshold
@@ -22,17 +23,16 @@ import scala.util.Random
   * The algorithm is inspired by https://roguebasin.com/index.php/Dungeon-Building_Algorithm.
   */
 class RoomAndHallwayGenerator(roomGenerators: Seq[Weighted[RoomGenerator]]) extends DungeonLevelGenerator { outer =>
-  override def generateLevel(random: Random, depth: Int, armory: Armory, bestiary: Bestiary): DungeonLevel = {
-    new RoomAndHallwayGeneration(random, depth, armory, bestiary).generate()
+  override def generateLevel(random: Random, depth: Int, legendarium: Legendarium): DungeonLevel = {
+    new RoomAndHallwayGeneration(random, depth, legendarium).generate()
   }
 
   private class RoomAndHallwayGeneration(
       random: Random,
       depth: Int,
-      armory: Armory,
-      bestiary: Bestiary
+      legendarium: Legendarium
   ) {
-    private val builder = DungeonLevelBuilder(random, armory, bestiary)
+    private val builder = DungeonLevelBuilder(random, legendarium)
 
     def generate(): DungeonLevel = {
       addRoom()
