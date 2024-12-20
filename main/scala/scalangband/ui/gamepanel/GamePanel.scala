@@ -2,13 +2,17 @@ package scalangband.ui.gamepanel
 
 import scalangband.Scalangband
 import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
+import scalangband.bridge.rendering.TextColors.White
 import scalangband.model.Game
+import scalangband.model.item.food.Food
+import scalangband.model.player.Player.MaxSatiety
 import scalangband.model.player.action.PlayerAction
 import scalangband.ui.*
 import scalangband.ui.gamepanel.overlay.GamePanelOverlay
 import scalangband.ui.keys.MainKeyHandler
 import scalangband.ui.render.Renderer
 
+import java.awt.FontMetrics
 import scala.swing.*
 import scala.swing.event.*
 
@@ -19,6 +23,7 @@ class GamePanel(game: Game, renderer: Renderer, var maybeOverlay: Option[GamePan
   private val messagePane = new MessagePane(font)
   private val playerPane = new PlayerPane(game, font)
   private val levelPane = new LevelPane(game, renderer)
+  private val statusPane = new StatusPane(game, font)
 
   preferredSize = new Dimension(GamePanel.WidthInPixels, GamePanel.HeightInPixels)
   background = new Color(0, 0, 0)
@@ -69,6 +74,7 @@ class GamePanel(game: Game, renderer: Renderer, var maybeOverlay: Option[GamePan
     messagePane.paint(g, 0, 0)
     playerPane.paint(g, 0, lineHeight)
     levelPane.paint(g, (PlayerPane.WidthInChars + 1) * charWidth, lineHeight * 2)
+    statusPane.paint(g, (PlayerPane.WidthInChars + 1) * charWidth)
 
     maybeOverlay match {
       case Some(overlay) =>
@@ -83,6 +89,17 @@ object GamePanel {
   
   def apply(game: Game, renderer: Renderer): GamePanel = {
     new GamePanel(game, renderer)
+  }
+}
+
+class StatusPane(game: Game, font: Font) {
+  def paint(g: Graphics2D, xOffset: Int): Unit = {
+    val metrics: FontMetrics = g.getFontMetrics(font)
+
+    g.setFont(font)
+    g.setColor(White)
+    // yuck, this is hacky
+    g.drawString(s"Fed: ${game.player.satiety * 100 / MaxSatiety}%", xOffset, GamePanel.HeightInPixels - metrics.getHeight)
   }
 }
 

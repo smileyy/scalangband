@@ -17,9 +17,8 @@ trait Item extends Representable {
   def displayName: String = name
   
   def article: String = this match {
-    case w: Weapon => if (startsWithVowel(w)) "an " else "a "
     case a: Armor => ""
-    case l: LightSource => if (startsWithVowel(l)) "an " else "a "
+    case i => if (startsWithVowel(i)) "an " else "a "
   }
 
   override def toString: String = displayName

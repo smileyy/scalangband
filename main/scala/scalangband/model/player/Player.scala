@@ -6,6 +6,7 @@ import scalangband.model.Game.BaseEnergyUnit
 import scalangband.model.effect.{Effect, EffectType, Paralysis}
 import scalangband.model.element.Element
 import scalangband.model.item.armor.{Armor, BodyArmor}
+import scalangband.model.item.food.Food
 import scalangband.model.item.lightsource.LightSource
 import scalangband.model.item.weapon.Weapon
 import scalangband.model.item.{EquippableItem, Item}
@@ -24,6 +25,7 @@ class Player(
     val cls: PlayerClass,
     var baseStats: Stats,
     var health: Int,
+    var satiety: Int,
     var experience: Experience,
     var levels: List[PlayerLevel],
     var money: Int,
@@ -63,6 +65,8 @@ class Player(
     if (isDead) {
       results = DeathResult() :: results
     }
+
+    results = reduceSatiety() ::: results
 
     results
   }
@@ -214,6 +218,24 @@ class Player(
     results
   }
 
+  def eat(food: Food, fromInventory: Boolean = true): List[ActionResult] = {
+    var results: List[ActionResult] = List.empty
+
+    satiety = food.satiety.whenEaten(satiety)
+    results = MessageResult(food.message) :: results
+
+    if (fromInventory) {
+      inventory.removeItem(food)
+    }
+
+    results
+  }
+
+  def reduceSatiety(amount: Int = 1): List[ActionResult] = {
+    satiety = if (satiety - amount < 0) 0 else satiety - amount
+    List.empty
+  }
+
   def incapacitated: Boolean = {
     hasEffect(Paralysis)
   }
@@ -242,6 +264,7 @@ object Player {
       cls = cls,
       baseStats = startingStats,
       health = levelOne.hitpoints + (startingStats + cls.statBonus).toHp.toInt,
+      satiety = 4500,
       experience = Experience.None,
       levels = List(levelOne),
       money = DiceRoll("1d50+100").roll(),
@@ -252,13 +275,16 @@ object Player {
       coords = Coordinates.Placeholder
     )
   }
+
+  val MaxSatiety: Int = 5000
 }
 
 class PlayerAccessor(private val player: Player) {
-  def coordinates: Coordinates = player.coordinates
   def armorClass: Int = player.armorClass
-  def hasEffect(effectType: EffectType): Boolean = player.hasEffect(effectType)
   def canSeeInvisible: Boolean = player.canSeeInvisible
+  def coordinates: Coordinates = player.coordinates
+  def hasEffect(effectType: EffectType): Boolean = player.hasEffect(effectType)
+  def satiety: Int = player.satiety
 }
 
 class PlayerCallback(private val player: Player) {
@@ -277,6 +303,7 @@ class PlayerCallback(private val player: Player) {
   def wear(item: EquippableItem): List[ActionResult] = player.equip(item)
   def takeOff(f: Equipment => Option[Item]): List[ActionResult] = player.takeOff(f)
 
+  def eat(food: Food): List[ActionResult] = player.eat(food)
   def fullHeal(): List[ActionResult] = player.fullHeal()
 
   def logEquipment(): Unit = PlayerCallback.Logger.info(s"Equipment: ${player.equipment}")

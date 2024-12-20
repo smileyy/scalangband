@@ -35,10 +35,3 @@ object GoUpStairsAction extends PhysicalAction {
     }
   }
 }
-
-object ListEquipmentAction extends InterfaceAction {
-  override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
-    callback.player.logEquipment()
-    List.empty
-  }
-}

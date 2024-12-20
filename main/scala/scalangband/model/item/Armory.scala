@@ -1,6 +1,7 @@
 package scalangband.model.item
 
 import scalangband.data.item.armor.body.*
+import scalangband.data.item.food.{Apple, RationOfFood}
 import scalangband.data.item.lightsource.*
 import scalangband.data.item.money.*
 import scalangband.data.item.weapon.*
@@ -11,7 +12,7 @@ import scala.util.Random
 
 class Armory(factories: Seq[ItemFactory]) {
   private val factoriesByLevel: Map[Int, Seq[Weighted[ItemFactory]]] = {
-    (1 to 100).map(level => (level, factories.filter(factory => factory.levels.contains(level))))
+    (0 to 100).map(level => (level, factories.filter(factory => factory.levels.contains(level))))
       .map((level, factories) => (level, factories.map(factory => Weighted(factory.commonness, factory))))
       .toMap
   }
@@ -43,6 +44,10 @@ object Armory {
     // Light Sources
     WoodenTorch,
     Lantern,
+    
+    // Food
+    Apple,
+    RationOfFood,
 
     // Weapons
     Dagger,
