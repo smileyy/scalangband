@@ -4,6 +4,7 @@ import scalangband.model.Game.MaxDungeonDepth
 import scalangband.model.item.Armory
 import scalangband.model.level.DungeonLevel
 import scalangband.model.location.Coordinates
+import scalangband.model.monster.{Bestiary, Monster, MonsterFactory, MonsterFactoryFriendSpec, MonsterFriendSpec}
 import scalangband.model.monster.{Bestiary, MonsterFactory}
 import scalangband.model.monster.{Bestiary, Monster, MonsterFactory, MonsterFactoryFriendSpec, MonsterFriendSpec}
 import scalangband.model.tile.*
