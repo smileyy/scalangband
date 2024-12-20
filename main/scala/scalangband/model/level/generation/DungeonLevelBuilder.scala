@@ -2,7 +2,7 @@ package scalangband.model.level.generation
 
 import scalangband.model.Game.MaxDungeonDepth
 import scalangband.model.item.Armory
-import scalangband.model.level.DungeonLevel
+import scalangband.model.level.{DungeonLevel, Tiled}
 import scalangband.model.location.Coordinates
 import scalangband.model.monster.{Bestiary, Monster, MonsterFactory, MonsterFactoryFriendSpec, MonsterFriendSpec}
 import scalangband.model.monster.{Bestiary, MonsterFactory}
@@ -10,11 +10,11 @@ import scalangband.model.monster.{Bestiary, Monster, MonsterFactory, MonsterFact
 import scalangband.model.tile.*
 import scalangband.model.util.{RandomUtils, TileUtils}
 import scalangband.model.util.RandomUtils.randomElement
-import scalangband.model.util.TileUtils.{allCoordinatesFor, getAdjacentCoordinates}
 
 import scala.util.Random
 
-class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory: Armory, bestiary: Bestiary) { outer =>
+class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory: Armory, bestiary: Bestiary)
+    extends Tiled { outer =>
   def height: Int = tiles.length
   def width: Int = tiles(0).length
 
@@ -39,15 +39,16 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
     }
 
     override def addMonster(depth: Int): Unit = {
-      val (row, col) = RandomUtils.randomPairs(random, height, width)
+      val (row, col) = RandomUtils
+        .randomPairs(random, height, width)
         .filter((r, c) =>
           getTile(r, c) match {
             case ot: OccupiableTile if !ot.occupied => true
-            case _ => false
+            case _                                  => false
           }
         )
         .head
-      
+
       addMonster(row, col, depth)
     }
 
@@ -71,7 +72,7 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
       if (random.nextInt(100) < probability) {
         val numberOfFriends = spec.number.roll()
         val filter: Tile => Boolean = tile => tile.isInstanceOf[OccupiableTile] && !tile.occupied
-        val locations = getAdjacentCoordinates(outer.tiles, start, filter, numberOfFriends)
+        val locations = getAdjacentCoordinates(start, filter, numberOfFriends)
         locations.foreach(coords =>
           spec match {
             case factorySpec: MonsterFactoryFriendSpec => addSingleMonster(factorySpec.factory, coords)
@@ -95,7 +96,7 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
   }
 
   private def enforceUpStairsInvariants(random: Random, depth: Int): Unit = {
-    val upStairs = allCoordinatesFor(tiles, _.isInstanceOf[UpStairs])
+    val upStairs = allCoordinatesFor(_.isInstanceOf[UpStairs])
     if (depth == 0) {
       // replace any up stairs on the town level with floor tiles
       upStairs.foreach(coords => setTile(coords, Floor.empty()))
@@ -103,7 +104,7 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
       (0 until desiredNumberOfUpStairs(random)).foreach { _ =>
         val floor = randomElement(
           random,
-          allCoordinatesFor(tiles, tile => tile.isInstanceOf[Floor] && !tile.asInstanceOf[Floor].occupied)
+          allCoordinatesFor(tile => tile.isInstanceOf[Floor] && !tile.asInstanceOf[Floor].occupied)
         )
         setTile(floor, new UpStairs())
       }
@@ -115,7 +116,7 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
   }
 
   private def enforceDownStairsInvariants(random: Random, depth: Int): Unit = {
-    val downStairs = allCoordinatesFor(tiles, _.isInstanceOf[DownStairs])
+    val downStairs = allCoordinatesFor(_.isInstanceOf[DownStairs])
     if (depth == MaxDungeonDepth) {
       // replace any up stairs on the bottom level with floor tiles
       downStairs.foreach(coords => setTile(coords, Floor.empty()))
@@ -123,7 +124,7 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
       (0 until desiredNumberOfDownStairs(random, depth)).foreach { _ =>
         val floor = randomElement(
           random,
-          allCoordinatesFor(tiles, tile => tile.isInstanceOf[Floor] && !tile.asInstanceOf[Floor].occupied)
+          allCoordinatesFor(tile => tile.isInstanceOf[Floor] && !tile.asInstanceOf[Floor].occupied)
         )
         setTile(floor, new DownStairs())
       }
@@ -178,7 +179,7 @@ trait DungeonLevelCanvas {
       }
     }
   }
-  
+
   def drawHLine(row: Int, col: Int, length: Int, factory: () => Tile): Unit = {
     for (colIdx <- col until col + length) {
       setTile(row, colIdx, factory())

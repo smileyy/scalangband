@@ -14,7 +14,6 @@ import scalangband.model.scheduler.SchedulerQueue
 import scalangband.model.settings.Settings
 import scalangband.model.tile.{DownStairs, Floor, OccupiableTile, UpStairs}
 import scalangband.model.util.RandomUtils.randomElement
-import scalangband.model.util.TileUtils.allCoordinatesFor
 
 import scala.annotation.tailrec
 import scala.util.Random
@@ -148,7 +147,7 @@ object Game {
     val bestiary: Bestiary = Bestiary(armory)
     val town: DungeonLevel = Town(random, armory, bestiary)
 
-    val start = randomElement(random, allCoordinatesFor(town.tiles, tile => tile.isInstanceOf[DownStairs]))
+    val start = randomElement(random, town.allCoordinatesFor(tile => tile.isInstanceOf[DownStairs]))
     town.addPlayer(start, player)
 
     new Game(seed, random, settings, armory, bestiary, player, town, town, 0)
@@ -168,31 +167,26 @@ class GameCallback(private val game: Game) {
   private val logger = LoggerFactory.getLogger(getClass)
 
   // this has to be a `def` since the current level of the game is mutable
-  def level: LevelCallback = new LevelCallback(game.level)
+  def level: DungeonLevelCallback = new DungeonLevelCallback(game.level)
   val player: PlayerCallback = game.player.callback
 
   def movePlayerTo(targetCoordinates: Coordinates): Unit = {
     game.level.moveOccupant(game.player.coordinates, targetCoordinates)
   }
 
-  def killMonster(monster: Monster): Unit = {
+  def killMonster(monster: Monster): List[ActionResult] = {
     val coordinates = monster.coordinates
-    val tile = game.level(coordinates).asInstanceOf[OccupiableTile]
-
-    tile match {
-      case floor: Floor => floor.addItems(monster.inventory.toList)
-      // TODO #25: scatter the item nearby if it lands on a non-Floor tile
-      case _ => logger.info("Oops, an item disappeared into the aether")
-    }
 
     game.queue.remove(monster)
     game.level(coordinates).asInstanceOf[OccupiableTile].removeOccupant()
+
+    level.addItemsToTile(coordinates, monster.inventory)
   }
 
   def moveDownTo(newDepth: Int): Unit = {
     val newLevel = game.levelGenerator.generateLevel(game.random, newDepth, game.armory, game.bestiary)
     val startingCoordinates =
-      randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[UpStairs]))
+      randomElement(game.random, newLevel.allCoordinatesFor(tile => tile.isInstanceOf[UpStairs]))
     newLevel.addPlayer(startingCoordinates, game.player)
     game.level = newLevel
     player.resetEnergy()
@@ -205,7 +199,7 @@ class GameCallback(private val game: Game) {
       game.levelGenerator.generateLevel(game.random, newDepth, game.armory, game.bestiary)
     }
     val startingCoordinates =
-      randomElement(game.random, allCoordinatesFor(newLevel.tiles, tile => tile.isInstanceOf[DownStairs]))
+        randomElement(game.random, newLevel.allCoordinatesFor(tile => tile.isInstanceOf[DownStairs]))
     newLevel.addPlayer(startingCoordinates, game.player)
     game.level = newLevel
     player.resetEnergy()
