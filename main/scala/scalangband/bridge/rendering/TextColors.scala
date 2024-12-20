@@ -13,6 +13,7 @@ object TextColors {
   val LightUmber = new Color(188, 162, 145)
   val MediumGrey = new Color(95, 95, 95)
   val Orange = new Color(255, 165, 0)
+  val Purple = new Color(128, 0, 128)
   val Red = new Color(255, 0, 0)
   val Turquoise = new Color(83, 195, 189)
   val Umber = new Color(99, 81, 71)

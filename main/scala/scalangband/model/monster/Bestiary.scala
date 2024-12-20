@@ -15,6 +15,7 @@ import scalangband.data.monster.mushroom.*
 import scalangband.data.monster.reptile.*
 import scalangband.data.monster.rodent.*
 import scalangband.data.monster.snake.*
+import scalangband.data.monster.spider.CaveSpider
 import scalangband.data.monster.worm.*
 import scalangband.model.item.Armory
 import scalangband.model.level.DungeonLevels
@@ -62,6 +63,7 @@ object Bestiary {
 
     // Level 2
     Kobold,
+    CaveSpider,
     WildCat,
     Crow,
 
