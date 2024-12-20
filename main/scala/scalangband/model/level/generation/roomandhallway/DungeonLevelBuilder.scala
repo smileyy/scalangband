@@ -4,11 +4,11 @@ import scalangband.model.Game.MaxDungeonDepth
 import scalangband.model.item.{Armory, Item}
 import scalangband.model.level.DungeonLevel
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.{Bestiary, Monster, MonsterFactory}
+import scalangband.model.monster.{Bestiary, Monster, MonsterFactory, MonsterFactoryFriendSpec, MonsterFriendSpec}
 import scalangband.model.tile.*
-import scalangband.model.util.RandomUtils
+import scalangband.model.util.{RandomUtils, TileUtils}
 import scalangband.model.util.RandomUtils.randomElement
-import scalangband.model.util.TileUtils.allCoordinatesFor
+import scalangband.model.util.TileUtils.{allCoordinatesFor, getAdjacentCoordinates}
 
 import scala.util.Random
 
@@ -50,13 +50,32 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
     }
 
     override def addMonster(row: Int, col: Int, depth: Int): Unit = {
-      val monster = bestiary.generateMonster(random, depth, Coordinates(row + dy, col + dx))
-      getTile(row, col).asInstanceOf[OccupiableTile].setOccupant(monster)
+      addMonster(row: Int, col: Int, bestiary.getMonsterFactory(random, depth))
     }
 
     override def addMonster(row: Int, col: Int, factory: MonsterFactory): Unit = {
-      val monster = factory.apply(outer.random, Coordinates(row + dy, col + dx), armory)
-      getTile(row, col).asInstanceOf[OccupiableTile].setOccupant(monster)
+      val coordinates = Coordinates(row + dy, col + dx)
+      addSingleMonster(factory, coordinates)
+      factory.spec.friends.foreach(friendSpec => addFriends(friendSpec, coordinates))
+    }
+
+    private def addSingleMonster(factory: MonsterFactory, coordinates: Coordinates): Unit = {
+      val monster = factory.apply(outer.random, coordinates, armory)
+      outer.tiles(coordinates.row)(coordinates.col).asInstanceOf[OccupiableTile].setOccupant(monster)
+    }
+
+    private def addFriends(spec: MonsterFriendSpec, start: Coordinates): Unit = {
+      val probability: Int = spec.probability
+      if (random.nextInt(100) < probability) {
+        val numberOfFriends = spec.number.roll()
+        val filter: Tile => Boolean = tile => tile.isInstanceOf[OccupiableTile] && !tile.occupied
+        val locations = getAdjacentCoordinates(outer.tiles, start, filter, numberOfFriends)
+        locations.foreach(coords =>
+          spec match {
+            case factorySpec: MonsterFactoryFriendSpec => addSingleMonster(factorySpec.factory, coords)
+          }
+        )
+      }
     }
   }
 

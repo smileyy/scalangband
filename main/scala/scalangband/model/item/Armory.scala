@@ -4,7 +4,7 @@ import scalangband.data.item.armor.body.*
 import scalangband.data.item.lightsource.*
 import scalangband.data.item.money.*
 import scalangband.data.item.weapon.*
-import scalangband.model.level.Levels
+import scalangband.model.level.DungeonLevels
 import scalangband.model.util.Weighted
 
 import scala.util.Random
@@ -17,20 +17,20 @@ class Armory(factories: Seq[ItemFactory]) {
   }
 
   def generateItem(random: Random, depth: Int): Item = {
-    val level = Levels(depth).items.randomInRange(random)
+    val level = DungeonLevels(depth).items.randomInRange(random)
     val factory = Weighted.selectFrom(random, factoriesByLevel(level))
 
-    val quality = Weighted.selectFrom(random, Levels(depth).quality)
+    val quality = Weighted.selectFrom(random, DungeonLevels(depth).quality)
 
     factory(random, quality)
   }
 
   def generateItem(random: Random, archetype: ItemArchetype, depth: Int): Item = {
-    val level = Levels(depth).items.randomInRange(random)
+    val level = DungeonLevels(depth).items.randomInRange(random)
     val factories = factoriesByLevel(level).filter(w => w.item.archetype == archetype)
     val factory = Weighted.selectFrom(random, factories)
 
-    val quality = Weighted.selectFrom(random, Levels(depth).quality)
+    val quality = Weighted.selectFrom(random, DungeonLevels(depth).quality)
 
     factory(random, quality)
   }

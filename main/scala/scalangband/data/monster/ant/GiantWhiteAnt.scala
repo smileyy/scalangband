@@ -3,7 +3,7 @@ package scalangband.data.monster.ant
 import scalangband.bridge.rendering.TextColors
 import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, RandomMovementAction}
 import scalangband.model.monster.attack.BiteAttack
-import scalangband.model.monster.{Ant, MonsterFactory, MonsterSpec}
+import scalangband.model.monster.{Ant, MonsterFactory, MonsterFactoryFriendSpec, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object GiantWhiteAnt extends MonsterFactory {
@@ -16,6 +16,7 @@ object GiantWhiteAnt extends MonsterFactory {
     sleepiness = 80,
     experience = 2,
     actions = actions,
+    friends = Seq(MonsterFactoryFriendSpec(100, DiceRoll("4d4"), GiantWhiteAnt)),
     color = TextColors.White
   )
 
