@@ -1,10 +1,10 @@
 package scalangband.model.level.generation
 
 import scalangband.model.Game.MaxDungeonDepth
+import scalangband.model.Legendarium
 import scalangband.model.item.Armory
 import scalangband.model.level.{DungeonLevel, Tiled}
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.{Bestiary, Monster, MonsterFactory, MonsterFactoryFriendSpec, MonsterFriendSpec}
 import scalangband.model.monster.{Bestiary, MonsterFactory}
 import scalangband.model.monster.{Bestiary, Monster, MonsterFactory, MonsterFactoryFriendSpec, MonsterFriendSpec}
 import scalangband.model.tile.*
@@ -13,7 +13,7 @@ import scalangband.model.util.RandomUtils.randomElement
 
 import scala.util.Random
 
-class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory: Armory, bestiary: Bestiary)
+class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], legendarium: Legendarium)
     extends Tiled { outer =>
   def height: Int = tiles.length
   def width: Int = tiles(0).length
@@ -53,7 +53,7 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
     }
 
     override def addMonster(row: Int, col: Int, depth: Int): Unit = {
-      addMonster(row: Int, col: Int, bestiary.getMonsterFactory(random, depth))
+      addMonster(row: Int, col: Int, legendarium.getMonsterFactory(random, depth))
     }
 
     override def addMonster(row: Int, col: Int, factory: MonsterFactory): Unit = {
@@ -63,7 +63,7 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], armory:
     }
 
     private def addSingleMonster(factory: MonsterFactory, coordinates: Coordinates): Unit = {
-      val monster = factory.apply(outer.random, coordinates, armory)
+      val monster = factory.apply(outer.random, coordinates, legendarium.armory)
       outer.tiles(coordinates.row)(coordinates.col).asInstanceOf[OccupiableTile].setOccupant(monster)
     }
 
@@ -142,8 +142,7 @@ object DungeonLevelBuilder {
     */
   def apply(
       random: Random,
-      armory: Armory,
-      bestiary: Bestiary,
+      legendarium: Legendarium,
       height: Int = 50,
       width: Int = 100
   ): DungeonLevelBuilder = {
@@ -161,7 +160,7 @@ object DungeonLevelBuilder {
       }
     }
 
-    new DungeonLevelBuilder(random, tiles, armory, bestiary)
+    new DungeonLevelBuilder(random, tiles, legendarium)
   }
 }
 

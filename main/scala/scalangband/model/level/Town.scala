@@ -1,6 +1,7 @@
 package scalangband.model.level
 
 import scalangband.data.monster.person.RandomlyMumblingTownsperson
+import scalangband.model.Legendarium
 import scalangband.model.item.Armory
 import scalangband.model.level.generation.DungeonLevelBuilder
 import scalangband.model.monster.Bestiary
@@ -13,8 +14,8 @@ object Town {
   private val TownHeight = 36
   private val TownWidth = 80
 
-  def apply(random: Random, armory: Armory, bestiary: Bestiary): Town = {
-    val builder = DungeonLevelBuilder(random, armory, bestiary, TownHeight, TownWidth)
+  def apply(random: Random, legendarium: Legendarium): Town = {
+    val builder = DungeonLevelBuilder(random, legendarium, TownHeight, TownWidth)
 
     val canvas = builder.getCanvas(1, 1, TownHeight - 2, TownWidth - 2)
     canvas.fillRect(0, 0, TownHeight - 2, TownWidth - 2, factory = () => Floor.empty())

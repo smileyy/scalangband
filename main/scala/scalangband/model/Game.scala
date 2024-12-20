@@ -22,8 +22,7 @@ class Game(
     seed: Long,
     val random: Random,
     val settings: Settings,
-    val armory: Armory,
-    val bestiary: Bestiary,
+    val legendarium: Legendarium,
     val player: Player,
     val town: DungeonLevel,
     var level: DungeonLevel,
@@ -143,14 +142,13 @@ object Game {
   val MaxDungeonDepth: Int = 100
 
   def apply(seed: Long, random: Random, settings: Settings, player: Player): Game = {
-    val armory: Armory = Armory()
-    val bestiary: Bestiary = Bestiary(armory)
-    val town: DungeonLevel = Town(random, armory, bestiary)
+    val legendarium = Legendarium()
 
+    val town: DungeonLevel = Town(random, legendarium)
     val start = randomElement(random, town.allCoordinatesFor(tile => tile.isInstanceOf[DownStairs]))
     town.addPlayer(start, player)
 
-    new Game(seed, random, settings, armory, bestiary, player, town, town, 0)
+    new Game(seed, random, settings, legendarium, player, town, town, 0)
   }
 }
 
@@ -159,7 +157,7 @@ class GameAccessor(private val game: Game) {
   def level: DungeonLevelAccessor = new DungeonLevelAccessor(game.level)
   val player: PlayerAccessor = new PlayerAccessor(game.player)
 
-  def armory: Armory = game.armory
+  def legendarium: Legendarium = game.legendarium
   def playerTile: OccupiableTile = level.tile(player.coordinates).asInstanceOf[OccupiableTile]
 }
 
@@ -184,7 +182,7 @@ class GameCallback(private val game: Game) {
   }
 
   def moveDownTo(newDepth: Int): Unit = {
-    val newLevel = game.levelGenerator.generateLevel(game.random, newDepth, game.armory, game.bestiary)
+    val newLevel = game.levelGenerator.generateLevel(game.random, newDepth, game.legendarium)
     val startingCoordinates =
       randomElement(game.random, newLevel.allCoordinatesFor(tile => tile.isInstanceOf[UpStairs]))
     newLevel.addPlayer(startingCoordinates, game.player)
@@ -196,7 +194,7 @@ class GameCallback(private val game: Game) {
     val newLevel = if (newDepth == 0) {
       game.town
     } else {
-      game.levelGenerator.generateLevel(game.random, newDepth, game.armory, game.bestiary)
+      game.levelGenerator.generateLevel(game.random, newDepth, game.legendarium)
     }
     val startingCoordinates =
         randomElement(game.random, newLevel.allCoordinatesFor(tile => tile.isInstanceOf[DownStairs]))

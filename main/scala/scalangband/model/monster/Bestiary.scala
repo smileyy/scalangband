@@ -21,7 +21,7 @@ import scalangband.model.location.Coordinates
 
 import scala.util.Random
 
-class Bestiary(factories: Seq[MonsterFactory], armory: Armory) {
+class Bestiary(factories: Seq[MonsterFactory]) {
   private val factoriesByLevel = factories.map(factory => (factory.spec.depth, factory))
     .groupBy((level, _) => level)
     .map((level, seq) => (level, seq.map((_, factory) => factory).toIndexedSeq))
@@ -32,14 +32,14 @@ class Bestiary(factories: Seq[MonsterFactory], armory: Armory) {
     factoriesForLevel(random.nextInt(factoriesForLevel.size))
   }
 
-  def generateMonster(random: Random, depth: Int, coordinates: Coordinates): Monster = {
+  def generateMonster(random: Random, depth: Int, coordinates: Coordinates, armory: Armory): Monster = {
     getMonsterFactory(random, depth)(random, coordinates, armory)
   }
 }
 object Bestiary {
   private val Logger = LoggerFactory.getLogger(classOf[Bestiary])
 
-  def apply(armory: Armory): Bestiary = new Bestiary(Seq(
+  def apply(): Bestiary = new Bestiary(Seq(
     // these are in the same order as Angband's `monsters.txt`
 
     // Level 1
@@ -65,5 +65,5 @@ object Bestiary {
     // Level 3
     GiantWhiteAnt,
     MetallicRedCentipede,
- ), armory)
+ ))
 }

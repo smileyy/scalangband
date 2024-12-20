@@ -1,5 +1,6 @@
 package scalangband.model.level.generation
 
+import scalangband.model.Legendarium
 import scalangband.model.item.Armory
 import scalangband.model.level.DungeonLevel
 import scalangband.model.level.generation.room.RoomAndHallwayGenerator
@@ -11,8 +12,8 @@ class RandomWeightedLevelGenerator(weightedGenerators: Seq[(DungeonLevelGenerato
 
   private val totalWeights = weightedGenerators.map((_, weight) => weight).sum
 
-  override def generateLevel(random: Random, depth: Int, armory: Armory, bestiary: Bestiary): DungeonLevel = {
-    selectLevelGenerator(random).generateLevel(random, depth, armory, bestiary)
+  override def generateLevel(random: Random, depth: Int, legendarium: Legendarium): DungeonLevel = {
+    selectLevelGenerator(random).generateLevel(random, depth, legendarium)
   }
   
   private def selectLevelGenerator(random: Random): DungeonLevelGenerator = {
