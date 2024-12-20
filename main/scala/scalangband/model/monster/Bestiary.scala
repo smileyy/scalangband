@@ -60,6 +60,7 @@ object Bestiary {
     FruitBat,
 
     // Level 2
+    Kobold,
     Crow,
 
     // Level 3

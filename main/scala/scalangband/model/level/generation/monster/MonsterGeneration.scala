@@ -9,7 +9,6 @@ trait MonsterGeneration {
 
 object RandomMonsterGeneration extends MonsterGeneration {
   override def addMonsters(random: Random, canvas: DungeonLevelCanvas, depth: Int): Unit = {
-    println("Adding monsters...")
     val numberOfMonsters = random.nextInt(100) match {
       case x if x < 25 => 0
       case x if x < 75 => 1
