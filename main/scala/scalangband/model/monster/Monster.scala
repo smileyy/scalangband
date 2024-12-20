@@ -55,10 +55,12 @@ class Monster(
     if (Random.nextInt(8) == 0) {
       accessor.level.emptyAdjacentFloorTileCoordinates(coordinates) match {
         case Some(coordinates) =>
+          val monster = factory(new Random(), coordinates, accessor.armory)
+          monster.awake = true
           accessor.level
             .tile(coordinates)
             .asInstanceOf[Floor]
-            .setOccupant(factory(new Random(), coordinates, accessor.armory))
+            .setOccupant(monster)
         case None =>
       }
     }
