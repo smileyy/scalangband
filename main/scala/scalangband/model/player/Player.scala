@@ -71,18 +71,18 @@ class Player(
     regenerateEnergy()
     equipment.allEquipment.foreach(item => item.onNextTurn())
   }
-  
+
   def pickUp(item: Item): ActionResult = {
     inventory.addItem(item)
     MessageResult(s"You pick up the ${item.displayName}.")
   }
 
-  def drop(item: Item, callback: GameCallback): ActionResult = {
-    inventory.removeItem(item) 
-    callback.level.addItemToTile(coordinates, item)
-    MessageResult(s"You drop ${item.article}${item.displayName}.")
+  def drop(item: Item, callback: GameCallback): List[ActionResult] = {
+    inventory.removeItem(item)
+    val dropItemResult = callback.level.addItemToTile(coordinates, item)
+    List(dropItemResult, MessageResult(s"You drop ${item.article}${item.displayName}."))
   }
-  
+
   def equip(item: EquippableItem): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
@@ -94,14 +94,14 @@ class Player(
         case Some(item) =>
           inventory.addItem(item)
           results = MessageResult(s"$were ${item.article}${item.displayName}") :: results
-        case None => 
+        case None =>
       }
     }
-    
+
     item match {
-      case w: Weapon => equip(e => e.wield(w), "You are wielding", "You were wielding")
+      case w: Weapon      => equip(e => e.wield(w), "You are wielding", "You were wielding")
       case l: LightSource => equip(e => e.wield(l), "Your light source is", "You were holding")
-      case b: BodyArmor => equip(e => e.wear(b), "You are wearing", "You were wearing")
+      case b: BodyArmor   => equip(e => e.wear(b), "You are wearing", "You were wearing")
     }
 
     results
@@ -112,9 +112,9 @@ class Player(
       case Some(item) =>
         inventory.addItem(item)
         item match {
-          case w: Weapon => List(MessageResult(s"You were wielding ${item.article}${item.displayName}."))
+          case w: Weapon      => List(MessageResult(s"You were wielding ${item.article}${item.displayName}."))
           case l: LightSource => List(MessageResult(s"You were holding ${item.article}${item.displayName}."))
-          case a: Armor => List(MessageResult(s"You were wearing ${item.article}${item.displayName}."))
+          case a: Armor       => List(MessageResult(s"You were wearing ${item.article}${item.displayName}."))
         }
       case None => List.empty
     }
@@ -136,7 +136,7 @@ class Player(
       List.empty
     }
   }
-  
+
   def attack(monster: Monster, callback: GameCallback): List[ActionResult] = {
     Random.nextInt(20) + 1 match {
       case 1  => handleMiss(monster)
@@ -155,7 +155,7 @@ class Player(
 
     val damageDice = equipment.weapon match {
       case Some(weapon) => weapon.damage
-      case None => DiceRoll("1d1")
+      case None         => DiceRoll("1d1")
     }
     val damage = Math.max(damageDice.roll() + toDamage, 1)
     monster.health = monster.health - damage
@@ -164,10 +164,10 @@ class Player(
     results = MessageResult(s"You hit the ${monster.displayName}.") :: results
     Player.Logger.info(s"Player hit ${monster.displayName} for $damage damage")
     if (monster.health <= 0) {
-      callback.killMonster(monster)
       Player.Logger.info(s"Player killed ${monster.displayName}")
-      val deathString = s"You have ${if (monster.alive) "slain" else "destroyed"} the ${monster.displayName}."
-      results = MessageResult(deathString) :: results
+      results =
+        MessageResult(s"You have ${if (monster.alive) "slain" else "destroyed"} the ${monster.displayName}.") :: results
+      results = callback.killMonster(monster) ::: results
 
       results = addExperience(monster.experience) ::: results
     }
@@ -223,7 +223,7 @@ class Player(
   }
 
   private def resists(element: Element): Boolean = false
-  
+
   def fullHeal(): List[ActionResult] = {
     health = maxHealth
     List(MessageResult("You feel *much* better."))
@@ -272,13 +272,13 @@ class PlayerCallback(private val player: Player) {
   def addMoney(amount: Int): Unit = player.money = player.money + amount
 
   def pickUp(item: Item): ActionResult = player.pickUp(item)
-  def dropItem(item: Item, callback: GameCallback): ActionResult = player.drop(item, callback)
+  def dropItem(item: Item, callback: GameCallback): List[ActionResult] = player.drop(item, callback)
 
   def wear(item: EquippableItem): List[ActionResult] = player.equip(item)
   def takeOff(f: Equipment => Option[Item]): List[ActionResult] = player.takeOff(f)
 
   def fullHeal(): List[ActionResult] = player.fullHeal()
-  
+
   def logEquipment(): Unit = PlayerCallback.Logger.info(s"Equipment: ${player.equipment}")
 }
 object PlayerCallback {
