@@ -1,7 +1,7 @@
 package scalangband.ui.keys
 
 import scalangband.model.Game
-import scalangband.model.debug.{EnableDebugAction, DisplaySatietyAction}
+import scalangband.model.debug.EnableDebugAction
 import scalangband.model.location.*
 import scalangband.model.player.action.*
 import scalangband.ui.gamepanel.overlay.*
