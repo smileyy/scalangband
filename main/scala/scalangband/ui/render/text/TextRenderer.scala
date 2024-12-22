@@ -83,6 +83,7 @@ class TextRenderer(font: Font) extends Renderer {
         case Eye => TextTile('e', font, color)
         case Feline => TextTile('f', font, color)
         case IckyThing => TextTile('i', font, color)
+        case Jelly => TextTile('j', font, color)
         case Kobold => TextTile('k', font, color)
         case Mold => TextTile('m', font, color)
         case Mushroom => TextTile(',', font, color)

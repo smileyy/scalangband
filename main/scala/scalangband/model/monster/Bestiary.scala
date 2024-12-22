@@ -9,6 +9,7 @@ import scalangband.data.monster.centipede.*
 import scalangband.data.monster.eye.*
 import scalangband.data.monster.feline.*
 import scalangband.data.monster.ickything.*
+import scalangband.data.monster.jelly.WhiteJelly
 import scalangband.data.monster.kobold.*
 import scalangband.data.monster.mold.*
 import scalangband.data.monster.mushroom.*
@@ -70,5 +71,6 @@ object Bestiary {
     // Level 3
     GiantWhiteAnt,
     MetallicRedCentipede,
+    WhiteJelly,
  ))
 }
