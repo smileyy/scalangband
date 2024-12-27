@@ -1,6 +1,6 @@
 package scalangband.model.item.armor
 
-import scalangband.model.item.{Artifact, GoodQuality, GreatQuality, ItemArchetype, ItemFactory, ItemQuality, NormalQuality}
+import scalangband.model.item.*
 
 import scala.swing.Color
 import scala.util.Random

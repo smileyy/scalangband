@@ -1,6 +1,7 @@
 package scalangband.model.level.generation.monster
 
 import scalangband.model.level.generation.DungeonLevelCanvas
+
 import scala.util.Random
 
 trait MonsterGeneration {

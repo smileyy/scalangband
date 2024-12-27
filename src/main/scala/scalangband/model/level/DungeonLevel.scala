@@ -7,7 +7,7 @@ import scalangband.model.item.Item
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.monster.Monster
 import scalangband.model.player.Player
-import scalangband.model.tile.{BrokenDoor, ClosedDoor, Floor, OccupiableTile, Tile}
+import scalangband.model.tile.*
 
 import scala.util.Random
 

@@ -1,6 +1,6 @@
 package scalangband.model.level.generation.room
 
-import scalangband.data.level.rooms.rectangle.{CheckerboardMoatedRoom, FourBoxesMoatedRoom, RandomSizedRectangularRoom, StandardMoatedRoom, TinyChamberRoom}
+import scalangband.data.level.rooms.rectangle.*
 import scalangband.model.Legendarium
 import scalangband.model.item.Armory
 import scalangband.model.level.DungeonLevel

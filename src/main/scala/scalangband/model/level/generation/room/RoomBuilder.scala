@@ -1,7 +1,7 @@
 package scalangband.model.level.generation.room
 
 import scalangband.model.level.generation.DungeonLevelCanvas
-import scalangband.model.location.{Coordinates, Direction, DownDirection, LeftDirection, RightDirection, UpDirection}
+import scalangband.model.location.*
 import scalangband.model.tile.*
 
 import scala.util.Random
