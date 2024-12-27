@@ -5,11 +5,10 @@ import scalangband.model.Legendarium
 import scalangband.model.item.Armory
 import scalangband.model.level.{DungeonLevel, Tiled}
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.{Bestiary, MonsterFactory}
-import scalangband.model.monster.{Bestiary, Monster, MonsterFactory, MonsterFactoryFriendSpec, MonsterFriendSpec}
+import scalangband.model.monster.*
 import scalangband.model.tile.*
-import scalangband.model.util.{RandomUtils, TileUtils}
 import scalangband.model.util.RandomUtils.randomElement
+import scalangband.model.util.{RandomUtils, TileUtils}
 
 import scala.util.Random
 

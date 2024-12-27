@@ -1,9 +1,9 @@
 package scalangband.model.monster
 
-import scalangband.model.{Creature, Legendarium}
 import scalangband.model.item.{Armory, Item}
 import scalangband.model.monster.action.MonsterActions
 import scalangband.model.util.DiceRoll
+import scalangband.model.{Creature, Legendarium}
 
 import scala.swing.Color
 import scala.util.Random

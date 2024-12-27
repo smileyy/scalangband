@@ -1,11 +1,8 @@
 package scalangband.data.level.rooms.rectangle
 
-import scalangband.model.level.generation.room.{Room, RoomGenerator}
-import StandardMoatedRoom.{
-  InteriorHeight,
-  InteriorWidth
-}
+import scalangband.data.level.rooms.rectangle.StandardMoatedRoom.{InteriorHeight, InteriorWidth}
 import scalangband.model.level.generation.DungeonLevelCanvas
+import scalangband.model.level.generation.room.{Room, RoomGenerator}
 import scalangband.model.level.generation.terrain.{
   CheckerboardTerrainGenerator,
   EmptyFloorTerrainGenerator,
