@@ -1,6 +1,6 @@
 package scalangband.ui.gamepanel
 
-import scalangband.bridge.rendering.TextColors.{Green, Turquoise, White}
+import scalangband.bridge.rendering.TextColors.{Green, Orange, Red, Turquoise, White, Yellow}
 import scalangband.model.Game
 import scalangband.model.player.{Player, Stat, Stats}
 
@@ -67,11 +67,16 @@ trait LabeledField {
     val charWidth = g.getFontMetrics(font).charWidth(' ')
     val charHeight = g.getFontMetrics(font).getHeight
 
-    val value = getValue(player)
-    val valueOffset = width - value.length
-
+    paintLabel(g, x, y, charWidth, charHeight)
+    paintValue(player, g, x, y, width, charWidth, charHeight)
+  }
+  def paintLabel(g: Graphics2D, x: Int, y: Int, charWidth: Int, charHeight: Int): Unit = {
     g.setColor(labelColor)
     g.drawString(label, x * charWidth, (y + 1) * charHeight)
+  }
+  def paintValue(player: Player, g: Graphics2D, x: Int, y: Int, width: Int, charWidth: Int, charHeight: Int): Unit = {
+    val value = getValue(player)
+    val valueOffset = width - value.length
     g.setColor(valueColor)
     g.drawString(value, (x + valueOffset) * charWidth, (y + 1) * charHeight)
   }
@@ -110,4 +115,29 @@ class ArmorClassField extends LabeledField {
 class HealthField extends LabeledField {
   override def label: String = "HP"
   override def getValue(player: Player): String = s"${player.health}/ ${player.maxHealth}"
+  override def paintValue(player: Player, g: Graphics2D, x: Int, y: Int, width: Int, charWidth: Int, charHeight: Int): Unit = {
+    val (health, separator, maxHealth) = (player.health.toString, "/ ", player.maxHealth.toString)
+    val startingOffset = width - s"$health$separator$maxHealth".length
+
+    def paintHealth(): Unit =
+      g.setColor(healthColor(player))
+      g.drawString(health, (x + startingOffset) * charWidth, (y + 1) * charHeight)
+    def paintSeparator(): Unit =
+      g.setColor(White)
+      g.drawString(separator, (x + startingOffset + health.length) * charWidth, (y + 1) * charHeight)
+    def paintMaxHealth(): Unit =
+      g.setColor(Green)
+      g.drawString(maxHealth, (x + startingOffset + health.length + separator.length) * charWidth, (y + 1) * charHeight)
+
+    paintHealth()
+    paintSeparator()
+    paintMaxHealth()
+  }
+  private def healthColor(player: Player): Color = {
+    player.healthPercent match
+      case x if x <= 25 => Red
+      case x if x <= 50 => Orange
+      case x if x <= 75 => Yellow
+      case _ => valueColor
+  }
 }
