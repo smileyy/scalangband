@@ -19,7 +19,7 @@ object SoldierAnt extends MonsterFactory {
     color = White
   )
 
-  private def actions = new MonsterActions(
+  private def actions = MonsterActions(
     adjacent = Seq(Weighted(100, MeleeAttacksAction(new BiteAttack(DiceRoll("1d2"))))),
     otherwise = Seq(Weighted(100, RandomMovementAction))
   )

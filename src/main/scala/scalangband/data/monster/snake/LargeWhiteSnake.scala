@@ -20,7 +20,7 @@ object LargeWhiteSnake extends MonsterFactory {
     color = White
   )
   
-  private def actions: MonsterActions = new MonsterActions(
+  private def actions = MonsterActions(
     adjacent = Seq(
       Weighted(50, RandomMovementAction), 
       Weighted(50, MeleeAttacksAction(Seq(new BiteAttack(DiceRoll("1d2")), new CrushAttack(DiceRoll("1d2")))))

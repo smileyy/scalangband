@@ -20,7 +20,7 @@ object FruitBat extends MonsterFactory {
     color = Orange
   )
   
-  private def actions = new MonsterActions(
+  private def actions = MonsterActions(
     adjacent = Seq(
       Weighted(75, MeleeAttacksAction(new BiteAttack(DiceRoll("1d1")))),
       Weighted(25, RandomMovementAction)

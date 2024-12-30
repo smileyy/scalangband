@@ -20,7 +20,7 @@ object SmallKobold extends MonsterFactory {
     color = Yellow
   )
 
-  private def actions = new MonsterActions(
+  private def actions = MonsterActions(
     adjacent = Seq(Weighted(100, MeleeAttacksAction(new PlainAttack(DiceRoll("1d5"))))),
     otherwise = Seq(Weighted(100, RandomMovementAction))
   )

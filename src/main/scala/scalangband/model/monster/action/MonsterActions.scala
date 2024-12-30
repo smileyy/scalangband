@@ -2,19 +2,44 @@ package scalangband.model.monster.action
 
 import org.slf4j.{Logger, LoggerFactory}
 import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
+import scalangband.model.level.DungeonLevelAccessor
 import scalangband.model.location.*
 import scalangband.model.location.Direction.allDirections
 import scalangband.model.monster.Monster
 import scalangband.model.monster.attack.MeleeAttack
-import scalangband.model.util.Weighted
+import scalangband.model.player.{Player, PlayerAccessor}
+import scalangband.model.util.{BresenhamLine, Weighted}
 import scalangband.model.{GameAccessor, GameCallback}
 
 import scala.util.Random
 
-class MonsterActions(adjacent: Seq[Weighted[MonsterAction]], otherwise: Seq[Weighted[MonsterAction]]) {
+class MonsterActions(adjacent: Seq[Weighted[MonsterAction]], los: Seq[Weighted[MonsterAction]], otherwise: Seq[Weighted[MonsterAction]]) {
   def select(monster: Monster, game: GameAccessor): MonsterAction = {
-    val isAdjacent = allDirections.exists(dir => monster.coordinates + dir == game.player.coordinates)
-    if (isAdjacent) Weighted.selectFrom(adjacent) else Weighted.selectFrom(otherwise)
+    println(s"Checking action from ${monster.displayName}${monster.coordinates} to player at ${game.player.coordinates}")
+    if (isAdjacent(monster, game.player)) {
+      Weighted.selectFrom(adjacent)
+    } else if (hasLineOfSight(monster, game.player, game.level)) {
+      Weighted.selectFrom(los)
+    } else {
+      Weighted.selectFrom(otherwise)
+    }
+  }
+
+  private def isAdjacent(monster: Monster, player: PlayerAccessor) = {
+    allDirections.exists(dir => monster.coordinates + dir == player.coordinates)
+  }
+
+  private def hasLineOfSight(monster: Monster, player: PlayerAccessor, level: DungeonLevelAccessor): Boolean = {
+    new BresenhamLine(monster.coordinates, player.coordinates).find(coords => level.tile(coords).opaque) match {
+      case Some(_) => false
+      case None => true
+    }
+  }
+
+}
+object MonsterActions {
+  def apply(adjacent: Seq[Weighted[MonsterAction]], otherwise: Seq[Weighted[MonsterAction]]): MonsterActions = {
+    new MonsterActions(adjacent, otherwise, otherwise)
   }
 }
 
