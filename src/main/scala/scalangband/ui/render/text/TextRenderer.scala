@@ -93,6 +93,7 @@ class TextRenderer(font: Font) extends Renderer {
         case Snake => TextTile('J', font, color)
         case Spider => TextTile('S', font, color)
         case Worm => TextTile('w', font, color)
+        case Yeek => TextTile('y', font, color)
       }
     } else {
       render(representations, player)

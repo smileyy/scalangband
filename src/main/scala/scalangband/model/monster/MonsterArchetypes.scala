@@ -20,4 +20,5 @@ object Rodent extends MonsterArchetype
 object Snake extends MonsterArchetype
 object Spider extends MonsterArchetype
 object Worm extends MonsterArchetype
+object Yeek extends MonsterArchetype
 
