@@ -18,7 +18,7 @@ class InventoryOverlay(
     filter: InventoryFilter = AllInventoryFilter
 ) extends GamePanelOverlay {
   override def message: Option[String] = None
-  override def keyHandler: KeyHandler = new InventoryKeyHandler(game, factory, this)
+  override def keyHandler: KeyHandler = new InventoryKeyHandler(game, factory, filter, this)
 
   override def panel: Option[OverlayPanel] = Some(new InventoryPane(game, prompt, filter))
 }
@@ -35,7 +35,7 @@ object DropItemInventoryOverlay {
   }
 }
 
-class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, overlay: InventoryOverlay) extends KeyHandler {
+class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, filter: InventoryFilter, overlay: InventoryOverlay) extends KeyHandler {
   override def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay] = {
     event match {
       case KeyPressed(_, Key.Escape, _, _) => Left(None)
@@ -65,8 +65,9 @@ class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, overlay: 
   }
 
   private def actionOrOverlay(game: Game, idx: Int): Either[Option[PlayerAction], GamePanelOverlay] = {
-    if (game.player.inventory.size > idx) {
-      val item = game.player.inventory.getItem(idx)
+    val inventory = game.player.inventory
+    if (inventory.size > idx && filter.accepts(inventory.getItem(idx))) {
+      val item = inventory.getItem(idx)
       Left(factory(item))
     } else {
       Right(overlay)
@@ -114,6 +115,7 @@ object ViewItemActionFactory extends InventoryActionFactory {
 
 trait InventoryFilter {
   def apply(item: Item): Boolean
+  def accepts(item: Item): Boolean = apply(item)
 }
 
 object AllInventoryFilter extends InventoryFilter {
