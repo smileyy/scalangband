@@ -19,7 +19,7 @@ object WhiteIckyThing extends MonsterFactory {
     color = White
   )
 
-  private def actions = new MonsterActions(
+  private def actions = MonsterActions(
     adjacent = Seq(
       Weighted(75, MeleeAttacksAction(Seq(new TouchAttack(DiceRoll("1d2"))))),
       Weighted(25, RandomMovementAction)

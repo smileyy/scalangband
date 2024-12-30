@@ -19,7 +19,7 @@ object RockLizard extends MonsterFactory {
     color = LightUmber
   )
 
-  private def actions = new MonsterActions(
+  private def actions = MonsterActions(
     adjacent = Seq(Weighted(100, MeleeAttacksAction(new BiteAttack(DiceRoll("1d1"))))),
     otherwise = Seq(Weighted(100, RandomMovementAction))
   )
