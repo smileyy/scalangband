@@ -15,7 +15,6 @@ import scala.util.Random
 
 class MonsterActions(adjacent: Seq[Weighted[MonsterAction]], los: Seq[Weighted[MonsterAction]], otherwise: Seq[Weighted[MonsterAction]]) {
   def select(monster: Monster, game: GameAccessor): MonsterAction = {
-    println(s"Checking action from ${monster.displayName}${monster.coordinates} to player at ${game.player.coordinates}")
     if (isAdjacent(monster, game.player)) {
       Weighted.selectFrom(adjacent)
     } else if (hasLineOfSight(monster, game.player, game.level)) {
