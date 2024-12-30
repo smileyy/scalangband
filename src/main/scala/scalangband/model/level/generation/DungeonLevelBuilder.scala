@@ -52,13 +52,13 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], legenda
     }
 
     override def addMonster(row: Int, col: Int, depth: Int): Unit = {
-      addMonster(row: Int, col: Int, legendarium.getMonsterFactory(random, depth))
+      addMonster(row: Int, col: Int, legendarium.getMonsterFactory(random, depth), depth)
     }
 
-    override def addMonster(row: Int, col: Int, factory: MonsterFactory): Unit = {
+    override def addMonster(row: Int, col: Int, factory: MonsterFactory, depth: Int): Unit = {
       val coordinates = Coordinates(row + dy, col + dx)
       addSingleMonster(factory, coordinates)
-      factory.spec.friends.foreach(friendSpec => addFriends(friendSpec, coordinates))
+      factory.spec.friends.foreach(friendSpec => addFriends(friendSpec, coordinates, depth, factory.spec.depth))
     }
 
     private def addSingleMonster(factory: MonsterFactory, coordinates: Coordinates): Unit = {
@@ -66,10 +66,14 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], legenda
       outer.tiles(coordinates.row)(coordinates.col).asInstanceOf[OccupiableTile].setOccupant(monster)
     }
 
-    private def addFriends(spec: MonsterFriendSpec, start: Coordinates): Unit = {
+    private def addFriends(spec: MonsterFriendSpec, start: Coordinates, depth: Int, originatingMonsterDepth: Int): Unit = {
       val probability: Int = spec.probability
       if (random.nextInt(100) < probability) {
-        val numberOfFriends = spec.number.roll()
+        val numberOfFriends = if (depth < originatingMonsterDepth + 5) {
+          spec.number.roll() / 2
+        } else {
+          spec.number.roll()
+        }
         val filter: Tile => Boolean = tile => tile.isInstanceOf[OccupiableTile] && !tile.occupied
         val locations = getAdjacentCoordinates(start, filter, numberOfFriends)
         locations.foreach(coords =>
@@ -192,5 +196,5 @@ trait DungeonLevelCanvas {
 
   def addMonster(depth: Int): Unit
   def addMonster(row: Int, col: Int, depth: Int): Unit
-  def addMonster(row: Int, col: Int, factory: MonsterFactory): Unit
+  def addMonster(row: Int, col: Int, factory: MonsterFactory, depth: Int): Unit
 }

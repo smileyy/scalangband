@@ -19,7 +19,7 @@ object Town {
 
     val canvas = builder.getCanvas(1, 1, TownHeight - 2, TownWidth - 2)
     canvas.fillRect(0, 0, TownHeight - 2, TownWidth - 2, factory = () => Floor.empty())
-    canvas.addMonster(0, 0, RandomlyMumblingTownsperson)
+    canvas.addMonster(0, 0, RandomlyMumblingTownsperson, 0)
 
     builder.build(random, 0, tiles => new Town(tiles))
   }
