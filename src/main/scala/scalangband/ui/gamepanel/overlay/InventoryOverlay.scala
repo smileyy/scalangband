@@ -105,10 +105,6 @@ object DropItemActionFactory extends InventoryActionFactory {
   override def apply(item: Item): Option[PlayerAction] = Some(new DropInventoryItemAction(item))
 }
 
-object EatFoodActionFactory extends InventoryActionFactory {
-  override def apply(item: Item): Option[PlayerAction] = Some(new EatFoodAction(item.asInstanceOf[Food]))
-}
-
 object ViewItemActionFactory extends InventoryActionFactory {
   override def apply(item: Item): Option[PlayerAction] = None
 }
@@ -120,8 +116,4 @@ trait InventoryFilter {
 
 object AllInventoryFilter extends InventoryFilter {
   override def apply(item: Item): Boolean = true
-}
-
-object FoodFilter extends InventoryFilter {
-  override def apply(item: Item): Boolean = item.isInstanceOf[Food]
 }

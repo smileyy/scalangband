@@ -15,8 +15,7 @@ object MainKeyHandler extends KeyHandler {
       case KeyPressed(_, Key.W, Key.Modifier.Control, _) => Left(Some(EnableDebugAction))
       
       case KeyPressed(_, Key.C, Key.Modifier.Shift, _) => Right(new CharacterOverlay(game))
-      case KeyPressed(_, Key.E, Key.Modifier.Shift, _) =>
-        Right(new InventoryOverlay(game, EatFoodActionFactory, "Eat which food?", FoodFilter))
+      case KeyPressed(_, Key.E, Key.Modifier.Shift, _) => Right(EatFoodOverlay(game))
       case KeyPressed(_, Key.Period, Key.Modifier.Shift, _) => Left(Some(GoDownStairsAction))
       case KeyPressed(_, Key.Comma, Key.Modifier.Shift, _)  => Left(Some(GoUpStairsAction))
 
@@ -41,7 +40,7 @@ object MainKeyHandler extends KeyHandler {
       case KeyPressed(_, Key.I, _, _) => Right(InventoryListOverlay(game))
       case KeyPressed(_, Key.O, _, _) => Right(OpenOverlay)
       case KeyPressed(_, Key.T, _, _) => Right(new TakeOffEquipmentOverlay(game))
-      case KeyPressed(_, Key.W, _, _) => Right(new WearEquipmentOverlay(game))
+      case KeyPressed(_, Key.W, _, _) => Right(WearEquipmentOverlay(game))
 
       case KeyPressed(_, _, _, _) => Left(None)
     }
