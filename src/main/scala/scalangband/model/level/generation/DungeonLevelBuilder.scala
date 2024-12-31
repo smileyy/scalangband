@@ -43,7 +43,7 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], legenda
         .filter((r, c) =>
           getTile(r, c) match {
             case ot: OccupiableTile if !ot.occupied => true
-            case _                                  => false
+            case _ => false
           }
         )
         .head
@@ -67,20 +67,25 @@ class DungeonLevelBuilder(random: Random, val tiles: Array[Array[Tile]], legenda
     }
 
     private def addFriends(spec: MonsterFriendSpec, start: Coordinates, depth: Int, originatingMonsterDepth: Int): Unit = {
-      val probability: Int = spec.probability
-      if (random.nextInt(100) < probability) {
-        val numberOfFriends = if (depth < originatingMonsterDepth + 5) {
-          spec.number.roll() / 2
-        } else {
-          spec.number.roll()
+      if (random.nextInt(100) < spec.probability) {
+
+        val maybeFactory: Option[MonsterFactory] = spec match {
+          case factorySpec: MonsterFactoryFriendSpec => Some(factorySpec.factory)
+          case archetypeSpec: MonsterArchetypeFriendSpec => legendarium.getMonsterFactory(random, archetypeSpec.archetype, depth)
         }
-        val filter: Tile => Boolean = tile => tile.isInstanceOf[OccupiableTile] && !tile.occupied
-        val locations = getAdjacentCoordinates(start, filter, numberOfFriends)
-        locations.foreach(coords =>
-          spec match {
-            case factorySpec: MonsterFactoryFriendSpec => addSingleMonster(factorySpec.factory, coords)
+
+        maybeFactory.foreach { factory =>
+          val numberOfFriends = if (depth < originatingMonsterDepth + 5) {
+            spec.number.roll() / 2
+          } else {
+            spec.number.roll()
           }
-        )
+
+          val filter: Tile => Boolean = tile => tile.isInstanceOf[OccupiableTile] && !tile.occupied
+          val locations = getAdjacentCoordinates(start, filter, numberOfFriends)
+
+          locations.foreach(coords => addSingleMonster(factory, coords))
+        }
       }
     }
   }

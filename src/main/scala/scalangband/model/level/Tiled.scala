@@ -12,7 +12,7 @@ trait Tiled {
 
   /** Returns tiles adjacent to the starting tile that pass the given filter. "Adjacent" means the search continues for
     * any passable tiles. That means callers of this method don't have to worry about, e.g., an item dropping behind a
-    * wall. Note that fewer items that requested may be returned if there are not sufficient adjacent tiles.
+    * wall. Note that fewer items that requested may be returned if there are insufficient adjacent tiles.
     */
   def getAdjacentCoordinates(start: Coordinates, filter: Tile => Boolean, count: Int): Seq[Coordinates] = {
     var results: List[Coordinates] = List.empty

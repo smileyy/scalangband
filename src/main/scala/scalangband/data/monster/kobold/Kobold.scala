@@ -26,6 +26,6 @@ object Kobold extends MonsterFactory {
   )
 
   private def inventory = Seq(
-    new ProbabilisticInventoryGenerator(60, ArmoryInventoryGenerator(1))
+    new ProbabilisticInventoryGenerator(60, ArmoryInventoryGenerator(2))
   )
 }
