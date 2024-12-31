@@ -25,6 +25,6 @@ object BlueYeek extends MonsterFactory {
     otherwise = Seq(Weighted(100, RandomMovementAction)))
 
   private def inventory = Seq(
-    new ProbabilisticInventoryGenerator(60, ArmoryInventoryGenerator(1))
+    new ProbabilisticInventoryGenerator(60, ArmoryInventoryGenerator(2))
   )
 }

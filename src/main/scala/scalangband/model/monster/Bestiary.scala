@@ -9,16 +9,17 @@ import scalangband.data.monster.centipede.*
 import scalangband.data.monster.eye.*
 import scalangband.data.monster.feline.*
 import scalangband.data.monster.ickything.*
-import scalangband.data.monster.jelly.WhiteJelly
+import scalangband.data.monster.jelly.*
 import scalangband.data.monster.kobold.*
 import scalangband.data.monster.mold.*
 import scalangband.data.monster.mushroom.*
+import scalangband.data.monster.person.*
 import scalangband.data.monster.reptile.*
 import scalangband.data.monster.rodent.*
 import scalangband.data.monster.snake.*
-import scalangband.data.monster.spider.CaveSpider
+import scalangband.data.monster.spider.*
 import scalangband.data.monster.worm.*
-import scalangband.data.monster.yeek.BlueYeek
+import scalangband.data.monster.yeek.*
 import scalangband.model.item.Armory
 import scalangband.model.level.DungeonLevels
 import scalangband.model.location.Coordinates
@@ -34,6 +35,19 @@ class Bestiary(factories: Seq[MonsterFactory]) {
     val actualDepth = DungeonLevels(depth).monsters.randomInRange(random)
     val factoriesForLevel = factoriesByLevel(actualDepth)
     factoriesForLevel(random.nextInt(factoriesForLevel.size))
+  }
+
+  /**
+   * Returns a monster factory (if any) for the given archetype at the provided depth.
+   */
+  def getMonsterFactory(random: Random, archetype: MonsterArchetype, depth: Int): Option[MonsterFactory] = {
+    val factoriesForLevel = factoriesByLevel(depth)
+    val archetypeFactories = factoriesForLevel.filter(factory => factory.spec.archetype == archetype)
+    if (archetypeFactories.isEmpty) {
+      None
+    } else {
+      Some(archetypeFactories(random.nextInt(archetypeFactories.size)))
+    }
   }
 
   def generateMonster(random: Random, depth: Int, coordinates: Coordinates, armory: Armory): Monster = {
@@ -65,6 +79,7 @@ object Bestiary {
 
     // Level 2
     Kobold,
+    Soldier,
     BlueYeek,
     CaveSpider,
     WildCat,

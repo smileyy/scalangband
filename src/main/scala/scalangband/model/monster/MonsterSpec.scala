@@ -34,11 +34,3 @@ class MonsterSpec(
     inventory.flatMap(generator => generator.generateItem(random, armory))
   }
 }
-
-trait MonsterFriendSpec {
-  def probability: Int
-  def number: DiceRoll
-}
-
-class MonsterFactoryFriendSpec(val probability: Int, val number: DiceRoll, val factory: MonsterFactory)
-    extends MonsterFriendSpec
