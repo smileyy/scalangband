@@ -80,6 +80,7 @@ object Bestiary {
     // Level 2
     Kobold,
     Soldier,
+    GiantBlackAnt,
     BlueYeek,
     CaveSpider,
     WildCat,
