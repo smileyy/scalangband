@@ -24,6 +24,9 @@ class SchedulerQueue(private var head: SchedulerNode = null, private var last: S
     val result = head
     
     this.head = result.next
+    if (this.head != null) {
+      this.head.prev = null
+    }
 
     result.creature
   }
@@ -83,21 +86,31 @@ class SchedulerQueue(private var head: SchedulerNode = null, private var last: S
   
   def remove(monster: Monster): Unit = {
     var node = head
-    
     var done = false
-    while (node != null && done) {
+
+    while (node != null && !done) {
       if (node.creature == monster) {
         
         val prev = node.prev
+        val next = node.next
+
         if (prev == null) {
-          head = node.next
+          head = next
           head.prev = null
         } else {
-          prev.next = node.next
-          node.next.prev = prev
+          prev.next = next
+        }
+
+        if (next == null) {
+          last = node.prev
+          last.next = null
+        } else {
+          next.prev = prev
         }
         
         done = true
+      } else {
+        node = node.next
       }
     }
     

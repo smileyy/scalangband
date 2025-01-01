@@ -3,7 +3,7 @@ package scalangband.data.monster.person
 import scalangband.bridge.rendering.TextColors.Umber
 import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.PlainAttack
-import scalangband.model.monster.{ArmoryInventoryGenerator, MonsterArchetypeFriendSpec, MonsterFactory, MonsterFactoryFriendSpec, MonsterSpec, Person, ProbabilisticInventoryGenerator}
+import scalangband.model.monster.{ArmoryInventoryGenerator, MonsterArchetypeFriendSpec, MonsterFactory, MonsterFactoryFriendSpec, MonsterSpec, OpensDoors, Person, ProbabilisticInventoryGenerator}
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object Soldier extends MonsterFactory {
@@ -15,6 +15,7 @@ object Soldier extends MonsterFactory {
     armorClass = 24,
     experience = 6,
     sleepiness = 80,
+    doors = OpensDoors,
     actions = actions,
     inventory = inventory,
     friends = friends,
