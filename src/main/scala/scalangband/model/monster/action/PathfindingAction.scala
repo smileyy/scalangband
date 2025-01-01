@@ -25,8 +25,8 @@ class AStarPath(monster: Monster, target: Coordinates, level: DungeonLevelAccess
   private val heuristic = ChebyshevDistanceHeuristic
 
   def optimalDirection: Option[Direction] = {
-    val openSet =
-      mutable.PriorityQueue(PathNode(monster.coordinates, None, None, heuristic.score(monster.coordinates, target)))
+    val start = PathNode(monster.coordinates, None, None, heuristic.score(monster.coordinates, target))
+    val openSet = mutable.PriorityQueue(start)
 
     @tailrec
     def astar(visited: Set[Coordinates] = Set.empty): Option[Direction] = {
@@ -44,12 +44,14 @@ class AStarPath(monster: Monster, target: Coordinates, level: DungeonLevelAccess
                 PathNode(coords, Some(p), Some(dir), costToMove(monster, tile) + heuristic.score(coords, target))
               }
 
-            nextNodes.foreach(node => openSet.enqueue(node))
-            astar(visited + p.coordinates)
+            nextNodes.foreach(node =>
+              openSet.enqueue(node)
+            )
+            astar(visited ++ nextNodes.map(_.coordinates))
         }
     }
 
-    astar()
+    astar(Set(start.coordinates))
   }
 
   def canMoveTo(monster: Monster, tile: Tile): Boolean = tile match {
