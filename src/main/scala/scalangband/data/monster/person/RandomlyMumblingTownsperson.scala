@@ -8,7 +8,19 @@ import scalangband.model.monster.action.{MonsterActions, MonsterPassAction, Rand
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object RandomlyMumblingTownsperson extends MonsterFactory {
-  override val spec: MonsterSpec = new MonsterSpec(name = "Randomly Mumbling Townsperson", archetype = Person, depth = 0, health = DiceRoll("1d4"), armorClass = 1, sleepiness = 0, experience = 0, actions = actions, inventory = inventory, color = TextColors.White)
+  override val spec: MonsterSpec = new MonsterSpec(
+    name = "Randomly Mumbling Townsperson",
+    archetype = Person,
+    depth = 0,
+    health = DiceRoll("1d4"),
+    hearing = 20,
+    armorClass = 1,
+    sleepiness = 0,
+    experience = 0,
+    actions = actions,
+    inventory = inventory,
+    color = TextColors.White
+  )
 
   private def actions = MonsterActions(
     adjacent = Seq(
@@ -25,6 +37,6 @@ object RandomlyMumblingTownsperson extends MonsterFactory {
 
   def inventory: Seq[MonsterInventoryGenerator] = Seq(
     new FixedInventoryGenerator(CopperCoins),
-    new FixedInventoryGenerator(PotteryShard),
+    new FixedInventoryGenerator(PotteryShard)
   )
 }
