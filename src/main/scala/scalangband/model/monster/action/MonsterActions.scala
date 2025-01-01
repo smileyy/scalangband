@@ -34,7 +34,6 @@ class MonsterActions(adjacent: Seq[Weighted[MonsterAction]], los: Seq[Weighted[M
       case None => true
     }
   }
-
 }
 object MonsterActions {
   def apply(adjacent: Seq[Weighted[MonsterAction]], otherwise: Seq[Weighted[MonsterAction]]): MonsterActions = {
@@ -68,7 +67,7 @@ object RandomMovementAction extends MonsterAction {
   override def apply(monster: Monster, accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
     val direction: Direction = Direction.randomDirection()
     Logger.debug(s"${monster.name} is trying to move $direction")
-    List(callback.level.tryToMoveMonster(monster, direction))
+    callback.level.tryToMoveMonster(monster, direction)
   }
 }
 
