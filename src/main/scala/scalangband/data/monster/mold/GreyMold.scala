@@ -12,9 +12,10 @@ object GreyMold extends MonsterFactory {
     archetype = Mold,
     depth = 1,
     health = DiceRoll("1d3"),
+    hearing = 2,
     armorClass = 1,
-    experience = 3,
     sleepiness = 0,
+    experience = 3,
     alive = false,
     actions = actions,
     color = TextColors.MediumGrey

@@ -13,9 +13,10 @@ object MetallicRedCentipede extends MonsterFactory {
     archetype = Centipede,
     depth = 3,
     health = DiceRoll("4d6+3"),
+    hearing = 8,
     armorClass = 10,
-    experience = 12,
     sleepiness = 20,
+    experience = 12,
     actions = actions,
     color = TextColors.Red
   )

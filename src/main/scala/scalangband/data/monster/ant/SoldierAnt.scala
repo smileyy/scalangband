@@ -12,9 +12,10 @@ object SoldierAnt extends MonsterFactory {
     archetype = Ant,
     depth = 1,
     health = DiceRoll("2d5"),
+    hearing = 10,
     armorClass = 4,
-    experience = 3,
     sleepiness = 40,
+    experience = 3,
     actions = actions,
     color = White
   )

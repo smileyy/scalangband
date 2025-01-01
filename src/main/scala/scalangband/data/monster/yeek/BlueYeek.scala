@@ -12,9 +12,10 @@ object BlueYeek extends MonsterFactory {
     archetype = Yeek,
     depth = 2,
     health = DiceRoll("2d6"),
+    hearing = 18,
     armorClass = 16,
-    experience = 4,
     sleepiness = 10,
+    experience = 4,
     actions = actions,
     inventory = inventory,
     color = Blue
@@ -22,7 +23,8 @@ object BlueYeek extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent = Seq(Weighted(100, MeleeAttacksAction(new PlainAttack(DiceRoll("1d5"))))),
-    otherwise = Seq(Weighted(100, RandomMovementAction)))
+    otherwise = Seq(Weighted(100, RandomMovementAction))
+  )
 
   private def inventory = Seq(
     new ProbabilisticInventoryGenerator(60, ArmoryInventoryGenerator(2))

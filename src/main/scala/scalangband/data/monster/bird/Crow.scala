@@ -12,9 +12,10 @@ object Crow extends MonsterFactory {
     archetype = Bird,
     depth = 2,
     health = DiceRoll("3d5"),
+    hearing = 40,
     armorClass = 14,
-    experience = 8,
     sleepiness = 0,
+    experience = 8,
     actions = actions,
     color = TextColors.DarkGrey
   )

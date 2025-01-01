@@ -12,9 +12,10 @@ object SmallKobold extends MonsterFactory {
     archetype = Kobold,
     depth = 1,
     health = DiceRoll("4d3"),
+    hearing = 20,
     armorClass = 24,
-    experience = 5,
     sleepiness = 70,
+    experience = 5,
     actions = actions,
     inventory = inventory,
     color = Yellow

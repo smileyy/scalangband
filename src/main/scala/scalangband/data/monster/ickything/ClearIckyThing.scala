@@ -12,13 +12,14 @@ object ClearIckyThing extends MonsterFactory {
     archetype = IckyThing,
     depth = 1,
     health = DiceRoll("2d5"),
+    hearing = 12,
     armorClass = 7,
-    experience = 2,
     sleepiness = 10,
+    experience = 2,
     invisible = true,
     clear = true,
     actions = actions,
-    color = White // this doesn't matter, so just gotta pick one
+    color = White
   )
 
   private def actions = MonsterActions(

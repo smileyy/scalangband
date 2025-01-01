@@ -5,6 +5,7 @@ import scalangband.model.level.DungeonLevelAccessor
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.{GameAccessor, GameCallback}
 import scalangband.model.monster.{CantOpenDoors, Monster}
+import scalangband.model.player.{Player, PlayerAccessor}
 import scalangband.model.tile.{ClosedDoor, OccupiableTile, PermanentWall, RemovableWall, Tile, Wall}
 
 import scala.annotation.tailrec
@@ -12,20 +13,25 @@ import scala.collection.mutable
 
 object PathfindingAction extends MonsterAction {
   override def apply(monster: Monster, game: GameAccessor, callback: GameCallback): List[ActionResult] = {
-    val path = new AStarPath(monster, game.player.coordinates, game.level)
-
-    path.optimalDirection match {
-      case Some(direction) => callback.level.tryToMoveMonster(monster, direction)
-      case None            => List.empty
+    if (canHearPlayer(monster, game.player)) {
+      val path = new AStarPath(monster, game.player.coordinates, game.level)
+      path.next match {
+        case Some(direction) => callback.level.tryToMoveMonster(monster, direction)
+        case None => MonsterPassAction.apply(monster, game, callback)
+      }
+    } else {
+      MonsterPassAction.apply(monster, game, callback)
     }
+  }
+  
+  def canHearPlayer(monster: Monster, player: PlayerAccessor): Boolean = {
+    monster.coordinates.euclidian(player.coordinates) <= monster.hearing
   }
 }
 
 class AStarPath(monster: Monster, target: Coordinates, level: DungeonLevelAccessor) {
-  private val heuristic = ChebyshevDistanceHeuristic
-
-  def optimalDirection: Option[Direction] = {
-    val start = PathNode(monster.coordinates, None, None, heuristic.score(monster.coordinates, target))
+  def next: Option[Direction] = {
+    val start = PathNode(monster.coordinates, None, None, monster.coordinates.chebyshevDistance(target))
     val openSet = mutable.PriorityQueue(start)
 
     @tailrec
@@ -41,7 +47,7 @@ class AStarPath(monster: Monster, target: Coordinates, level: DungeonLevelAccess
               .map((dir, coords) => (dir, coords, level.tile(coords)))
               .filter((_, coords, tile) => coords == target || canMoveTo(monster, tile))
               .map { (dir, coords, tile) =>
-                PathNode(coords, Some(p), Some(dir), heuristic.score(coords, target))
+                PathNode(coords, Some(p), Some(dir), coords.chebyshevDistance(target))
               }
 
             nextNodes.foreach(node => openSet.enqueue(node))
@@ -83,11 +89,5 @@ case class PathNode(coordinates: Coordinates, previous: Option[PathNode], direct
   override def compare(that: PathNode): Int = {
     // Scala priority queues are max heaps; we want the min to be at the head of the queue, so we negate the comparison.
     this.priority.compareTo(that.priority) * -1
-  }
-}
-
-object ChebyshevDistanceHeuristic {
-  def score(start: Coordinates, end: Coordinates): Int = {
-    math.max(math.abs(end.row - start.row), math.abs(end.col - start.col))
   }
 }

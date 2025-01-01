@@ -12,9 +12,10 @@ object WildDog extends MonsterFactory {
     archetype = Canine,
     depth = 1,
     health = DiceRoll("1d5"),
+    hearing = 10,
     armorClass = 3,
-    experience = 1,
     sleepiness = 10,
+    experience = 1,
     actions = actions,
     friends = Seq(MonsterFactoryFriendSpec(100, DiceRoll("2d7"), this)),
     color = LightUmber

@@ -8,6 +8,17 @@ case class Coordinates(row: Int, col: Int) {
     Coordinates(row + direction.dy, col + direction.dx)
   }
 
+  def euclidian(target: Coordinates): Int = {
+    val dy = y - target.y
+    val dx = x - target.x
+    
+    math.sqrt(dy*dy + dx*dx).toInt
+  }
+
+  def chebyshevDistance(target: Coordinates): Int = {
+    math.max(math.abs(y - target.y), math.abs(x - target.x))
+  }
+  
   override def toString: String = s"($row, $col)"
 }
 object Coordinates {

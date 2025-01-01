@@ -11,18 +11,19 @@ object CaveSpider extends MonsterFactory {
     name = "Cave Spider",
     archetype = Spider,
     depth = 2,
-    health = DiceRoll("2d6"),
     speed = 30,
+    health = DiceRoll("2d6"),
+    hearing = 8,
     armorClass = 19,
-    experience = 7,
     sleepiness = 80,
+    experience = 7,
     actions = actions,
     friends = Seq(MonsterFactoryFriendSpec(100, DiceRoll("2d8"), this)),
     color = Purple
   )
-  
+
   private def actions = MonsterActions(
-    adjacent = Seq(Weighted(100, MeleeAttacksAction(new BiteAttack(DiceRoll("1d4"))))), 
+    adjacent = Seq(Weighted(100, MeleeAttacksAction(new BiteAttack(DiceRoll("1d4"))))),
     otherwise = Seq(Weighted(100, RandomMovementAction))
-  ) 
+  )
 }

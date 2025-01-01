@@ -12,6 +12,7 @@ object GiantWhiteAnt extends MonsterFactory {
     archetype = Ant,
     depth = 3,
     health = DiceRoll("3d6"),
+    hearing = 8,
     armorClass = 19,
     sleepiness = 80,
     experience = 2,

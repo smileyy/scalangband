@@ -12,9 +12,10 @@ object WhiteIckyThing extends MonsterFactory {
     archetype = IckyThing,
     depth = 1,
     health = DiceRoll("2d5"),
+    hearing = 12,
     armorClass = 8,
-    experience = 1,
     sleepiness = 10,
+    experience = 1,
     actions = actions,
     color = White
   )

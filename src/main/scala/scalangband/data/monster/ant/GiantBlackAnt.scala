@@ -3,7 +3,13 @@ package scalangband.data.monster.ant
 import scalangband.bridge.rendering.TextColors.DarkGrey
 import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, RandomMovementAction}
 import scalangband.model.monster.attack.BiteAttack
-import scalangband.model.monster.{Ant, ArmoryInventoryGenerator, MonsterFactory, MonsterSpec, ProbabilisticInventoryGenerator}
+import scalangband.model.monster.{
+  Ant,
+  ArmoryInventoryGenerator,
+  MonsterFactory,
+  MonsterSpec,
+  ProbabilisticInventoryGenerator
+}
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object GiantBlackAnt extends MonsterFactory {
@@ -12,9 +18,10 @@ object GiantBlackAnt extends MonsterFactory {
     archetype = Ant,
     depth = 2,
     health = DiceRoll("3d6"),
+    hearing = 8,
     armorClass = 24,
-    experience = 8,
     sleepiness = 80,
+    experience = 8,
     actions = actions,
     color = DarkGrey
   )

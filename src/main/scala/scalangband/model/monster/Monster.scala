@@ -27,6 +27,7 @@ class Monster(
   def experience: Int = spec.experience * level
 
   def speed: Int = spec.speed
+  def hearing: Int = spec.hearing
   def armorClass: Int = spec.armorClass
 
   def alive: Boolean = spec.alive

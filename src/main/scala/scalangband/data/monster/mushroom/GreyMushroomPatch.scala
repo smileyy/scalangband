@@ -13,9 +13,10 @@ object GreyMushroomPatch extends MonsterFactory {
     archetype = Mushroom,
     depth = 1,
     health = DiceRoll("1d3"),
+    hearing = 2,
     armorClass = 1,
-    experience = 1,
     sleepiness = 0,
+    experience = 1,
     alive = false,
     actions = actions,
     color = TextColors.MediumGrey
