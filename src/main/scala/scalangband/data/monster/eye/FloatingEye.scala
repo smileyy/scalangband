@@ -13,9 +13,10 @@ object FloatingEye extends MonsterFactory {
     archetype = Eye,
     depth = 1,
     health = DiceRoll("4d4+1"),
+    hearing = 2,
     armorClass = 7,
-    experience = 1,
     sleepiness = 10,
+    experience = 1,
     actions = actions,
     color = Orange
   )
@@ -23,7 +24,7 @@ object FloatingEye extends MonsterFactory {
   private def actions = MonsterActions(
     adjacent = Seq(
       Weighted(20, MeleeAttacksAction(new GazeAttack(DiceRoll("1d1"), effect = Some(Paralysis(DiceRoll("1d4")))))),
-      Weighted(80, MonsterPassAction),
+      Weighted(80, MonsterPassAction)
     ),
     otherwise = Seq(Weighted(100, MonsterPassAction))
   )

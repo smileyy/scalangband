@@ -13,18 +13,23 @@ object WhiteJelly extends MonsterFactory {
     name = "White Jelly",
     archetype = Jelly,
     depth = 2,
-    health = DiceRoll("12d5"),
     speed = 40,
+    health = DiceRoll("12d5"),
+    hearing = 2,
     armorClass = 1,
-    experience = 10,
     sleepiness = 99,
+    experience = 10,
     actions = actions,
     color = White
   )
-  
-  def actions = MonsterActions(
+
+  private def actions = MonsterActions(
     adjacent = Seq(
-      Weighted(100, MeleeAttacksAction(new TouchAttack(DiceRoll("1d2"), Some(Poison), Some(Poisoning(DiceRoll("1d2"))))))
-    ), 
-    otherwise = Seq(Weighted(100, MonsterPassAction)))
+      Weighted(
+        100,
+        MeleeAttacksAction(new TouchAttack(DiceRoll("1d2"), Some(Poison), Some(Poisoning(DiceRoll("1d2")))))
+      )
+    ),
+    otherwise = Seq(Weighted(100, MonsterPassAction))
+  )
 }

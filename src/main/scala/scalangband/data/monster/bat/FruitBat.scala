@@ -11,19 +11,21 @@ object FruitBat extends MonsterFactory {
     name = "Fruit Bat",
     archetype = Bat,
     depth = 1,
-    health = DiceRoll("2d5"),
     speed = 30,
+    health = DiceRoll("2d5"),
+    hearing = 20,
     armorClass = 3,
-    experience = 1,
     sleepiness = 10,
+    experience = 1,
     actions = actions,
     color = Orange
   )
-  
+
   private def actions = MonsterActions(
     adjacent = Seq(
       Weighted(75, MeleeAttacksAction(new BiteAttack(DiceRoll("1d1")))),
       Weighted(25, RandomMovementAction)
-    ), 
-    otherwise = Seq(Weighted(100, RandomMovementAction)))
+    ),
+    otherwise = Seq(Weighted(100, RandomMovementAction))
+  )
 }

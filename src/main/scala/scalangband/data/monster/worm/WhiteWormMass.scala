@@ -14,9 +14,10 @@ object WhiteWormMass extends MonsterFactory {
     archetype = Worm,
     depth = 1,
     health = DiceRoll("4d4"),
+    hearing = 7,
     armorClass = 1,
-    experience = 2,
     sleepiness = 14,
+    experience = 2,
     breeds = true,
     actions = actions,
     color = White
@@ -28,7 +29,8 @@ object WhiteWormMass extends MonsterFactory {
         25,
         MeleeAttacksAction(
           new CrawlAttack(DiceRoll("1d2"), element = Some(Poison), effect = Some(Poisoning(DiceRoll("1d4"))))
-        )),
+        )
+      ),
       Weighted(75, RandomMovementAction)
     ),
     otherwise = Seq(

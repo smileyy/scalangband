@@ -80,6 +80,7 @@ object Bestiary {
     // Level 2
     Kobold,
     Soldier,
+    WhiteJelly,
     GiantBlackAnt,
     BlueYeek,
     CaveSpider,
@@ -89,6 +90,5 @@ object Bestiary {
     // Level 3
     GiantWhiteAnt,
     MetallicRedCentipede,
-    WhiteJelly,
  ))
 }

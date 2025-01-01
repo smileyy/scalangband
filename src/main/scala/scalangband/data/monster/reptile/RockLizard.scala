@@ -12,9 +12,10 @@ object RockLizard extends MonsterFactory {
     archetype = Reptile,
     depth = 1,
     health = DiceRoll("4d3"),
+    hearing = 20,
     armorClass = 4,
-    experience = 2,
     sleepiness = 15,
+    experience = 2,
     actions = actions,
     color = LightUmber
   )

@@ -13,9 +13,10 @@ object GiantWhiteCentipede extends MonsterFactory {
     archetype = Centipede,
     depth = 1,
     health = DiceRoll("3d5"),
+    hearing = 7,
     armorClass = 11,
-    experience = 2,
     sleepiness = 40,
+    experience = 2,
     actions = actions,
     color = TextColors.White
   )

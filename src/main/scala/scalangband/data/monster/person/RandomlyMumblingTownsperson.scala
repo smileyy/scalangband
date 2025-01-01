@@ -13,9 +13,10 @@ object RandomlyMumblingTownsperson extends MonsterFactory {
     archetype = Person,
     depth = 0,
     health = DiceRoll("1d4"),
+    hearing = 20,
     armorClass = 1,
-    experience = 0,
     sleepiness = 0,
+    experience = 0,
     actions = actions,
     inventory = inventory,
     color = TextColors.White
@@ -36,6 +37,6 @@ object RandomlyMumblingTownsperson extends MonsterFactory {
 
   def inventory: Seq[MonsterInventoryGenerator] = Seq(
     new FixedInventoryGenerator(CopperCoins),
-    new FixedInventoryGenerator(PotteryShard),
+    new FixedInventoryGenerator(PotteryShard)
   )
 }

@@ -12,15 +12,16 @@ object GiantWhiteMouse extends MonsterFactory {
     archetype = Rodent,
     depth = 1,
     health = DiceRoll("1d3"),
+    hearing = 8,
     armorClass = 4,
-    experience = 1,
     sleepiness = 20,
+    experience = 1,
     breeds = true,
     actions = actions,
     color = White
   )
 
-  def actions = MonsterActions(
+  private def actions = MonsterActions(
     adjacent = Seq(
       Weighted(50, MeleeAttacksAction(new BiteAttack(DiceRoll("1d2")))),
       Weighted(50, RandomMovementAction)
