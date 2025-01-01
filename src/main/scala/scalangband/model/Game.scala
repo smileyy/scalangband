@@ -53,13 +53,14 @@ class Game(
           // recreate the queue -- this is okay even if the player didn't successfully go up stairs
           queue = SchedulerQueue(level.creatures)
         case GoDownStairsAction =>
+          // recreate the queue -- this is okay even if the player didn't successfully go down stairs
           queue = SchedulerQueue(level.creatures)
         case _ =>
-          if (playerAction.energyRequired > 0) {
-            val player = queue.poll().asInstanceOf[Player]
-            player.deductEnergy(playerAction.energyRequired)
-            queue.insert(player)
+          val player = queue.poll().asInstanceOf[Player]
+          player.deductEnergy(playerAction.energyRequired)
+          queue.insert(player)
 
+          if (!queue.peek.isInstanceOf[Player]) {
             val monsterActionResults = takeMonsterActions()
             results = monsterActionResults ::: results
           }
