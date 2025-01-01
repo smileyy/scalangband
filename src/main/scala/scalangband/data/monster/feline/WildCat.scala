@@ -3,7 +3,7 @@ package scalangband.data.monster.feline
 import scalangband.bridge.rendering.TextColors.LightUmber
 import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.ClawAttack
-import scalangband.model.monster.{Feline, MonsterFactory, MonsterSpec}
+import scalangband.model.monster.{BashesDoors, Feline, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object WildCat extends MonsterFactory {
@@ -16,7 +16,7 @@ object WildCat extends MonsterFactory {
     armorClass = 14,
     experience = 8,
     sleepiness = 0,
-    bashesDoors = true,
+    doors = BashesDoors,
     actions = actions,
     color = LightUmber
   )

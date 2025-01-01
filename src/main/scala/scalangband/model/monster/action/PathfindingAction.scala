@@ -4,7 +4,7 @@ import scalangband.bridge.actionresult.ActionResult
 import scalangband.model.level.DungeonLevelAccessor
 import scalangband.model.location.{Coordinates, Direction}
 import scalangband.model.{GameAccessor, GameCallback}
-import scalangband.model.monster.Monster
+import scalangband.model.monster.{CantOpenDoors, Monster}
 import scalangband.model.tile.{ClosedDoor, OccupiableTile, PermanentWall, RemovableWall, Tile, Wall}
 
 import scala.annotation.tailrec
@@ -41,12 +41,10 @@ class AStarPath(monster: Monster, target: Coordinates, level: DungeonLevelAccess
               .map((dir, coords) => (dir, coords, level.tile(coords)))
               .filter((_, coords, tile) => coords == target || canMoveTo(monster, tile))
               .map { (dir, coords, tile) =>
-                PathNode(coords, Some(p), Some(dir), costToMove(monster, tile) + heuristic.score(coords, target))
+                PathNode(coords, Some(p), Some(dir), heuristic.score(coords, target))
               }
 
-            nextNodes.foreach(node =>
-              openSet.enqueue(node)
-            )
+            nextNodes.foreach(node => openSet.enqueue(node))
             astar(visited ++ nextNodes.map(_.coordinates))
         }
     }
@@ -55,16 +53,12 @@ class AStarPath(monster: Monster, target: Coordinates, level: DungeonLevelAccess
   }
 
   def canMoveTo(monster: Monster, tile: Tile): Boolean = tile match {
-    case _: PermanentWall                     => false
-    case _: RemovableWall                     => false
-    case _: ClosedDoor if monster.bashesDoors => true
-    case _: ClosedDoor                        => false
-    case ot: OccupiableTile if ot.occupied    => false
-    case _                                    => true
-  }
-
-  def costToMove(monster: Monster, tile: Tile): Int = {
-    1
+    case _: PermanentWall                                => false
+    case _: RemovableWall                                => false
+    case _: ClosedDoor if monster.doors == CantOpenDoors => false
+    case _: ClosedDoor                                   => true
+    case ot: OccupiableTile if ot.occupied               => false
+    case _                                               => true
   }
 }
 
@@ -75,17 +69,21 @@ case class PathNode(coordinates: Coordinates, previous: Option[PathNode], direct
     def firstMove(node: PathNode): Option[Direction] = {
       node.previous match {
         case None => None
-        case Some(parent) => parent.previous match {
-          case None => node.direction
-          case _ => firstMove(parent)
-        }
+        case Some(parent) =>
+          parent.previous match {
+            case None => node.direction
+            case _    => firstMove(parent)
+          }
       }
     }
 
     firstMove(this)
   }
 
-  override def compare(that: PathNode): Int = -Ordering.Int.compare(this.priority, that.priority)
+  override def compare(that: PathNode): Int = {
+    // Scala priority queues are max heaps; we want the min to be at the head of the queue, so we negate the comparison.
+    this.priority.compareTo(that.priority) * -1
+  }
 }
 
 object ChebyshevDistanceHeuristic {
