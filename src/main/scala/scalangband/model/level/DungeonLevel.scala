@@ -5,7 +5,7 @@ import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.model.Creature
 import scalangband.model.item.Item
 import scalangband.model.location.{Coordinates, Direction}
-import scalangband.model.monster.Monster
+import scalangband.model.monster.{BashesDoors, Monster, OpensDoors}
 import scalangband.model.player.Player
 import scalangband.model.tile.*
 
@@ -54,9 +54,15 @@ class DungeonLevel(val depth: Int, val tiles: Array[Array[Tile]]) extends Tiled 
       case ot: OccupiableTile if !ot.occupied =>
         moveOccupant(monster.coordinates, targetCoordinates)
         List.empty
-      case door: ClosedDoor if monster.bashesDoors =>
-        replaceTile(targetCoordinates, new BrokenDoor())
-        List(MessageResult("You hear a door burst open!"))
+      case door: ClosedDoor => monster.doors match {
+        case OpensDoors =>
+          replaceTile(targetCoordinates, new OpenDoor())
+          List.empty
+        case BashesDoors =>
+          replaceTile(targetCoordinates, new BrokenDoor())
+          List(MessageResult("You hear a door burst open!"))
+        case _ => List.empty
+      }
       case _ => List.empty
     }
   }

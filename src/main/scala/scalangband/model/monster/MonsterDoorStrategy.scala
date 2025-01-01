@@ -1,0 +1,7 @@
+package scalangband.model.monster
+
+sealed trait MonsterDoorStrategy
+
+object CantOpenDoors extends MonsterDoorStrategy
+object OpensDoors extends MonsterDoorStrategy
+object BashesDoors extends MonsterDoorStrategy

@@ -33,8 +33,8 @@ class Monster(
   def invisible: Boolean = spec.invisible
   def clear: Boolean = spec.clear
   def breeds: Boolean = spec.breeds
-  def bashesDoors: Boolean = spec.bashesDoors
-
+  def doors: MonsterDoorStrategy = spec.doors
+  
   /** Anything that happens before a monster's next action.
     */
   def beforeNextAction(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {

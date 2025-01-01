@@ -8,12 +8,11 @@ object DungeonLevels {
   
   private val specs: Map[Int, LevelSpec] = Map(
     1 -> LevelSpec(
-      monsters = CenteredRange(1, 1 to 3), 
-      items = CenteredRange(1, 1 to 3),
+      monsters = CenteredRange(1, 1 to 1), 
+      items = CenteredRange(1, 1 to 1),
       quality = Seq(
         Weighted(9900, NormalQuality), 
-        Weighted(90, GoodQuality), 
-        Weighted(10, GreatQuality),
+        Weighted(100, GoodQuality), 
       )
     ),
     2 -> LevelSpec(
@@ -21,9 +20,7 @@ object DungeonLevels {
       items = CenteredRange(2, 1 to 5),
       quality = Seq(
         Weighted(9900, NormalQuality),
-        Weighted(90, GoodQuality),
-        Weighted(9, GreatQuality),
-        Weighted(1, Artifact)
+        Weighted(100, GoodQuality),
       )
     ),
   )
