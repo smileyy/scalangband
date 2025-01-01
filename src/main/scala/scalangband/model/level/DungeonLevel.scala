@@ -48,16 +48,16 @@ class DungeonLevel(val depth: Int, val tiles: Array[Array[Tile]]) extends Tiled 
 
   /** Tries to move the monster in the given direction. If the monster can't move in that direction, nothing happens
     */
-  def tryToMoveMonster(monster: Monster, direction: Direction): ActionResult = {
+  def tryToMoveMonster(monster: Monster, direction: Direction): List[ActionResult] = {
     val targetCoordinates: Coordinates = monster.coordinates + direction
     this(targetCoordinates) match {
       case ot: OccupiableTile if !ot.occupied =>
         moveOccupant(monster.coordinates, targetCoordinates)
-        NoResult
+        List.empty
       case door: ClosedDoor if monster.bashesDoors =>
         replaceTile(targetCoordinates, new BrokenDoor())
-        MessageResult("You hear a door burst open!")
-      case _ => NoResult
+        List(MessageResult("You hear a door burst open!"))
+      case _ => List.empty
     }
   }
 
@@ -128,6 +128,6 @@ class DungeonLevelCallback(private val level: DungeonLevel) {
   def addItemToTile(coordinates: Coordinates, item: Item): ActionResult = level.addItemToTile(coordinates, item)
   def addItemsToTile(coordinates: Coordinates, items: Iterable[Item]): List[ActionResult] =
     level.addItemsToTile(coordinates, items)
-  def tryToMoveMonster(monster: Monster, direction: Direction): ActionResult =
+  def tryToMoveMonster(monster: Monster, direction: Direction): List[ActionResult] =
     level.tryToMoveMonster(monster, direction)
 }

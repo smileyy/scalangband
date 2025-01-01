@@ -8,7 +8,7 @@ import scalangband.model.location.Coordinates
 import scalangband.model.monster.*
 import scalangband.model.tile.*
 import scalangband.model.util.RandomUtils.randomElement
-import scalangband.model.util.{RandomUtils, TileUtils}
+import scalangband.model.util.RandomUtils
 
 import scala.util.Random
 
