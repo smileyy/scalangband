@@ -1,7 +1,7 @@
 package scalangband.data.monster.feline
 
 import scalangband.bridge.rendering.TextColors.LightUmber
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
+import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.ClawAttack
 import scalangband.model.monster.{BashesDoors, Feline, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -26,6 +26,7 @@ object WildCat extends MonsterFactory {
     adjacent = Seq(
       Weighted(100, new MeleeAttacksAction(Seq(new ClawAttack(DiceRoll("1d3")), new ClawAttack(DiceRoll("1d3")))))
     ),
-    otherwise = Seq(Weighted(100, PathfindingAction))
+    los = Seq(Weighted(100, PathfindingAction)),
+    otherwise = Seq(Weighted(100, HearingBoundedAction(PathfindingAction, RandomMovementAction)))
   )
 }

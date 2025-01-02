@@ -1,7 +1,7 @@
 package scalangband.data.monster.canine
 
 import scalangband.bridge.rendering.TextColors.LightUmber
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
+import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.BiteAttack
 import scalangband.model.monster.{Canine, MonsterFactory, MonsterFactoryFriendSpec, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -23,6 +23,7 @@ object WildDog extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent = Seq(Weighted(100, MeleeAttacksAction(new BiteAttack(DiceRoll("1d1"))))),
-    otherwise = Seq(Weighted(100, PathfindingAction))
+    los = Seq(Weighted(100, PathfindingAction)),
+    otherwise = Seq(Weighted(100, HearingBoundedAction(PathfindingAction, RandomMovementAction)))
   )
 }

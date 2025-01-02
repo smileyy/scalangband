@@ -1,7 +1,7 @@
 package scalangband.data.monster.rodent
 
 import scalangband.bridge.rendering.TextColors.White
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
+import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.BiteAttack
 import scalangband.model.monster.{MonsterFactory, MonsterSpec, Rodent}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -26,8 +26,12 @@ object GiantWhiteMouse extends MonsterFactory {
       Weighted(50, MeleeAttacksAction(new BiteAttack(DiceRoll("1d2")))),
       Weighted(50, RandomMovementAction)
     ),
-    otherwise = Seq(
+    los = Seq(
       Weighted(50, PathfindingAction),
+      Weighted(50, RandomMovementAction)
+    ),
+    otherwise = Seq(
+      Weighted(50, HearingBoundedAction(PathfindingAction, RandomMovementAction)),
       Weighted(50, RandomMovementAction)
     )
   )

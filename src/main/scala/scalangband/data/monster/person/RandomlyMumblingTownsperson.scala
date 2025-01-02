@@ -28,6 +28,11 @@ object RandomlyMumblingTownsperson extends MonsterFactory {
       Weighted(9, RandomMovementAction),
       Weighted(1, SpeakAction("The townsperson mumbles incoherently."))
     ),
+    los = Seq(
+      Weighted(90, MonsterPassAction),
+      Weighted(9, RandomMovementAction),
+      Weighted(1, SpeakAction("The townsperson mumbles incoherently."))
+    ),
     otherwise = Seq(
       Weighted(90, MonsterPassAction),
       Weighted(9, RandomMovementAction),

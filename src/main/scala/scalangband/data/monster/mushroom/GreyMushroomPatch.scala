@@ -29,6 +29,7 @@ object GreyMushroomPatch extends MonsterFactory {
         MeleeAttacksAction(Seq(new SporeAttack(DiceRoll("1d4"), effectFactory = Some(Confusion(DiceRoll("1d4"))))))
       )
     ),
+    los = Seq(Weighted(100, MonsterPassAction)),
     otherwise = Seq(Weighted(100, MonsterPassAction))
   )
 }

@@ -1,7 +1,7 @@
 package scalangband.data.monster.centipede
 
 import scalangband.bridge.rendering.TextColors
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
+import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.{CrawlAttack, StingAttack}
 import scalangband.model.monster.{Centipede, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -24,6 +24,7 @@ object GiantYellowCentipede extends MonsterFactory {
     adjacent = Seq(
       Weighted(100, MeleeAttacksAction(Seq(new CrawlAttack(DiceRoll("1d4")), new StingAttack(DiceRoll("1d4")))))
     ),
-    otherwise = Seq(Weighted(100, PathfindingAction))
+    los = Seq(Weighted(100, PathfindingAction)),
+    otherwise = Seq(Weighted(100, new HearingBoundedAction(PathfindingAction, RandomMovementAction)))
   )
 }

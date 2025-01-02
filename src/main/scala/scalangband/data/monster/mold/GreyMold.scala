@@ -25,6 +25,7 @@ object GreyMold extends MonsterFactory {
     adjacent = Seq(
       Weighted(100, MeleeAttacksAction(Seq(new SporeAttack(DiceRoll("1d4")), new SporeAttack(DiceRoll("1d4")))))
     ),
+    los = Seq(Weighted(100, MonsterPassAction)),
     otherwise = Seq(Weighted(100, MonsterPassAction))
   )
 }

@@ -1,7 +1,7 @@
 package scalangband.data.monster.spider
 
 import scalangband.bridge.rendering.TextColors.Purple
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
+import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.BiteAttack
 import scalangband.model.monster.{MonsterFactory, MonsterFactoryFriendSpec, MonsterSpec, Spider}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -24,6 +24,7 @@ object CaveSpider extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent = Seq(Weighted(100, MeleeAttacksAction(new BiteAttack(DiceRoll("1d4"))))),
-    otherwise = Seq(Weighted(100, PathfindingAction))
+    los = Seq(Weighted(100, PathfindingAction)),
+    otherwise = Seq(Weighted(100, HearingBoundedAction(PathfindingAction, RandomMovementAction)))
   )
 }

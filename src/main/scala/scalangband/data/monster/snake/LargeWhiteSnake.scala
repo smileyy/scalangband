@@ -1,7 +1,13 @@
 package scalangband.data.monster.snake
 
 import scalangband.bridge.rendering.TextColors.White
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
+import scalangband.model.monster.action.{
+  HearingBoundedAction,
+  MeleeAttacksAction,
+  MonsterActions,
+  PathfindingAction,
+  RandomMovementAction
+}
 import scalangband.model.monster.attack.{BiteAttack, CrushAttack}
 import scalangband.model.monster.{MonsterFactory, MonsterSpec, Snake}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -23,9 +29,13 @@ object LargeWhiteSnake extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent = Seq(
-      Weighted(50, RandomMovementAction),
-      Weighted(50, MeleeAttacksAction(Seq(new BiteAttack(DiceRoll("1d2")), new CrushAttack(DiceRoll("1d2")))))
+      Weighted(50, MeleeAttacksAction(Seq(new BiteAttack(DiceRoll("1d2")), new CrushAttack(DiceRoll("1d2"))))),
+      Weighted(50, RandomMovementAction)
     ),
-    otherwise = Seq(Weighted(50, PathfindingAction), Weighted(50, RandomMovementAction))
+    los = Seq(Weighted(50, PathfindingAction), Weighted(50, RandomMovementAction)),
+    otherwise = Seq(
+      Weighted(50, HearingBoundedAction(PathfindingAction, RandomMovementAction)),
+      Weighted(50, RandomMovementAction)
+    )
   )
 }
