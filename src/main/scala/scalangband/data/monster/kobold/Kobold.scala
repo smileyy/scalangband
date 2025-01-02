@@ -1,7 +1,7 @@
 package scalangband.data.monster.kobold
 
 import scalangband.bridge.rendering.TextColors.LightGreen
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, RandomMovementAction}
+import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.PlainAttack
 import scalangband.model.monster.{ArmoryInventoryGenerator, MonsterFactory, MonsterSpec, ProbabilisticInventoryGenerator, Kobold as KoboldArchetype}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -23,7 +23,7 @@ object Kobold extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent = Seq(Weighted(100, MeleeAttacksAction(new PlainAttack(DiceRoll("1d8"))))),
-    otherwise = Seq(Weighted(100, RandomMovementAction))
+    otherwise = Seq(Weighted(100, PathfindingAction))
   )
 
   private def inventory = Seq(

@@ -2,9 +2,9 @@ package scalangband.data.monster.centipede
 
 import scalangband.bridge.rendering.TextColors
 import scalangband.model.element.Fire
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, RandomMovementAction}
+import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.{CrawlAttack, StingAttack}
-import scalangband.model.monster.{Centipede, MonsterFactory, MonsterSpec}
+import scalangband.model.monster.{BashesDoors, Centipede, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
 
 object MetallicRedCentipede extends MonsterFactory {
@@ -17,6 +17,7 @@ object MetallicRedCentipede extends MonsterFactory {
     armorClass = 10,
     sleepiness = 20,
     experience = 12,
+    doors = BashesDoors,
     actions = actions,
     color = TextColors.Red
   )
@@ -24,11 +25,11 @@ object MetallicRedCentipede extends MonsterFactory {
   private def actions = MonsterActions(
     adjacent = Seq(
       Weighted(
-        50,
+        75,
         MeleeAttacksAction(Seq(CrawlAttack(DiceRoll("1d2")), StingAttack(DiceRoll("1d2"), element = Some(Fire))))
       ),
-      Weighted(50, RandomMovementAction)
+      Weighted(25, RandomMovementAction)
     ),
-    otherwise = Seq(Weighted(100, RandomMovementAction))
+    otherwise = Seq(Weighted(75, PathfindingAction), Weighted(25, RandomMovementAction))
   )
 }
