@@ -8,6 +8,7 @@ import scalangband.data.monster.canine.*
 import scalangband.data.monster.centipede.*
 import scalangband.data.monster.eye.*
 import scalangband.data.monster.feline.*
+import scalangband.data.monster.harpy.WhiteHarpy
 import scalangband.data.monster.ickything.*
 import scalangband.data.monster.jelly.*
 import scalangband.data.monster.kobold.*
@@ -82,6 +83,7 @@ object Bestiary {
     Soldier,
     WhiteJelly,
     GiantBlackAnt,
+    WhiteHarpy,
     BlueYeek,
     CaveSpider,
     WildCat,
