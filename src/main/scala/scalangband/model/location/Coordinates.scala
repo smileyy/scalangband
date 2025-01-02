@@ -8,7 +8,7 @@ case class Coordinates(row: Int, col: Int) {
     Coordinates(row + direction.dy, col + direction.dx)
   }
 
-  def euclidian(target: Coordinates): Int = {
+  def euclidianDistanceTo(target: Coordinates): Int = {
     val dy = y - target.y
     val dx = x - target.x
     

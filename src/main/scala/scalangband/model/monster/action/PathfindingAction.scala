@@ -3,29 +3,20 @@ package scalangband.model.monster.action
 import scalangband.bridge.actionresult.ActionResult
 import scalangband.model.level.DungeonLevelAccessor
 import scalangband.model.location.{Coordinates, Direction}
-import scalangband.model.{GameAccessor, GameCallback}
 import scalangband.model.monster.{CantOpenDoors, Monster}
-import scalangband.model.player.{Player, PlayerAccessor}
-import scalangband.model.tile.{ClosedDoor, OccupiableTile, PermanentWall, RemovableWall, Tile, Wall}
+import scalangband.model.tile.*
+import scalangband.model.{GameAccessor, GameCallback}
 
 import scala.annotation.tailrec
 import scala.collection.mutable
 
 object PathfindingAction extends MonsterAction {
   override def apply(monster: Monster, game: GameAccessor, callback: GameCallback): List[ActionResult] = {
-    if (canHearPlayer(monster, game.player)) {
-      val path = new AStarPath(monster, game.player.coordinates, game.level)
-      path.next match {
-        case Some(direction) => callback.level.tryToMoveMonster(monster, direction)
-        case None => MonsterPassAction.apply(monster, game, callback)
-      }
-    } else {
-      MonsterPassAction.apply(monster, game, callback)
+    val path = new AStarPath(monster, game.player.coordinates, game.level)
+    path.next match {
+      case Some(direction) => callback.level.tryToMoveMonster(monster, direction)
+      case None => MonsterPassAction.apply(monster, game, callback)
     }
-  }
-  
-  def canHearPlayer(monster: Monster, player: PlayerAccessor): Boolean = {
-    monster.coordinates.euclidian(player.coordinates) <= monster.hearing
   }
 }
 
@@ -88,6 +79,6 @@ case class PathNode(coordinates: Coordinates, previous: Option[PathNode], direct
 
   override def compare(that: PathNode): Int = {
     // Scala priority queues are max heaps; we want the min to be at the head of the queue, so we negate the comparison.
-    this.priority.compareTo(that.priority) * -1
+    -this.priority.compareTo(that.priority)
   }
 }

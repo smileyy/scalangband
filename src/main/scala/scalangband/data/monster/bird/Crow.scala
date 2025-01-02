@@ -1,7 +1,7 @@
 package scalangband.data.monster.bird
 
 import scalangband.bridge.rendering.TextColors
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
+import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.BiteAttack
 import scalangband.model.monster.{Bird, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -24,6 +24,7 @@ object Crow extends MonsterFactory {
     adjacent = Seq(
       Weighted(100, MeleeAttacksAction(Seq(BiteAttack(DiceRoll("1d3")), BiteAttack(DiceRoll("1d3")))))
     ),
-    otherwise = Seq(Weighted(100, PathfindingAction))
+    los = Seq(Weighted(100, PathfindingAction)),
+    otherwise = Seq(Weighted(100, HearingBoundedAction(PathfindingAction, RandomMovementAction)))
   )
 }

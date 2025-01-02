@@ -26,6 +26,7 @@ object FloatingEye extends MonsterFactory {
       Weighted(20, MeleeAttacksAction(new GazeAttack(DiceRoll("1d1"), effect = Some(Paralysis(DiceRoll("1d4")))))),
       Weighted(80, MonsterPassAction)
     ),
+    los = Seq(Weighted(100, MonsterPassAction)),
     otherwise = Seq(Weighted(100, MonsterPassAction))
   )
 }

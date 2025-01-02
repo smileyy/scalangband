@@ -30,6 +30,7 @@ object WhiteJelly extends MonsterFactory {
         MeleeAttacksAction(new TouchAttack(DiceRoll("1d2"), Some(Poison), Some(Poisoning(DiceRoll("1d2")))))
       )
     ),
+    los = Seq(Weighted(100, MonsterPassAction)),
     otherwise = Seq(Weighted(100, MonsterPassAction))
   )
 }
