@@ -2,7 +2,7 @@ package scalangband.data.monster.centipede
 
 import scalangband.bridge.rendering.TextColors
 import scalangband.model.element.Cold
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, RandomMovementAction}
+import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.{CrawlAttack, StingAttack}
 import scalangband.model.monster.{Centipede, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -29,6 +29,6 @@ object GiantWhiteCentipede extends MonsterFactory {
       ),
       Weighted(50, RandomMovementAction)
     ),
-    otherwise = Seq(Weighted(100, RandomMovementAction))
+    otherwise = Seq(Weighted(50, PathfindingAction), Weighted(50, RandomMovementAction))
   )
 }
