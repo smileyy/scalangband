@@ -3,7 +3,7 @@ package scalangband.data.monster.jelly
 import scalangband.bridge.rendering.TextColors.White
 import scalangband.model.effect.Poisoning
 import scalangband.model.element.Poison
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, MonsterPassAction}
+import scalangband.model.monster.action.{MeleeAttacks, MonsterActions, MonsterPassAction}
 import scalangband.model.monster.attack.TouchAttack
 import scalangband.model.monster.{Jelly, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -27,7 +27,7 @@ object WhiteJelly extends MonsterFactory {
     adjacent = Seq(
       Weighted(
         100,
-        MeleeAttacksAction(new TouchAttack(DiceRoll("1d2"), Some(Poison), Some(Poisoning(DiceRoll("1d2")))))
+        MeleeAttacks(new TouchAttack(DiceRoll("1d2"), Some(Poison), Some(Poisoning(DiceRoll("1d2")))))
       )
     ),
     los = Seq(Weighted(100, MonsterPassAction)),

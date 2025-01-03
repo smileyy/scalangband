@@ -24,6 +24,17 @@ object Confusion extends EffectType {
   override def clearedResult: ActionResult = MessageResult("You are no longer confused.")
 }
 
+object Fear extends EffectType {
+  def apply(turns: DiceRoll): EffectFactory = {
+    new EffectFactory(this, turns)
+  }
+
+  override def affectedResult: ActionResult = MessageResult("You are afraid!")
+  override def affectedMoreResult: ActionResult = MessageResult("You are afraid!")
+  override def clearedResult: ActionResult = MessageResult("You are no longer afraid.")
+}
+
+
 object Paralysis extends EffectType {
   def apply(turns: DiceRoll): EffectFactory = {
     new EffectFactory(this, turns)

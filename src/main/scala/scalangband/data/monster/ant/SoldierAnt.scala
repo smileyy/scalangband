@@ -1,7 +1,7 @@
 package scalangband.data.monster.ant
 
 import scalangband.bridge.rendering.TextColors.White
-import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
+import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacks, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.BiteAttack
 import scalangband.model.monster.{Ant, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -21,7 +21,7 @@ object SoldierAnt extends MonsterFactory {
   )
 
   private def actions = MonsterActions(
-    adjacent = Seq(Weighted(100, MeleeAttacksAction(new BiteAttack(DiceRoll("1d2"))))),
+    adjacent = Seq(Weighted(100, MeleeAttacks(new BiteAttack(DiceRoll("1d2"))))),
     los = Seq(Weighted(100, PathfindingAction)),
     otherwise = Seq(Weighted(100, HearingBoundedAction(PathfindingAction, RandomMovementAction)))
   )

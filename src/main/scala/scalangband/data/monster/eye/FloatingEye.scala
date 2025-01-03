@@ -2,7 +2,7 @@ package scalangband.data.monster.eye
 
 import scalangband.bridge.rendering.TextColors.Orange
 import scalangband.model.effect.Paralysis
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, MonsterPassAction}
+import scalangband.model.monster.action.{MeleeAttacks, MonsterActions, MonsterPassAction}
 import scalangband.model.monster.attack.GazeAttack
 import scalangband.model.monster.{Eye, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -23,7 +23,7 @@ object FloatingEye extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent = Seq(
-      Weighted(20, MeleeAttacksAction(new GazeAttack(DiceRoll("1d1"), effect = Some(Paralysis(DiceRoll("1d4")))))),
+      Weighted(20, MeleeAttacks(new GazeAttack(DiceRoll("1d1"), effect = Some(Paralysis(DiceRoll("1d4")))))),
       Weighted(80, MonsterPassAction)
     ),
     los = Seq(Weighted(100, MonsterPassAction)),

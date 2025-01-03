@@ -3,7 +3,7 @@ package scalangband.model.player
 import org.slf4j.LoggerFactory
 import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult}
 import scalangband.model.Game.BaseEnergyUnit
-import scalangband.model.effect.{Effect, EffectType, Paralysis}
+import scalangband.model.effect.{Effect, EffectType, Fear, Paralysis}
 import scalangband.model.element.Element
 import scalangband.model.item.armor.{Armor, BodyArmor}
 import scalangband.model.item.food.Food
@@ -111,8 +111,8 @@ class Player(
     results
   }
 
-  def takeOff(f: Equipment => Option[Item]): List[ActionResult] = {
-    f(equipment) match {
+  def takeOff(takeoff: Equipment => Option[Item]): List[ActionResult] = {
+    takeoff(equipment) match {
       case Some(item) =>
         inventory.addItem(item)
         item match {
@@ -142,15 +142,19 @@ class Player(
   }
 
   def attack(monster: Monster, callback: GameCallback): List[ActionResult] = {
-    Random.nextInt(20) + 1 match {
-      case 1  => handleMiss(monster)
-      case 20 => handleHit(monster, callback)
-      case _ =>
-        if (Random.nextInt(toHit) > monster.armorClass * 3 / 4) {
-          handleHit(monster, callback)
-        } else {
-          handleMiss(monster)
-        }
+    if (hasEffect(Fear)) {
+      List(MessageResult(s"You are too afraid to attack the ${monster.displayName}!"))
+    } else {
+      Random.nextInt(20) + 1 match {
+        case 1 => handleMiss(monster)
+        case 20 => handleHit(monster, callback)
+        case _ =>
+          if (Random.nextInt(toHit) > monster.armorClass * 3 / 4) {
+            handleHit(monster, callback)
+          } else {
+            handleMiss(monster)
+          }
+      }
     }
   }
 
@@ -207,17 +211,21 @@ class Player(
       results = DeathResult() :: results
     } else {
       maybeEffect.foreach { eff =>
-        if (Random.nextInt(100) > savingThrow) {
-          results = effects.addEffect(eff) :: results
-        } else {
-          results = MessageResult("You resist.") :: results
-        }
+        results = tryToAddEffect(eff) :: results
       }
     }
 
     results
   }
 
+  def tryToAddEffect(effect: Effect): ActionResult = {
+    if (Random.nextInt(100) > savingThrow) {
+      effects.addEffect(effect)
+    } else {
+      MessageResult("You resist.")
+    }
+  }
+  
   def eat(food: Food, fromInventory: Boolean = true): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
@@ -294,6 +302,8 @@ class PlayerCallback(private val player: Player) {
   def takeDamage(damage: Int, element: Option[Element] = None, effect: Option[Effect] = None): List[ActionResult] = {
     player.takeDamage(damage, element, effect)
   }
+  
+  def tryToAddEffect(effect: Effect): ActionResult = player.tryToAddEffect(effect)
 
   def addMoney(amount: Int): Unit = player.money = player.money + amount
 

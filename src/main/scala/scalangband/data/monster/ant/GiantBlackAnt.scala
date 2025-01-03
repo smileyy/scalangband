@@ -3,7 +3,7 @@ package scalangband.data.monster.ant
 import scalangband.bridge.rendering.TextColors.DarkGrey
 import scalangband.model.monster.action.{
   HearingBoundedAction,
-  MeleeAttacksAction,
+  MeleeAttacks,
   MonsterActions,
   PathfindingAction,
   RandomMovementAction
@@ -34,7 +34,7 @@ object GiantBlackAnt extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent =
-      Seq(Weighted(75, MeleeAttacksAction(new BiteAttack(DiceRoll("1d4")))), Weighted(25, RandomMovementAction)),
+      Seq(Weighted(75, MeleeAttacks(new BiteAttack(DiceRoll("1d4")))), Weighted(25, RandomMovementAction)),
     los = Seq(Weighted(75, PathfindingAction), Weighted(25, RandomMovementAction)),
     otherwise = Seq(
       Weighted(75, HearingBoundedAction(PathfindingAction, RandomMovementAction)),
