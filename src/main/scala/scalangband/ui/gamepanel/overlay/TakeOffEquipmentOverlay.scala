@@ -66,7 +66,7 @@ class TakeOffEquipmentPane(game: Game) extends OverlayPanel {
     def paintEquipmentLine(get: Equipment => Option[Item], option: Char): Unit = {
       get(equipment) match {
         case Some(item) =>
-          g.drawString(s"$option) ${item.displayName}", startX, (itemsDrawn + 2) * lineHeight)
+          g.drawString(s"$option) $item", startX, (itemsDrawn + 2) * lineHeight)
           itemsDrawn = itemsDrawn + 1
         case None =>
       }

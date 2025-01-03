@@ -7,7 +7,7 @@ import scalangband.model.util.DiceRoll
 
 object Dagger extends WeaponFactory {
   override val spec: WeaponSpec = WeaponSpec(
-    name = "Dagger", archetype = Sword, damage = DiceRoll("1d4"), color = White
+    name = "Dagger", singular = "a Dagger", archetype = Sword, damage = DiceRoll("1d4"), color = White
   )
 
   override val levels: Range = 1 to 100
@@ -16,7 +16,7 @@ object Dagger extends WeaponFactory {
 
 object MainGauche extends WeaponFactory {
   override val spec: WeaponSpec = WeaponSpec(
-    name = "Main Gauche", archetype = Sword, damage = DiceRoll("1d5"), color = White
+    name = "Main Gauche", singular = "a Main Gauche", archetype = Sword, damage = DiceRoll("1d5"), color = White
   )
 
   override def levels: Range = 3 to 100

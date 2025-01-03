@@ -1,10 +1,22 @@
 package scalangband.model.item.food
 
 import scalangband.model.player.Player.MaxSatiety
+import scalangband.model.util.{DiceRoll, Weighted}
 
 import scala.swing.Color
+import scala.util.Random
 
-class FoodSpec(val name: String, val satiety: Satiety, val message: String = "That tastes good.", val color: Color)
+class FoodSpec(
+    val name: String,
+    val singular: String,
+    val plural: String,
+    val quantities: Seq[Weighted[DiceRoll]],
+    val satiety: Satiety,
+    val message: String = "That tastes good.",
+    val color: Color
+) {
+  def quantity(random: Random): Int = Weighted.selectFrom(random, quantities).roll()
+}
 
 sealed trait Satiety {
   def whenEaten(current: Int): Int

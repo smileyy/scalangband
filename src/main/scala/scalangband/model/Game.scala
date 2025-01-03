@@ -204,8 +204,7 @@ class GameCallback(private val game: Game) {
     player.resetEnergy()
   }
 
-  def playerPickup(tile: Floor, item: Item): ActionResult = {
-    tile.removeItem(item)
+  def playerPickup(item: Item): Unit = {
     player.pickUp(item)
   }
 

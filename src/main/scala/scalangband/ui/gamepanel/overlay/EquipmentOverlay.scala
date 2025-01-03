@@ -44,7 +44,7 @@ class EquipmentPanel(game: Game) extends OverlayPanel {
 
     def drawItem(option: Char, label: String, maybeItem: Option[EquippableItem], line: Int): Unit = {
       maybeItem match {
-        case Some(item) => g.drawString(s"$option) $label: ${item.article}${item.displayName}", startX, (line + 2) * lineHeight)
+        case Some(item) => g.drawString(s"$option) $label: $item", startX, (line + 2) * lineHeight)
         case None => g.drawString(s" ) $label: (nothing)", startX, (line + 2) * lineHeight)
       }
     }

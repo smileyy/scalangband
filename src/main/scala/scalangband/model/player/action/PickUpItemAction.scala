@@ -1,6 +1,7 @@
 package scalangband.model.player.action
 
 import scalangband.bridge.actionresult.{ActionResult, MessageResult}
+import scalangband.model.item.{Item, StackableItem}
 import scalangband.model.tile.Floor
 import scalangband.model.{GameAccessor, GameCallback}
 
@@ -9,8 +10,13 @@ object PickUpItemAction extends FreeAction {
     accessor.playerTile match {
       case floor: Floor if floor.items.nonEmpty =>
         val item = floor.items.head
-        val result = callback.playerPickup(floor, floor.items.head)
-        List(result)
+        val itemToAdd = item match {
+          case stackable: StackableItem => stackable.clone(stackable.quantity)
+          case regularItem: Item => regularItem
+        }
+        callback.playerPickup(itemToAdd)
+        floor.removeItem(item)
+        List(MessageResult(s"You pick up $item."))
       case _ => List(MessageResult("There is nothing to pick up."))
     }
   }

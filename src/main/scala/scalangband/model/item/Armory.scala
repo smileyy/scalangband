@@ -44,7 +44,6 @@ object Armory {
 
     // Light Sources
     WoodenTorch,
-    Lantern,
 
     // Food
     Apple,

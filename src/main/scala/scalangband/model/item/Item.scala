@@ -1,32 +1,36 @@
 package scalangband.model.item
 
 import scalangband.model.Representable
-import scalangband.model.item.Item.startsWithVowel
-import scalangband.model.item.armor.Armor
-import scalangband.model.item.lightsource.LightSource
-import scalangband.model.item.weapon.Weapon
 
 import scala.swing.Color
 
 trait Item extends Representable {
   def name: String
   def archetype: ItemArchetype
-  
   def color: Color
-  
-  def displayName: String = name
-  
-  def article: String = this match {
-    case a: Armor => ""
-    case i => if (startsWithVowel(i)) "an " else "a "
-  }
 
-  override def toString: String = displayName
+  def singular: String
+
+  override def toString: String = singular
 } 
-object Item {
-  private def startsWithVowel(item: Item): Boolean = {
-    vowels.contains(item.displayName.charAt(0))
+
+trait StackableItem extends Item {
+  def quantity: Int
+  def maxStackSize: Int = 40
+  def stackSpace: Int = maxStackSize - quantity
+
+  def stacksWith(item: Item): Boolean = {
+    this.archetype == item.archetype && this.name == item.name
   }
   
-  private val vowels: Set[Char] = Set('A', 'E', 'I', 'O', 'U')
+  def increment(quantity: Int = 1): Unit
+  def decrement(quantity: Int = 1): Unit
+
+  def clone(quantity: Int): StackableItem
+  
+  def plural: String
+
+  override def toString: String = {
+    if (quantity == 1) singular else s"$quantity $plural"
+  }
 }
