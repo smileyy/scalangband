@@ -5,7 +5,7 @@ import scalangband.data.item.food.RationOfFood
 import scalangband.data.item.lightsource.WoodenTorch
 import scalangband.data.item.potion.CureLightWoundsPotion
 import scalangband.data.item.weapon.Dagger
-import scalangband.model.item.GoodQuality
+import scalangband.model.item.{GoodQuality, NormalQuality}
 import scalangband.model.player.{Equipment, Inventory, StatBonuses, Stats}
 import scalangband.model.util.DiceRoll
 
@@ -24,13 +24,14 @@ object Warrior extends PlayerClass {
 
   override def startingEquipment(random: Random): Equipment = new Equipment(
     weapon = Some(Dagger()),
-    light = Some(WoodenTorch()),
+//    light = Some(WoodenTorch(quantity = Some(1))),
     body = Some(SoftLeatherArmor())
   )
 
   override def startingInventory(random: Random): Inventory = {
     val inventory = Inventory.empty()
-    (1 to DiceRoll("1d3").roll()).foreach(_ => inventory.addItem(RationOfFood()))
+    (1 to DiceRoll("1d3").roll()).foreach(_ => inventory.addItem(RationOfFood(quantity = Some(1))))
+    (1 to DiceRoll("1d3").roll()).foreach(_ => inventory.addItem(WoodenTorch(quantity = Some(1))))
     inventory
   }
 }

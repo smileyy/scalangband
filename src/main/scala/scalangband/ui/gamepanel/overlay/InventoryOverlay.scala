@@ -2,7 +2,7 @@ package scalangband.ui.gamepanel.overlay
 
 import scalangband.bridge.rendering.TextColors.*
 import scalangband.model.Game
-import scalangband.model.item.Item
+import scalangband.model.item.{Item, StackableItem}
 import scalangband.model.item.food.Food
 import scalangband.model.player.action.{DropInventoryItemAction, EatFoodAction, PlayerAction}
 import scalangband.ui.gamepanel.{GamePanel, PlayerPane}
@@ -64,11 +64,13 @@ class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, filter: I
     }
   }
 
-  private def actionOrOverlay(game: Game, idx: Int): Either[Option[PlayerAction], GamePanelOverlay] = {
+  private def actionOrOverlay(game: Game, idx: Int, quantity: Int = 1): Either[Option[PlayerAction], GamePanelOverlay] = {
     val inventory = game.player.inventory
     if (inventory.size > idx && filter.accepts(inventory.getItem(idx))) {
-      val item = inventory.getItem(idx)
-      Left(factory(item))
+      inventory.getItem(idx) match {
+        case stackable: StackableItem => Left(factory(stackable.clone(quantity)))
+        case item: Item => Left(factory(item))
+      }
     } else {
       Right(overlay)
     }
@@ -91,7 +93,7 @@ class InventoryPane(game: Game, prompt: String, filter: InventoryFilter) extends
     g.drawString(prompt, 0, lineHeight)
     var line = 0
     itemsByCharacter.foreach { (item, idx) =>
-      g.drawString(s"${(idx + 'a').toChar}) a ${item.displayName}", startX, (line + 2) * lineHeight)
+      g.drawString(s"${(idx + 'a').toChar}) $item", startX, (line + 2) * lineHeight)
       line = line + 1
     }
   }
@@ -102,7 +104,7 @@ trait InventoryActionFactory {
 }
 
 object DropItemActionFactory extends InventoryActionFactory {
-  override def apply(item: Item): Option[PlayerAction] = Some(new DropInventoryItemAction(item))
+  override def apply(item: Item): Option[PlayerAction] = Some(new DropInventoryItemAction(item, 1))
 }
 
 object ViewItemActionFactory extends InventoryActionFactory {

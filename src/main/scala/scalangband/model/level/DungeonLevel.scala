@@ -77,7 +77,7 @@ class DungeonLevel(val depth: Int, val tiles: Array[Array[Tile]]) extends Tiled 
           case x :: _ =>
             this(x).asInstanceOf[Floor].addItem(item)
             NoResult
-          case Nil => MessageResult(s"${item.article}${item.displayName} disappears.")
+          case Nil => MessageResult(s"$item disappears.")
         }
     }
   }

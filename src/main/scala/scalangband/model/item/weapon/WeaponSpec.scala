@@ -5,4 +5,10 @@ import scalangband.model.util.DiceRoll
 
 import scala.swing.Color
 
-class WeaponSpec(val name: String, val archetype: ItemArchetype, val damage: DiceRoll, val color: Color)
+class WeaponSpec(
+    val name: String,
+    val singular: String,
+    val archetype: ItemArchetype,
+    val damage: DiceRoll,
+    val color: Color
+)
