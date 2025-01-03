@@ -334,7 +334,7 @@ class PlayerCallback(private val player: Player) {
   def addMoney(amount: Int): Unit = player.money = player.money + amount
 
   def pickUp(item: Item): Unit = player.pickUp(item)
-  def removeInventoryItem(item: Item, quantity: Int, callback: GameCallback): Unit = {
+  def removeInventoryItem(item: Item): Unit = {
     player.removeInventoryItem(item)
   }
 
