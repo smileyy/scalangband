@@ -29,9 +29,12 @@ class MonsterActions(adjacent: Seq[Weighted[MonsterAction]], los: Seq[Weighted[M
   }
 
   private def hasLineOfSight(monster: Monster, player: PlayerAccessor, level: DungeonLevelAccessor): Boolean = {
-    new BresenhamLine(monster.coordinates, player.coordinates).find(coords => level.tile(coords).opaque) match {
-      case Some(_) => false
-      case None => true
+    if (player.lightRadius == 0) false
+    else {
+      new BresenhamLine(monster.coordinates, player.coordinates).find(coords => level.tile(coords).opaque) match {
+        case Some(_) => false
+        case None => true
+      }
     }
   }
 }

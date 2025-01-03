@@ -292,6 +292,7 @@ class PlayerAccessor(private val player: Player) {
   def canSeeInvisible: Boolean = player.canSeeInvisible
   def coordinates: Coordinates = player.coordinates
   def hasEffect(effectType: EffectType): Boolean = player.hasEffect(effectType)
+  def lightRadius: Int = player.lightRadius
   def satiety: Int = player.satiety
 }
 
