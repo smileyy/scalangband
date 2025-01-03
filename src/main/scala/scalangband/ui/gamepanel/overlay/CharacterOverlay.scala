@@ -11,7 +11,7 @@ import scala.swing.{Font, Graphics2D}
 class CharacterOverlay(game: Game) extends GamePanelOverlay {
   override def message: Option[String] = None
   override def keyHandler: KeyHandler = new CharacterOverlayKeyHandler(this)
-  override def panel: Option[OverlayPanel] = Some(new CharacterPane(game))
+  override def panel: Option[OverlayPane] = Some(new CharacterPane(game))
 }
 
 class CharacterOverlayKeyHandler(overlay: CharacterOverlay) extends KeyHandler {
@@ -23,7 +23,7 @@ class CharacterOverlayKeyHandler(overlay: CharacterOverlay) extends KeyHandler {
   }
 }
 
-class CharacterPane(game: Game) extends OverlayPanel {
+class CharacterPane(game: Game) extends OverlayPane {
   override def paint(g: Graphics2D, font: Font): Unit = {
     val fontMetrics = g.getFontMetrics(font)
     val lineHeight = fontMetrics.getHeight

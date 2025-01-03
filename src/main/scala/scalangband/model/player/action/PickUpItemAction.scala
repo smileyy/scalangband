@@ -5,7 +5,7 @@ import scalangband.model.item.{Item, StackableItem}
 import scalangband.model.tile.Floor
 import scalangband.model.{GameAccessor, GameCallback}
 
-object PickUpItemAction extends FreeAction {
+class PickUpItemAction(item: Item) extends FreeAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
     accessor.playerTile match {
       case floor: Floor if floor.items.nonEmpty =>
@@ -19,5 +19,11 @@ object PickUpItemAction extends FreeAction {
         List(MessageResult(s"You pick up $item."))
       case _ => List(MessageResult("There is nothing to pick up."))
     }
+  }
+}
+
+object NothingToPickUpAction extends FreeAction {
+  override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
+    List(MessageResult("There is nothing to pick up."))
   }
 }

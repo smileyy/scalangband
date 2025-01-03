@@ -5,5 +5,5 @@ import scalangband.ui.keys.{DirectionKeyHandler, KeyHandler, OpenActionFactory}
 object OpenOverlay extends GamePanelOverlay {
   override def message: Option[String] = Some("Choose a direction...")
   override def keyHandler: KeyHandler = DirectionKeyHandler(OpenActionFactory)
-  override def panel: Option[OverlayPanel] = None
+  override def panel: Option[OverlayPane] = None
 }

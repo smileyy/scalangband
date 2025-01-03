@@ -1,46 +1,31 @@
-package scalangband.ui.gamepanel.overlay
+package scalangband.ui.gamepanel.overlay.floor
 
-import scalangband.bridge.rendering.TextColors.*
+import scalangband.bridge.rendering.TextColors.{Black, White}
 import scalangband.model.Game
 import scalangband.model.item.{Item, StackableItem}
-import scalangband.model.item.food.Food
-import scalangband.model.player.action.{DropInventoryItemAction, EatFoodAction, PlayerAction}
+import scalangband.model.player.action.PlayerAction
+import scalangband.model.tile.Floor
+import scalangband.ui.gamepanel.overlay.*
 import scalangband.ui.gamepanel.{GamePanel, PlayerPane}
 import scalangband.ui.keys.KeyHandler
 
 import scala.swing.event.{Key, KeyPressed}
 import scala.swing.{Font, Graphics2D}
 
-class InventoryOverlay(
-    game: Game,
-    factory: InventoryActionFactory,
-    prompt: String,
-    filter: InventoryFilter = AllInventoryFilter
-) extends GamePanelOverlay {
+class FloorItemOverlay(game: Game, tile: Floor, prompt: String, filter: ItemFilter = AllItemFilter, factory: ItemActionFactory)
+    extends GamePanelOverlay {
   override def message: Option[String] = None
-  override def keyHandler: KeyHandler = new InventoryKeyHandler(game, factory, filter, this)
-
-  override def panel: Option[OverlayPanel] = Some(new InventoryPane(game, prompt, filter))
+  override def keyHandler: KeyHandler = new FloorItemKeyHandler(game, factory, filter, this)
+  override def panel: Option[OverlayPane] = Some(new FloorPane(tile, prompt, filter))
 }
 
-object InventoryListOverlay {
-  def apply(game: Game): InventoryOverlay = {
-    new InventoryOverlay(game, ViewItemActionFactory, "Select Item: ")
-  }
-}
-
-object DropItemInventoryOverlay {
-  def apply(game: Game): InventoryOverlay = {
-    new InventoryOverlay(game, DropItemActionFactory, "Drop which item?")
-  }
-}
-
-class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, filter: InventoryFilter, overlay: InventoryOverlay) extends KeyHandler {
+class FloorItemKeyHandler(game: Game, factory: ItemActionFactory, filter: ItemFilter, overlay: FloorItemOverlay)
+  extends KeyHandler {
   override def handleKeyPressed(event: KeyPressed, game: Game): Either[Option[PlayerAction], GamePanelOverlay] = {
     event match {
       case KeyPressed(_, Key.Escape, _, _) => Left(None)
 
-      case KeyPressed(_, Key.Slash, _, _) => Right(new EquipmentOverlay(game))
+//      case KeyPressed(_, Key.Slash, _, _) => Right(new EquipmentOverlay(game))
 
       case KeyPressed(_, Key.A, _, _) => actionOrOverlay(game, 0)
       case KeyPressed(_, Key.B, _, _) => actionOrOverlay(game, 1)
@@ -64,11 +49,11 @@ class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, filter: I
     }
   }
 
-  private def actionOrOverlay(game: Game, idx: Int, quantity: Int = 1): Either[Option[PlayerAction], GamePanelOverlay] = {
+  private def actionOrOverlay(game: Game, idx: Int): Either[Option[PlayerAction], GamePanelOverlay] = {
     val inventory = game.player.inventory
     if (inventory.size > idx && filter.accepts(inventory.getItem(idx))) {
       inventory.getItem(idx) match {
-        case stackable: StackableItem => Left(factory(stackable.clone(quantity)))
+        case stackable: StackableItem => Left(factory(stackable.clone(stackable.quantity)))
         case item: Item => Left(factory(item))
       }
     } else {
@@ -77,45 +62,24 @@ class InventoryKeyHandler(game: Game, factory: InventoryActionFactory, filter: I
   }
 }
 
-class InventoryPane(game: Game, prompt: String, filter: InventoryFilter) extends OverlayPanel {
+class FloorPane(tile: Floor, prompt: String, filter: ItemFilter) extends OverlayPane {
   override def paint(g: Graphics2D, font: Font): Unit = {
     val fontMetrics = g.getFontMetrics(font)
     val lineHeight = fontMetrics.getHeight
     val charWidth = fontMetrics.charWidth(' ')
 
-    val itemsByCharacter = game.player.inventory.items.zipWithIndex.filter((item, idx) => filter(item))
+    val itemsByIndex = tile.items.zipWithIndex.filter((item, idx) => filter(item))
 
     g.setColor(Black)
     val startX = (PlayerPane.WidthInChars + 1) * charWidth
-    g.fillRect(startX, 0, GamePanel.WidthInPixels - startX, (itemsByCharacter.size + 1) * lineHeight)
+    g.fillRect(startX, 0, GamePanel.WidthInPixels - startX, (itemsByIndex.size + 1) * lineHeight)
 
     g.setColor(White)
     g.drawString(prompt, 0, lineHeight)
     var line = 0
-    itemsByCharacter.foreach { (item, idx) =>
+    itemsByIndex.foreach { (item, idx) =>
       g.drawString(s"${(idx + 'a').toChar}) $item", startX, (line + 2) * lineHeight)
       line = line + 1
     }
   }
-}
-
-trait InventoryActionFactory {
-  def apply(item: Item): Option[PlayerAction]
-}
-
-object DropItemActionFactory extends InventoryActionFactory {
-  override def apply(item: Item): Option[PlayerAction] = Some(new DropInventoryItemAction(item, 1))
-}
-
-object ViewItemActionFactory extends InventoryActionFactory {
-  override def apply(item: Item): Option[PlayerAction] = None
-}
-
-trait InventoryFilter {
-  def apply(item: Item): Boolean
-  def accepts(item: Item): Boolean = apply(item)
-}
-
-object AllInventoryFilter extends InventoryFilter {
-  override def apply(item: Item): Boolean = true
 }

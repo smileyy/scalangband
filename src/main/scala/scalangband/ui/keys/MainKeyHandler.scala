@@ -4,7 +4,11 @@ import scalangband.model.Game
 import scalangband.model.debug.EnableDebugAction
 import scalangband.model.location.*
 import scalangband.model.player.action.*
+import scalangband.model.tile.Floor
 import scalangband.ui.gamepanel.overlay.*
+import scalangband.ui.gamepanel.overlay.equipment.{EquipmentOverlay, TakeOffEquipmentOverlay}
+import scalangband.ui.gamepanel.overlay.floor.PickUpItemFromFloorOverlay
+import scalangband.ui.gamepanel.overlay.inventory.{DropItemInventoryOverlay, ListInventoryOverlay, QuaffPotionOverlay, WearEquipmentInventoryOverlay}
 
 import scala.swing.event.{Key, KeyPressed}
 
@@ -36,12 +40,16 @@ object MainKeyHandler extends KeyHandler {
       case KeyPressed(_, Key.C, _, _) => Right(CloseOverlay)
       case KeyPressed(_, Key.D, _, _) => Right(DropItemInventoryOverlay(game))
       case KeyPressed(_, Key.E, _, _) => Right(new EquipmentOverlay(game))
-      case KeyPressed(_, Key.G, _, _) => Left(Some(PickUpItemAction))
-      case KeyPressed(_, Key.I, _, _) => Right(InventoryListOverlay(game))
+      case KeyPressed(_, Key.G, _, _) => game.playerTile.match {
+          case floor: Floor if floor.items.size == 1 => Left(Some(PickUpItemAction(floor.items.head)))
+          case floor: Floor if floor.items.size > 1 => Right(PickUpItemFromFloorOverlay(game, floor))
+          case _ => Left(Some(NothingToPickUpAction))
+      }
+      case KeyPressed(_, Key.I, _, _) => Right(ListInventoryOverlay(game))
       case KeyPressed(_, Key.O, _, _) => Right(OpenOverlay)
       case KeyPressed(_, Key.Q, _, _) => Right(QuaffPotionOverlay(game))
       case KeyPressed(_, Key.T, _, _) => Right(new TakeOffEquipmentOverlay(game))
-      case KeyPressed(_, Key.W, _, _) => Right(WearEquipmentOverlay(game))
+      case KeyPressed(_, Key.W, _, _) => Right(WearEquipmentInventoryOverlay(game))
 
       case KeyPressed(_, _, _, _) => Left(None)
     }
