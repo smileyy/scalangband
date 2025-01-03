@@ -39,6 +39,7 @@ object MainKeyHandler extends KeyHandler {
       case KeyPressed(_, Key.G, _, _) => Left(Some(PickUpItemAction))
       case KeyPressed(_, Key.I, _, _) => Right(InventoryListOverlay(game))
       case KeyPressed(_, Key.O, _, _) => Right(OpenOverlay)
+      case KeyPressed(_, Key.Q, _, _) => Right(QuaffPotionOverlay(game))
       case KeyPressed(_, Key.T, _, _) => Right(new TakeOffEquipmentOverlay(game))
       case KeyPressed(_, Key.W, _, _) => Right(WearEquipmentOverlay(game))
 

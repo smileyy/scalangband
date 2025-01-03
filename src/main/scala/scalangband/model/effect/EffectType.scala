@@ -1,12 +1,13 @@
 package scalangband.model.effect
 
-import scalangband.bridge.actionresult.{ActionResult, MessageResult}
+import scalangband.bridge.actionresult.{ActionResult, MessageResult, NoResult}
 import scalangband.model.player.PlayerCallback
 import scalangband.model.util.DiceRoll
 
 sealed trait EffectType {
   def affectedResult: ActionResult
   def affectedMoreResult: ActionResult
+  def affectedLessResult: ActionResult = NoResult
   def clearedResult: ActionResult
 
   def impactPlayer(strength: Int, callback: PlayerCallback): Unit = {}
@@ -21,6 +22,7 @@ object Confusion extends EffectType {
   
   override def affectedResult: ActionResult = MessageResult("You are confused!")
   override def affectedMoreResult: ActionResult = MessageResult("You are more confused!")
+  override def affectedLessResult: ActionResult = MessageResult("You are less confused.")
   override def clearedResult: ActionResult = MessageResult("You are no longer confused.")
 }
 
@@ -52,6 +54,7 @@ object Poisoning extends EffectType {
 
   override def affectedResult: ActionResult = MessageResult("You are poisoned!")
   override def affectedMoreResult: ActionResult = MessageResult("You are more poisoned!")
+  override def affectedLessResult: ActionResult = MessageResult("You are less poisoned.")
   override def clearedResult: ActionResult = MessageResult("You are no longer poisoned.")
 
   override def impactPlayer(strength: Int, callback: PlayerCallback): Unit = {

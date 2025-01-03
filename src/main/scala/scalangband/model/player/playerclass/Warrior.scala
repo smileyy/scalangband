@@ -3,6 +3,7 @@ package scalangband.model.player.playerclass
 import scalangband.data.item.armor.body.SoftLeatherArmor
 import scalangband.data.item.food.RationOfFood
 import scalangband.data.item.lightsource.WoodenTorch
+import scalangband.data.item.potion.CureLightWoundsPotion
 import scalangband.data.item.weapon.Dagger
 import scalangband.model.item.GoodQuality
 import scalangband.model.player.{Equipment, Inventory, StatBonuses, Stats}
