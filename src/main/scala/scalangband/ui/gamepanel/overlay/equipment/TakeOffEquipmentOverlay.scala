@@ -1,10 +1,11 @@
-package scalangband.ui.gamepanel.overlay
+package scalangband.ui.gamepanel.overlay.equipment
 
 import scalangband.bridge.rendering.TextColors.{Black, White}
 import scalangband.model.Game
 import scalangband.model.item.Item
 import scalangband.model.player.Equipment
 import scalangband.model.player.action.{PlayerAction, TakeOffEquipmentAction}
+import scalangband.ui.gamepanel.overlay.*
 import scalangband.ui.gamepanel.{GamePanel, PlayerPane}
 import scalangband.ui.keys.KeyHandler
 
@@ -14,7 +15,7 @@ import scala.swing.{Font, Graphics2D}
 class TakeOffEquipmentOverlay(game: Game) extends GamePanelOverlay {
   override def message: Option[String] = None
   override def keyHandler: KeyHandler = new TakeOffEquipmentKeyHandler(game, this)
-  override def panel: Option[OverlayPanel] = Some(new TakeOffEquipmentPane(game))
+  override def panel: Option[OverlayPane] = Some(new TakeOffEquipmentPane(game))
 }
 
 class TakeOffEquipmentKeyHandler(game: Game, overlay: TakeOffEquipmentOverlay) extends KeyHandler {
@@ -45,7 +46,7 @@ class TakeOffEquipmentKeyHandler(game: Game, overlay: TakeOffEquipmentOverlay) e
   }
 }
 
-class TakeOffEquipmentPane(game: Game) extends OverlayPanel {
+class TakeOffEquipmentPane(game: Game) extends OverlayPane {
   override def paint(g: Graphics2D, font: Font): Unit = {
     val fontMetrics = g.getFontMetrics(font)
     val lineHeight = fontMetrics.getHeight

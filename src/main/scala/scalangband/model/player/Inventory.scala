@@ -40,7 +40,6 @@ class Inventory(val items: mutable.IndexedBuffer[Item]) {
    */
   def removeItem(item: Item): Unit = item match {
     case stackable: StackableItem =>
-      println(s"Removing $item")
       var stacksToRemove: List[Item] = List.empty
       var numberLeftToRemove = stackable.quantity
 

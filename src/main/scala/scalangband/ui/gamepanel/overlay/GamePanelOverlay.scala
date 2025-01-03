@@ -7,9 +7,9 @@ import scala.swing.{Font, Graphics2D}
 trait GamePanelOverlay {
   def message: Option[String]
   def keyHandler: KeyHandler
-  def panel: Option[OverlayPanel]  
+  def panel: Option[OverlayPane]  
 }
 
-trait OverlayPanel {
+trait OverlayPane {
   def paint(g: Graphics2D, font: Font): Unit
 }

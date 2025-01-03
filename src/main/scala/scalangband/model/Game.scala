@@ -119,6 +119,10 @@ class Game(
     queue = SchedulerQueue(level.creatures)
   }
 
+  def playerTile: OccupiableTile = {
+    level(player.coordinates).asInstanceOf[OccupiableTile]
+  }
+
   //
   // Debugging
   //
@@ -159,7 +163,7 @@ class GameAccessor(private val game: Game) {
   val player: PlayerAccessor = new PlayerAccessor(game.player)
 
   def legendarium: Legendarium = game.legendarium
-  def playerTile: OccupiableTile = level.tile(player.coordinates).asInstanceOf[OccupiableTile]
+  def playerTile: OccupiableTile = game.playerTile
 }
 
 class GameCallback(private val game: Game) {

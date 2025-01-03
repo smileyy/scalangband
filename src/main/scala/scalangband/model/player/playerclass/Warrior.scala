@@ -24,7 +24,7 @@ object Warrior extends PlayerClass {
 
   override def startingEquipment(random: Random): Equipment = new Equipment(
     weapon = Some(Dagger()),
-//    light = Some(WoodenTorch(quantity = Some(1))),
+    light = Some(WoodenTorch(quantity = Some(1))),
     body = Some(SoftLeatherArmor())
   )
 
