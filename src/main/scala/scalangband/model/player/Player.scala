@@ -8,6 +8,7 @@ import scalangband.model.element.Element
 import scalangband.model.item.armor.{Armor, BodyArmor}
 import scalangband.model.item.food.Food
 import scalangband.model.item.lightsource.LightSource
+import scalangband.model.item.potion.Potion
 import scalangband.model.item.weapon.Weapon
 import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.location.Coordinates
@@ -226,6 +227,20 @@ class Player(
     }
   }
   
+  def reduceEffect(effectType: EffectType, amount: Int): ActionResult = {
+    effects.reduceEffect(effectType, amount)
+  }
+  
+  def quaff(potion: Potion, fromInventory: Boolean = true): List[ActionResult] = {
+    val results = potion.onQuaff(callback)
+  
+    if (fromInventory) {
+      inventory.removeItem(potion)
+    }
+    
+    results
+  }
+  
   def eat(food: Food, fromInventory: Boolean = true): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
@@ -254,6 +269,16 @@ class Player(
 
   private def resists(element: Element): Boolean = false
 
+  def heal(amount: Int): ActionResult = {
+    if (health + amount > maxHealth) {
+      health = maxHealth
+    } else {
+      health = health + amount
+    }
+    
+    MessageResult("You feel better.")
+  }
+  
   def fullHeal(): List[ActionResult] = {
     health = maxHealth
     List(MessageResult("You feel *much* better."))
@@ -305,6 +330,7 @@ class PlayerCallback(private val player: Player) {
   }
   
   def tryToAddEffect(effect: Effect): ActionResult = player.tryToAddEffect(effect)
+  def reduceEffect(effect: EffectType, turns: Int): ActionResult = player.reduceEffect(effect, turns)
 
   def addMoney(amount: Int): Unit = player.money = player.money + amount
 
@@ -315,8 +341,12 @@ class PlayerCallback(private val player: Player) {
   def takeOff(f: Equipment => Option[Item]): List[ActionResult] = player.takeOff(f)
 
   def eat(food: Food): List[ActionResult] = player.eat(food)
+  def quaff(potion: Potion, fromInventory: Boolean): List[ActionResult] = player.quaff(potion, fromInventory)
+  
+  def heal(amount: Int): ActionResult = player.heal(amount)
   def fullHeal(): List[ActionResult] = player.fullHeal()
 
+  
   def logEquipment(): Unit = PlayerCallback.Logger.info(s"Equipment: ${player.equipment}")
 }
 object PlayerCallback {

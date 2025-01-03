@@ -106,6 +106,7 @@ class TextRenderer(font: Font) extends Renderer {
     case LightSource => TextTile('~', font, item.color)
     case Miscellaneous => TextTile('~', font, item.color)
     case MoneyArchetype => TextTile('$', font, item.color)
+    case Potion => TextTile('!', font, item.color)
     case SoftBodyArmor => TextTile('(', font, item.color)
     case Sword => TextTile('|', font, item.color)
   }

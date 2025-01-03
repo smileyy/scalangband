@@ -4,6 +4,7 @@ import scalangband.data.item.armor.body.*
 import scalangband.data.item.food.{Apple, RationOfFood}
 import scalangband.data.item.lightsource.*
 import scalangband.data.item.money.*
+import scalangband.data.item.potion.CureLightWoundsPotion
 import scalangband.data.item.weapon.*
 import scalangband.model.level.DungeonLevels
 import scalangband.model.util.Weighted
@@ -44,7 +45,7 @@ object Armory {
     // Light Sources
     WoodenTorch,
     Lantern,
-    
+
     // Food
     Apple,
     RationOfFood,
@@ -56,5 +57,8 @@ object Armory {
     // Soft Body Armors
     Robe,
     SoftLeatherArmor,
+
+    // Potions
+    CureLightWoundsPotion
   ))
 }

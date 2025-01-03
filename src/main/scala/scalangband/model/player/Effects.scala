@@ -1,6 +1,6 @@
 package scalangband.model.player
 
-import scalangband.bridge.actionresult.ActionResult
+import scalangband.bridge.actionresult.{ActionResult, NoResult}
 import scalangband.model.effect.{Effect, EffectType}
 
 import scala.collection.mutable
@@ -37,6 +37,21 @@ class Effects(effectsByType: mutable.Map[EffectType, Effect]) {
     results
   }
 
+  def reduceEffect(effectType: EffectType, amount: Int): ActionResult = {
+    if (hasEffect(effectType)) {
+      val effect = effectsByType(effectType)      
+      effect.turns = effect.turns - amount
+      if (effect.turns <= 0) {
+        effectsByType.remove(effectType)
+        effectType.clearedResult
+      } else {
+        effectType.affectedLessResult
+      }
+    } else {
+      NoResult
+    }
+  }
+  
   override def toString: String = effectsByType.values.mkString("[", ",", "]")
 }
 object Effects {
