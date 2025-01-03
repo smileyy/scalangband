@@ -3,7 +3,7 @@ package scalangband.data.monster.worm
 import scalangband.bridge.rendering.TextColors.White
 import scalangband.model.effect.Poisoning
 import scalangband.model.element.Poison
-import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacksAction, MonsterActions, PathfindingAction, RandomMovementAction}
+import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacks, MonsterActions, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.CrawlAttack
 import scalangband.model.monster.{MonsterFactory, MonsterSpec, Worm}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -27,7 +27,7 @@ object WhiteWormMass extends MonsterFactory {
     adjacent = Seq(
       Weighted(
         25,
-        MeleeAttacksAction(
+        MeleeAttacks(
           new CrawlAttack(DiceRoll("1d2"), element = Some(Poison), effect = Some(Poisoning(DiceRoll("1d4"))))
         )
       ),

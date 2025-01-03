@@ -1,7 +1,7 @@
 package scalangband.data.monster.person
 
 import scalangband.bridge.rendering.TextColors.Umber
-import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacksAction, MonsterActions, MonsterPassAction, PathfindingAction, RandomMovementAction}
+import scalangband.model.monster.action.{HearingBoundedAction, MeleeAttacks, MonsterActions, MonsterPassAction, PathfindingAction, RandomMovementAction}
 import scalangband.model.monster.attack.PlainAttack
 import scalangband.model.monster.*
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -25,7 +25,7 @@ object Soldier extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent =
-      Seq(Weighted(100, MeleeAttacksAction(Seq(new PlainAttack(DiceRoll("1d7")), new PlainAttack(DiceRoll("1d7")))))),
+      Seq(Weighted(100, MeleeAttacks(Seq(new PlainAttack(DiceRoll("1d7")), new PlainAttack(DiceRoll("1d7")))))),
     los = Seq(Weighted(100, PathfindingAction)),
     otherwise = Seq(Weighted(100, HearingBoundedAction(PathfindingAction, MonsterPassAction)))
   )

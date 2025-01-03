@@ -3,7 +3,7 @@ package scalangband.data.monster.snake
 import scalangband.bridge.rendering.TextColors.White
 import scalangband.model.monster.action.{
   HearingBoundedAction,
-  MeleeAttacksAction,
+  MeleeAttacks,
   MonsterActions,
   PathfindingAction,
   RandomMovementAction
@@ -29,7 +29,7 @@ object LargeWhiteSnake extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent = Seq(
-      Weighted(50, MeleeAttacksAction(Seq(new BiteAttack(DiceRoll("1d2")), new CrushAttack(DiceRoll("1d2"))))),
+      Weighted(50, MeleeAttacks(Seq(new BiteAttack(DiceRoll("1d2")), new CrushAttack(DiceRoll("1d2"))))),
       Weighted(50, RandomMovementAction)
     ),
     los = Seq(Weighted(50, PathfindingAction), Weighted(50, RandomMovementAction)),

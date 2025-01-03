@@ -81,6 +81,7 @@ object Bestiary {
     // Level 2
     Kobold,
     Soldier,
+    Acolyte,
     WhiteJelly,
     GiantBlackAnt,
     WhiteHarpy,

@@ -17,6 +17,7 @@ class Monster(
     val factory: MonsterFactory,
     coordinates: Coordinates,
     var health: Int,
+    val maxHealth: Int,
     var awake: Boolean,
     val inventory: mutable.ListBuffer[Item] = ListBuffer.empty
 ) extends Creature(factory.spec.name, coordinates, Monster.startingEnergy()) {
@@ -60,8 +61,6 @@ class Monster(
         case None =>
       }
     }
-
-    List.empty
   }
 
   override def onNextTurn(): Unit = {
@@ -69,6 +68,14 @@ class Monster(
   }
 
   def getAction(game: GameAccessor): MonsterAction = spec.actions.select(this, game)
+
+  def heal(amount: Int): Unit = {
+    if (health + amount > maxHealth) {
+      health = maxHealth
+    } else {
+      health = health + amount
+    }
+  }  
 
   def color: Color = spec.color
 
@@ -79,14 +86,14 @@ class Monster(
   }
 }
 object Monster {
-
   def apply(random: Random, factory: MonsterFactory, coordinates: Coordinates, armory: Armory): Monster = {
     val awake = factory.spec.sleepiness == 0
     val inventory = mutable.ListBuffer.from(factory.spec.generateStartingInventory(random, armory))
-    new Monster(factory, coordinates, factory.spec.health.roll(), awake, inventory)
+    val maxHealth = factory.spec.health.roll()
+    new Monster(factory, coordinates, maxHealth, maxHealth, awake, inventory)
   }
 
-  /** All monsters start with some energy,  less than the player enters a level with.
+  /** All monsters start with some energy, less than the player enters a level with.
     */
   def startingEnergy(): Int = Random.nextInt(NormalSpeed - 1) + 1
 }

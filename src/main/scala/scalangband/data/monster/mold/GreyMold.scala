@@ -1,7 +1,7 @@
 package scalangband.data.monster.mold
 
 import scalangband.bridge.rendering.TextColors
-import scalangband.model.monster.action.{MeleeAttacksAction, MonsterActions, MonsterPassAction}
+import scalangband.model.monster.action.{MeleeAttacks, MonsterActions, MonsterPassAction}
 import scalangband.model.monster.attack.SporeAttack
 import scalangband.model.monster.{Mold, MonsterFactory, MonsterSpec}
 import scalangband.model.util.{DiceRoll, Weighted}
@@ -23,7 +23,7 @@ object GreyMold extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent = Seq(
-      Weighted(100, MeleeAttacksAction(Seq(new SporeAttack(DiceRoll("1d4")), new SporeAttack(DiceRoll("1d4")))))
+      Weighted(100, MeleeAttacks(Seq(new SporeAttack(DiceRoll("1d4")), new SporeAttack(DiceRoll("1d4")))))
     ),
     los = Seq(Weighted(100, MonsterPassAction)),
     otherwise = Seq(Weighted(100, MonsterPassAction))

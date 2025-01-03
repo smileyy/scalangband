@@ -3,7 +3,7 @@ package scalangband.data.monster.ickything
 import scalangband.bridge.rendering.TextColors.White
 import scalangband.model.monster.action.{
   HearingBoundedAction,
-  MeleeAttacksAction,
+  MeleeAttacks,
   MonsterActions,
   PathfindingAction,
   RandomMovementAction
@@ -28,7 +28,7 @@ object WhiteIckyThing extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent = Seq(
-      Weighted(75, MeleeAttacksAction(Seq(new TouchAttack(DiceRoll("1d2"))))),
+      Weighted(75, MeleeAttacks(Seq(new TouchAttack(DiceRoll("1d2"))))),
       Weighted(25, RandomMovementAction)
     ),
     los = Seq(Weighted(75, PathfindingAction), Weighted(25, RandomMovementAction)),

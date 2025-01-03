@@ -3,7 +3,7 @@ package scalangband.data.monster.bat
 import scalangband.bridge.rendering.TextColors.Orange
 import scalangband.model.monster.action.{
   HearingBoundedAction,
-  MeleeAttacksAction,
+  MeleeAttacks,
   MonsterActions,
   PathfindingAction,
   RandomMovementAction
@@ -29,7 +29,7 @@ object FruitBat extends MonsterFactory {
 
   private def actions = MonsterActions(
     adjacent = Seq(
-      Weighted(75, MeleeAttacksAction(new BiteAttack(DiceRoll("1d1")))),
+      Weighted(75, MeleeAttacks(new BiteAttack(DiceRoll("1d1")))),
       Weighted(25, RandomMovementAction)
     ),
     los = Seq(Weighted(75, PathfindingAction), Weighted(25, RandomMovementAction)),

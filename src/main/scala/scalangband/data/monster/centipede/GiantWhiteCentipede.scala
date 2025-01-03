@@ -4,7 +4,7 @@ import scalangband.bridge.rendering.TextColors
 import scalangband.model.element.Cold
 import scalangband.model.monster.action.{
   HearingBoundedAction,
-  MeleeAttacksAction,
+  MeleeAttacks,
   MonsterActions,
   PathfindingAction,
   RandomMovementAction
@@ -31,7 +31,7 @@ object GiantWhiteCentipede extends MonsterFactory {
     adjacent = Seq(
       Weighted(
         50,
-        MeleeAttacksAction(Seq(CrawlAttack(DiceRoll("1d2")), StingAttack(DiceRoll("1d2"), element = Some(Cold))))
+        MeleeAttacks(Seq(CrawlAttack(DiceRoll("1d2")), StingAttack(DiceRoll("1d2"), element = Some(Cold))))
       ),
       Weighted(50, RandomMovementAction)
     ),

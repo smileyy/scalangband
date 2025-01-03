@@ -36,7 +36,7 @@ class MonsterActions(adjacent: Seq[Weighted[MonsterAction]], los: Seq[Weighted[M
   }
 }
 
-class MeleeAttacksAction(attacks: Seq[MeleeAttack]) extends MonsterAction {
+class MeleeAttacks(attacks: Seq[MeleeAttack]) extends MonsterAction {
   override def apply(monster: Monster, game: GameAccessor, callback: GameCallback): List[ActionResult] = {
     var results: List[ActionResult] = List.empty
 
@@ -47,9 +47,9 @@ class MeleeAttacksAction(attacks: Seq[MeleeAttack]) extends MonsterAction {
     results
   }
 }
-object MeleeAttacksAction {
-  def apply(attack: MeleeAttack): MonsterAction = new MeleeAttacksAction(Seq(attack))
-  def apply(attacks: Seq[MeleeAttack]): MonsterAction = new MeleeAttacksAction(attacks)
+object MeleeAttacks {
+  def apply(attack: MeleeAttack): MonsterAction = new MeleeAttacks(Seq(attack))
+  def apply(attacks: Seq[MeleeAttack]): MonsterAction = new MeleeAttacks(attacks)
 }
 
 object MonsterPassAction extends MonsterAction {

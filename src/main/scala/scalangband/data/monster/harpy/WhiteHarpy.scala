@@ -24,7 +24,7 @@ object WhiteHarpy extends MonsterFactory {
     adjacent = Seq(
       Weighted(
         50,
-        MeleeAttacksAction(
+        MeleeAttacks(
           Seq(new ClawAttack(DiceRoll("1d1")), new ClawAttack(DiceRoll("1d1")), new BiteAttack(DiceRoll("1d2")))
         )
       ),

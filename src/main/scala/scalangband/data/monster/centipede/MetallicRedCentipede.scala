@@ -4,7 +4,7 @@ import scalangband.bridge.rendering.TextColors
 import scalangband.model.element.Fire
 import scalangband.model.monster.action.{
   HearingBoundedAction,
-  MeleeAttacksAction,
+  MeleeAttacks,
   MonsterActions,
   PathfindingAction,
   RandomMovementAction
@@ -32,7 +32,7 @@ object MetallicRedCentipede extends MonsterFactory {
     adjacent = Seq(
       Weighted(
         75,
-        MeleeAttacksAction(Seq(CrawlAttack(DiceRoll("1d2")), StingAttack(DiceRoll("1d2"), element = Some(Fire))))
+        MeleeAttacks(Seq(CrawlAttack(DiceRoll("1d2")), StingAttack(DiceRoll("1d2"), element = Some(Fire))))
       ),
       Weighted(25, RandomMovementAction)
     ),
