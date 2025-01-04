@@ -12,6 +12,8 @@ class Equipment(
     var body: Option[BodyArmor] = None
 ) {
   
+  val accessor = new EquipmentAccessor(this)
+  
   def equip(item: EquippableItem): Option[EquippableItem] = item match {
     case w: Weapon => wield(w)
     case l: LightSource => wield(l)
@@ -70,4 +72,8 @@ class Equipment(
   def statBonus: StatBonuses = allEquipment.map(_.statBonus).foldLeft(NoBonus)((acc, bonus) => acc + bonus)
 
   override def toString: String = s"{ weapon: $weapon, light: $light, body: $body }"
+}
+
+class EquipmentAccessor(equipment: Equipment) {
+  def weapon: Option[Weapon] = equipment.weapon
 }

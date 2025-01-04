@@ -12,8 +12,6 @@ class DropEquipmentAction(unequip: Equipment => Option[EquippableItem]) extends 
   override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
     callback.player.unequip(unequip) match {
       case Some(item) =>
-        println(item)
-
         var results: List[ActionResult] = List.empty
 
         val placeItemResult = callback.level.addItemToTile(accessor.player.coordinates, item)
@@ -25,9 +23,7 @@ class DropEquipmentAction(unequip: Equipment => Option[EquippableItem]) extends 
         }
 
         List(placeItemResult, MessageResult(s"You drop $item."), unequipResult)
-      case None =>
-        println("No item for some reason")
-        List.empty
+      case None => List.empty
     }
   }
 }

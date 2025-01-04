@@ -93,20 +93,7 @@ class Player(
     unequipMethod(equipment)
   }
   
-  def takeOff(takeoff: Equipment => Option[Item]): List[ActionResult] = {
-    takeoff(equipment) match {
-      case Some(item) =>
-        inventory.addItem(item)
-        item match {
-          case w: Weapon      => List(MessageResult(s"You were wielding $item."))
-          case l: LightSource => List(MessageResult(s"You were holding $item."))
-          case a: Armor       => List(MessageResult(s"You were wearing $item."))
-        }
-      case None => List.empty
-    }
-  }
-
-  private def addExperience(xp: Int): List[ActionResult] = {
+  def addExperience(xp: Int): List[ActionResult] = {
     experience = experience + xp / level
     val newLevel = ExperienceTable.getLevel(race, experience.current)
     if (newLevel > level) {
@@ -122,54 +109,7 @@ class Player(
       List.empty
     }
   }
-
-  def attack(monster: Monster, callback: GameCallback): List[ActionResult] = {
-    if (hasEffect(Fear)) {
-      List(MessageResult(s"You are too afraid to attack the ${monster.displayName}!"))
-    } else {
-      Random.nextInt(20) + 1 match {
-        case 1  => handleMiss(monster)
-        case 20 => handleHit(monster, callback)
-        case _ =>
-          if (Random.nextInt(toHit) > monster.armorClass * 3 / 4) {
-            handleHit(monster, callback)
-          } else {
-            handleMiss(monster)
-          }
-      }
-    }
-  }
-
-  private def handleHit(monster: Monster, callback: GameCallback): List[ActionResult] = {
-    var results: List[ActionResult] = List.empty
-
-    val damageDice = equipment.weapon match {
-      case Some(weapon) => weapon.damage
-      case None         => DiceRoll("1d1")
-    }
-    val damage = Math.max(damageDice.roll() + toDamage, 1)
-    monster.health = monster.health - damage
-    monster.awake = true
-
-    results = MessageResult(s"You hit the ${monster.displayName}.") :: results
-    Player.Logger.info(s"Player hit ${monster.displayName} for $damage damage")
-    if (monster.health <= 0) {
-      Player.Logger.info(s"Player killed ${monster.displayName}")
-      results =
-        MessageResult(s"You have ${if (monster.alive) "slain" else "destroyed"} the ${monster.displayName}.") :: results
-      results = callback.killMonster(monster) ::: results
-
-      results = addExperience(monster.experience) ::: results
-    }
-
-    results
-  }
-
-  private def handleMiss(monster: Monster): List[ActionResult] = {
-    Player.Logger.info(s"Player missed ${monster.displayName}")
-    List(MessageResult(s"You miss the ${monster.displayName}."))
-  }
-
+  
   def takeDamage(damage: Int, maybeElement: Option[Element], maybeEffect: Option[Effect]): List[ActionResult] = {
     Player.Logger.info(s"Player took $damage damage of element $maybeEffect and effect $maybeEffect")
     var results: List[ActionResult] = List.empty
@@ -294,18 +234,22 @@ object Player {
 }
 
 class PlayerAccessor(private val player: Player) {
-  def armorClass: Int = player.armorClass
-  def canSeeInvisible: Boolean = player.canSeeInvisible
   def coordinates: Coordinates = player.coordinates
+  def armorClass: Int = player.armorClass
+  def toHit: Int = player.toHit
+  def toDamage: Int = player.toDamage
+  def canSeeInvisible: Boolean = player.canSeeInvisible
   def hasEffect(effectType: EffectType): Boolean = player.hasEffect(effectType)
   def lightRadius: Int = player.lightRadius
   def satiety: Int = player.satiety
+  def equipment: EquipmentAccessor = player.equipment.accessor
 }
 
 class PlayerCallback(private val player: Player) {
-  def attack(monster: Monster, callback: GameCallback): List[ActionResult] = player.attack(monster, callback)
   def resetEnergy(): Unit = player.energy = player.speed
 
+  def addExperience(xp: Int): List[ActionResult] = player.addExperience(xp)
+  
   def takeDamage(damage: Int, element: Option[Element] = None, effect: Option[Effect] = None): List[ActionResult] = {
     player.takeDamage(damage, element, effect)
   }
