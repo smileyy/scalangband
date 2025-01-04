@@ -60,7 +60,12 @@ class Game(
           player.deductEnergy(playerAction.energyRequired)
           queue.insert(player)
 
-          if (!queue.peek.isInstanceOf[Player]) {
+          if (queue.peek.isInstanceOf[Player]) {
+            // this handles the edge case where there are no monsters but the turn is still over
+            if (player.energy < 0) {
+              startNextTurn()
+            }
+          } else {
             val monsterActionResults = takeMonsterActions()
             results = monsterActionResults ::: results
           }
