@@ -38,7 +38,7 @@ object MainKeyHandler extends KeyHandler {
       case KeyPressed(_, Key.Right, _, _) => Left(Some(PlayerMovementAction(RightDirection)))
 
       case KeyPressed(_, Key.C, _, _) => Right(CloseOverlay)
-      case KeyPressed(_, Key.D, _, _) => Right(DropItemInventoryOverlay(game))
+      case KeyPressed(_, Key.D, _, _) => Right(new DropItemInventoryOverlay(game))
       case KeyPressed(_, Key.E, _, _) => Right(new EquipmentOverlay(game))
       case KeyPressed(_, Key.G, _, _) => game.playerTile.match {
           case floor: Floor if floor.items.size == 1 => Left(Some(PickUpItemAction(floor.items.head)))

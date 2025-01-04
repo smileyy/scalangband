@@ -50,15 +50,11 @@ class InventoryKeyHandler(game: Game, factory: ItemActionFactory, filter: ItemFi
     }
   }
 
-  private def actionOrOverlay(
-      game: Game,
-      idx: Int,
-      quantity: Int = 1
-  ): Either[Option[PlayerAction], GamePanelOverlay] = {
+  private def actionOrOverlay(game: Game, idx: Int): Either[Option[PlayerAction], GamePanelOverlay] = {
     val inventory = game.player.inventory
     if (inventory.size > idx && filter.accepts(inventory.getItem(idx))) {
       inventory.getItem(idx) match {
-        case stackable: StackableItem => Left(factory(stackable.clone(quantity)))
+        case stack: StackableItem => Left(factory(stack.clone(1)))
         case item: Item               => Left(factory(item))
       }
     } else {
