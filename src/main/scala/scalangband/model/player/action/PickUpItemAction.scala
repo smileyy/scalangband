@@ -14,7 +14,7 @@ class PickUpItemAction(item: Item) extends FreeAction {
           case stackable: StackableItem => stackable.clone(stackable.quantity)
           case regularItem: Item => regularItem
         }
-        callback.playerPickup(itemToAdd)
+        callback.player.addToInventory(itemToAdd)
         floor.removeItem(item)
         List(MessageResult(s"You pick up $item."))
       case _ => List(MessageResult("There is nothing to pick up."))

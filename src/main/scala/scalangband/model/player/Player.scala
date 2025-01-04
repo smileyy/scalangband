@@ -77,42 +77,20 @@ class Player(
     equipment.allEquipment.foreach(item => item.onNextTurn())
   }
 
-  def pickUp(item: Item): Unit = {
+  def addToInventory(item: Item): Unit = {
     inventory.addItem(item)
   }
 
-  def removeInventoryItem(item: Item): Unit = {
+  def removeFromInventory(item: Item): Unit = {
     inventory.removeItem(item)
   }
 
-  def equip(item: EquippableItem, fromInventory: Boolean = true): List[ActionResult] = {
-    var results: List[ActionResult] = List.empty
-
-    if (fromInventory) {
-      inventory.removeItem(item)
-    }
-
-    def equip(equip: Equipment => Option[EquippableItem], are: String, were: String): Unit = {
-      results = MessageResult(s"$are $item") :: results
-      equip(equipment) match {
-        case Some(item) =>
-          inventory.addItem(item)
-          results = MessageResult(s"$were $item") :: results
-        case None =>
-      }
-    }
-    
-    item match {
-      case w: Weapon      => equip(e => e.wield(w), "You are wielding", "You were wielding")
-      case l: LightSource => equip(e => e.wield(l), "Your light source is", "You were holding")
-      case b: BodyArmor   => equip(e => e.wear(b), "You are wearing", "You were wearing")
-    }
-
-    results
+  def equip(item: EquippableItem): Option[EquippableItem] = {
+    equipment.equip(item)
   }
-
-  def unequip(f: Equipment => Option[Item]): Option[Item] = {
-    f(equipment)
+  
+  def unequip(unequipMethod: Equipment => Option[EquippableItem]): Option[EquippableItem] = {
+    unequipMethod(equipment)
   }
   
   def takeOff(takeoff: Equipment => Option[Item]): List[ActionResult] = {
@@ -188,7 +166,7 @@ class Player(
   }
 
   private def handleMiss(monster: Monster): List[ActionResult] = {
-    Player.Logger.info(s"Player killed ${monster.displayName}")
+    Player.Logger.info(s"Player missed ${monster.displayName}")
     List(MessageResult(s"You miss the ${monster.displayName}."))
   }
 
@@ -337,12 +315,11 @@ class PlayerCallback(private val player: Player) {
 
   def addMoney(amount: Int): Unit = player.money = player.money + amount
 
-  def pickUp(item: Item): Unit = player.pickUp(item)
-  def removeInventoryItem(item: Item): Unit = player.removeInventoryItem(item)
+  def addToInventory(item: Item): Unit = player.addToInventory(item)
+  def removeFromInventory(item: Item): Unit = player.removeFromInventory(item)
 
-  def equip(item: EquippableItem): List[ActionResult] = player.equip(item)
-  def unequip(f: Equipment => Option[Item]): Option[Item] = player.unequip(f)
-  def takeOff(f: Equipment => Option[Item]): List[ActionResult] = player.takeOff(f)
+  def equip(item: EquippableItem): Option[EquippableItem] = player.equip(item)
+  def unequip(f: Equipment => Option[EquippableItem]): Option[EquippableItem] = player.unequip(f)
 
   def eat(food: Food): List[ActionResult] = player.eat(food)
   def quaff(potion: Potion, fromInventory: Boolean): List[ActionResult] = player.quaff(potion, fromInventory)

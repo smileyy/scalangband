@@ -12,6 +12,12 @@ class Equipment(
     var body: Option[BodyArmor] = None
 ) {
   
+  def equip(item: EquippableItem): Option[EquippableItem] = item match {
+    case w: Weapon => wield(w)
+    case l: LightSource => wield(l)
+    case b: BodyArmor => wear(b)
+  }
+  
   def wield(w: Weapon): Option[Weapon] = {
     val result = weapon
     weapon = Some(w)
