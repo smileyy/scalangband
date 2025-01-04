@@ -51,7 +51,8 @@ class Equipment(
     }
   }
   
-  def allEquipment: Seq[EquippableItem] = Seq(weapon, light, body).flatten
+  def allPossibleEquipment: Seq[Option[EquippableItem]] = Seq(weapon, light, body)
+  def allEquipment: Seq[EquippableItem] = allPossibleEquipment.flatten
 
   def armorClass: Int = allEquipment.map(_.armorClass).sum
   def toArmor: Int = allEquipment.map(_.toArmorBonus).sum
