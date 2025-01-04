@@ -6,148 +6,83 @@ import scalangband.model.tile.*
 
 import scala.util.Random
 
-class RoomBuilder(val top: Int, val left: Int, val width: Int, val height: Int, val depth: Int) { outer =>
-  private var rows: List[RowBuilder] = List.empty
-  private var attachmentPoints: Map[Direction, List[Coordinates]] = Map(
-    UpDirection -> List.empty,
-    DownDirection -> List.empty,
-    LeftDirection -> List.empty,
-    RightDirection -> List.empty
-  )
+object RoomBuilder {
+  def apply(data: String)(top: Int, left: Int, depth: Int): Room = {
+    val rows = data.linesIterator.toList
 
-  private var currentRow = 0
+    val width = rows.head.length
+    val height = rows.length
 
-  private def addAttachmentPoint(direction: Direction, column: Int): Unit = {
-    val points: List[Coordinates] = attachmentPoints(direction)
-    attachmentPoints = attachmentPoints + (direction -> (new Coordinates(top + currentRow, left + column) :: points))
-  }
+    require(width > 0, "Rooms must have at least one column")
+    require(height > 0, "Rooms must have at least one row")
+    require(rows.forall(_.length == width), "All rows of a room must have the same width")
 
-  def row(): RowBuilder = {
-    new RowBuilder()
-  }
+    var ws = List.empty[Coordinates]
+    var fs = List.empty[Coordinates]
+    var ds = List.empty[Coordinates]
+    var ms = List.empty[Coordinates]
+    var Ls = List.empty[Coordinates]
+    var Rs = List.empty[Coordinates]
+    var Ts = List.empty[Coordinates]
+    var Bs = List.empty[Coordinates]
 
-  def build(): Room = {
-    if (rows.size != height) {
-      throw new Exception(s"Expected $height rows but was ${rows.size}")
+    for {
+      (row, rowIndex) <- rows.zipWithIndex
+      (char, columnIndex) <- row.zipWithIndex
+    } {
+      val coordinates = Coordinates(row = rowIndex, col = columnIndex)
+      char match {
+        case 'w' | '#' => ws ::= coordinates
+        case 'f' | ' ' => fs ::= coordinates
+        case 'd' => ds ::= coordinates
+        case 'm' => ms ::= coordinates
+        case 'L' => Ls ::= coordinates
+        case 'R' => Rs ::= coordinates
+        case 'T' => Ts ::= coordinates
+        case 'B' => Bs ::= coordinates
+        case other => throw new Exception(s"Encountered unexpected character '$other' in RoomBuilder")
+      }
     }
 
-    new Room:
-      override def top: Int = outer.top
-      override def left: Int = outer.left
-      override def height: Int = outer.height
-      override def width: Int = outer.width
-      override def depth: Int = outer.depth
+    // note: without these aliases, Room's methods would name shadow the values and would do infinite recursion.
+    val dataTop = top
+    val dataLeft = left
+    val dataHeight = height
+    val dataWidth = width
+    val dataDepth = depth
+
+    new Room {
+      override def top: Int = dataTop
+
+      override def left: Int = dataLeft
+
+      override def height: Int = dataHeight
+
+      override def width: Int = dataWidth
+
+      override def depth: Int = dataDepth
 
       override def attachmentPoint(random: Random, direction: Direction): Coordinates = {
-        val points = outer.attachmentPoints(direction)
-        val index = random.nextInt(points.size)
-        points(index)
+        val attachmentPoints = direction match
+          case UpDirection => Ts
+          case DownDirection => Bs
+          case LeftDirection => Ls
+          case RightDirection => Rs
+        val relativeCoordinate = attachmentPoints(random.nextInt(attachmentPoints.size))
+        Coordinates(relativeCoordinate.row + top, relativeCoordinate.col + left)
       }
 
       override def addToLevel(random: Random, canvas: DungeonLevelCanvas): Unit = {
-        var currentRow = 0
-        var currentCol = 0
-
-        rows.reverse.foreach( row =>
-          currentCol = 0
-          row.tiles.reverse.foreach( tile =>
-            canvas.setTile(currentRow, currentCol, tile.create())
-            tile.match {
-              case MonsterFactory => canvas.addMonster(currentRow, currentCol, depth)
-              case _ =>
-            }
-            currentCol = currentCol + 1
-          )
-          currentRow = currentRow + 1
-        )
+        fs.foreach(c => canvas.setTile(c.row, c.col, Floor.empty()))
+        ws.foreach(c => canvas.setTile(c.row, c.col, new RemovableWall()))
+        ds.foreach(c => canvas.setTile(c.row, c.col, new ClosedDoor()))
+        ms.foreach(c => canvas.setTile(c.row, c.col, Floor.empty()))
+        ms.foreach(c => canvas.addMonster(c.row, c.col, dataDepth))
+        Ls.foreach(c => canvas.setTile(c.row, c.col, new RemovableWall()))
+        Rs.foreach(c => canvas.setTile(c.row, c.col, new RemovableWall()))
+        Ts.foreach(c => canvas.setTile(c.row, c.col, new RemovableWall()))
+        Bs.foreach(c => canvas.setTile(c.row, c.col, new RemovableWall()))
       }
-  }
-
-  class RowBuilder {
-    var tiles: List[TileFactory] = List.empty
-    private var currentColumn = 0
-
-    private def add(tile: TileFactory): RowBuilder = {
-      tiles = tile :: tiles
-      currentColumn = currentColumn + 1
-      this
-    }
-
-    def w: RowBuilder = {
-      add(WallFactory)
-    }
-
-    def f: RowBuilder = {
-      add(EmptyFloorFactory)
-    }
-
-    def d: RowBuilder = {
-      add(DoorFactory)
-    }
-
-    def m: RowBuilder = {
-      add(MonsterFactory)
-    }
-
-    def L: RowBuilder = {
-      outer.addAttachmentPoint(LeftDirection, currentColumn)
-      add(WallFactory)
-    }
-
-    def T: RowBuilder = {
-      outer.addAttachmentPoint(UpDirection, currentColumn)
-      add(WallFactory)
-    }
-
-    def R: RowBuilder = {
-      outer.addAttachmentPoint(RightDirection, currentColumn)
-      add(WallFactory)
-    }
-
-    def B: RowBuilder = {
-      outer.addAttachmentPoint(DownDirection, currentColumn)
-      add(WallFactory)
-    }
-
-    def build(): RoomBuilder = {
-      if (tiles.size != outer.width) {
-        throw new Exception(s"Expected ${outer.width} tiles but found ${tiles.size}")
-      }
-
-      outer.rows = this :: outer.rows
-      outer.currentRow = outer.currentRow + 1
-
-      RoomBuilder.this
     }
   }
-}
-
-trait TileFactory {
-  def create(): Tile
-}
-
-object WallFactory extends TileFactory {
-  override def create(): Tile = new RemovableWall()
-}
-
-object EmptyFloorFactory extends TileFactory {
-  override def create(): Tile = Floor.empty()
-}
-
-object DoorFactory extends TileFactory {
-  override def create(): Tile = new ClosedDoor()
-}
-
-object MonsterFactory extends TileFactory {
-  override def create(): Tile = Floor.empty()
-}
-
-trait RoomBuilderGenerator extends RoomGenerator {
-  override def generateRoom(random: Random, top: Int, left: Int, depth: Int): Room = {
-    builder(top, left, height, width, depth).build()
-  }
-
-  def builder(top: Int, left: Int, height: Int, width: Int, depth: Int): RoomBuilder
-  def height: Int
-  def width: Int
 }

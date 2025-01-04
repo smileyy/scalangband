@@ -172,7 +172,8 @@ object RoomAndHallwayGenerator {
         Weighted(10, StandardMoatedRoom),
         Weighted(2, CheckerboardMoatedRoom),
         Weighted(2, FourBoxesMoatedRoom),
-        Weighted(2, TinyChamberRoom)
+        Weighted(2, TinyChamberRoom),
+        Weighted(2, BarracksRoom)
       )
     )
   }
