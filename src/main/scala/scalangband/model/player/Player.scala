@@ -3,20 +3,16 @@ package scalangband.model.player
 import org.slf4j.LoggerFactory
 import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult}
 import scalangband.model.Game.BaseEnergyUnit
-import scalangband.model.effect.{Effect, EffectType, Fear, Paralysis}
+import scalangband.model.effect.{Effect, EffectType, Paralysis}
 import scalangband.model.element.Element
-import scalangband.model.item.armor.{Armor, BodyArmor}
 import scalangband.model.item.food.Food
-import scalangband.model.item.lightsource.LightSource
 import scalangband.model.item.potion.Potion
-import scalangband.model.item.weapon.Weapon
 import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.Monster
 import scalangband.model.player.playerclass.PlayerClass
 import scalangband.model.player.race.Race
 import scalangband.model.util.DiceRoll
-import scalangband.model.{Creature, Game, GameCallback}
+import scalangband.model.{Creature, Game}
 
 import scala.util.Random
 
@@ -88,7 +84,7 @@ class Player(
   def equip(item: EquippableItem): Option[EquippableItem] = {
     equipment.equip(item)
   }
-  
+
   def unequip(unequipMethod: Equipment => Option[EquippableItem]): Option[EquippableItem] = {
     unequipMethod(equipment)
   }
@@ -109,7 +105,7 @@ class Player(
       List.empty
     }
   }
-  
+
   def takeDamage(damage: Int, maybeElement: Option[Element], maybeEffect: Option[Effect]): List[ActionResult] = {
     Player.Logger.info(s"Player took $damage damage of element $maybeEffect and effect $maybeEffect")
     var results: List[ActionResult] = List.empty
@@ -249,7 +245,7 @@ class PlayerCallback(private val player: Player) {
   def resetEnergy(): Unit = player.energy = player.speed
 
   def addExperience(xp: Int): List[ActionResult] = player.addExperience(xp)
-  
+
   def takeDamage(damage: Int, element: Option[Element] = None, effect: Option[Effect] = None): List[ActionResult] = {
     player.takeDamage(damage, element, effect)
   }
