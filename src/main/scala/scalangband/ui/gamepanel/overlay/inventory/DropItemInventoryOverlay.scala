@@ -1,16 +1,15 @@
 package scalangband.ui.gamepanel.overlay.inventory
 
-import scalangband.bridge.rendering.TextColors.{Black, White}
+import scalangband.bridge.rendering.TextColors.White
 import scalangband.model.Game
 import scalangband.model.item.{Item, StackableItem}
 import scalangband.model.player.action.{DropInventoryItemAction, PlayerAction}
-import scalangband.ui.gamepanel.{GamePanel, PlayerPane}
-import scalangband.ui.gamepanel.overlay.equipment.EquipmentOverlay
+import scalangband.ui.gamepanel.overlay.equipment.{DropEquipmentOverlay, EquipmentOverlay}
 import scalangband.ui.gamepanel.overlay.{AllItemFilter, GamePanelOverlay, ItemActionFactory, OverlayPane}
 import scalangband.ui.keys.KeyHandler
 
-import scala.swing.{Font, Graphics2D}
 import scala.swing.event.{Key, KeyPressed}
+import scala.swing.{Font, Graphics2D}
 
 class DropItemInventoryOverlay(game: Game) extends GamePanelOverlay {
   override def message: Option[String] = None
@@ -26,7 +25,7 @@ class DropInventoryItemKeyHandler(overlay: DropItemInventoryOverlay) extends Key
     event match {
       case KeyPressed(_, Key.Escape, _, _) => Left(None)
 
-      case KeyPressed(_, Key.Slash, _, _) => Right(new EquipmentOverlay(game))
+      case KeyPressed(_, Key.Slash, _, _) => Right(new DropEquipmentOverlay(game))
 
       case KeyPressed(_, Key.A, _, _) => actionOrOverlay(game, 0)
       case KeyPressed(_, Key.B, _, _) => actionOrOverlay(game, 1)

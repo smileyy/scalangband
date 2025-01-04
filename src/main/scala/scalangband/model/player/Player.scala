@@ -101,7 +101,7 @@ class Player(
         case None =>
       }
     }
-
+    
     item match {
       case w: Weapon      => equip(e => e.wield(w), "You are wielding", "You were wielding")
       case l: LightSource => equip(e => e.wield(l), "Your light source is", "You were holding")
@@ -111,6 +111,10 @@ class Player(
     results
   }
 
+  def unequip(f: Equipment => Option[Item]): Option[Item] = {
+    f(equipment)
+  }
+  
   def takeOff(takeoff: Equipment => Option[Item]): List[ActionResult] = {
     takeoff(equipment) match {
       case Some(item) =>
@@ -334,11 +338,10 @@ class PlayerCallback(private val player: Player) {
   def addMoney(amount: Int): Unit = player.money = player.money + amount
 
   def pickUp(item: Item): Unit = player.pickUp(item)
-  def removeInventoryItem(item: Item): Unit = {
-    player.removeInventoryItem(item)
-  }
+  def removeInventoryItem(item: Item): Unit = player.removeInventoryItem(item)
 
   def equip(item: EquippableItem): List[ActionResult] = player.equip(item)
+  def unequip(f: Equipment => Option[Item]): Option[Item] = player.unequip(f)
   def takeOff(f: Equipment => Option[Item]): List[ActionResult] = player.takeOff(f)
 
   def eat(food: Food): List[ActionResult] = player.eat(food)

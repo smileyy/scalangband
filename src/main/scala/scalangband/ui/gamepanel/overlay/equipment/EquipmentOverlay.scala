@@ -1,11 +1,11 @@
 package scalangband.ui.gamepanel.overlay.equipment
 
-import scalangband.bridge.rendering.TextColors.{Black, White}
+import scalangband.bridge.rendering.TextColors.{Black, MediumGrey, White}
 import scalangband.model.Game
 import scalangband.model.item.EquippableItem
 import scalangband.model.player.action.PlayerAction
-import scalangband.ui.gamepanel.overlay.{GamePanelOverlay, OverlayPane}
 import scalangband.ui.gamepanel.overlay.inventory.ListInventoryOverlay
+import scalangband.ui.gamepanel.overlay.{GamePanelOverlay, OverlayPane}
 import scalangband.ui.gamepanel.{GamePanel, PlayerPane}
 import scalangband.ui.keys.KeyHandler
 
@@ -46,8 +46,12 @@ class EquipmentPane(game: Game) extends OverlayPane {
 
     def drawItem(option: Char, label: String, maybeItem: Option[EquippableItem], line: Int): Unit = {
       maybeItem match {
-        case Some(item) => g.drawString(s"$option) $label: $item", startX, (line + 2) * lineHeight)
-        case None       => g.drawString(s" ) $label: (nothing)", startX, (line + 2) * lineHeight)
+        case Some(item) => 
+          g.setColor(White)
+          g.drawString(s"$option) $label: $item", startX, (line + 2) * lineHeight)
+        case None       =>
+          g.setColor(MediumGrey)
+          g.drawString(s" ) $label: (nothing)", startX, (line + 2) * lineHeight)
       }
     }
 
