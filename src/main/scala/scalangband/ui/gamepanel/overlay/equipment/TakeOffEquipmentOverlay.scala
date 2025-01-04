@@ -2,7 +2,7 @@ package scalangband.ui.gamepanel.overlay.equipment
 
 import scalangband.bridge.rendering.TextColors.{Black, White}
 import scalangband.model.Game
-import scalangband.model.item.Item
+import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.player.Equipment
 import scalangband.model.player.action.{PlayerAction, TakeOffEquipmentAction}
 import scalangband.ui.gamepanel.overlay.*
@@ -26,20 +26,19 @@ class TakeOffEquipmentKeyHandler(game: Game, overlay: TakeOffEquipmentOverlay) e
       case KeyPressed(_, Key.Escape, _, _) => Left(None)
 
       case KeyPressed(_, Key.A, _, _) =>
-        equipmentActionOrOverlay(e => e.weapon, e => e.unwieldWeapon(), overlay)
+        equipmentActionOrOverlay(e => e.weapon, e => e.unwieldWeapon())
       case KeyPressed(_, Key.F, _, _) =>
-        equipmentActionOrOverlay(e => e.light, e => e.removeLight(), overlay)
+        equipmentActionOrOverlay(e => e.light, e => e.removeLight())
       case KeyPressed(_, Key.G, _, _) =>
-        equipmentActionOrOverlay(e => e.body, e => e.removeBodyArmor(), overlay)
+        equipmentActionOrOverlay(e => e.body, e => e.removeBodyArmor())
 
       case _ => Right(overlay)
     }
   }
 
   def equipmentActionOrOverlay(
-      get: Equipment => Option[Item],
-      takeOff: Equipment => Option[Item],
-      overlay: TakeOffEquipmentOverlay
+      get: Equipment => Option[EquippableItem],
+      takeOff: Equipment => Option[EquippableItem]
   ): Either[Option[PlayerAction], GamePanelOverlay] = get(game.player.equipment) match {
     case Some(item) => Left(Some(new TakeOffEquipmentAction(takeOff)))
     case None       => Right(overlay)

@@ -208,10 +208,6 @@ class GameCallback(private val game: Game) {
     player.resetEnergy()
   }
 
-  def playerPickup(item: Item): Unit = {
-    player.pickUp(item)
-  }
-
   def enableDebug(): Unit = {
     game.enableDebug()
   }

@@ -3,20 +3,16 @@ package scalangband.model.player
 import org.slf4j.LoggerFactory
 import scalangband.bridge.actionresult.{ActionResult, DeathResult, MessageResult}
 import scalangband.model.Game.BaseEnergyUnit
-import scalangband.model.effect.{Effect, EffectType, Fear, Paralysis}
+import scalangband.model.effect.{Effect, EffectType, Paralysis}
 import scalangband.model.element.Element
-import scalangband.model.item.armor.{Armor, BodyArmor}
 import scalangband.model.item.food.Food
-import scalangband.model.item.lightsource.LightSource
 import scalangband.model.item.potion.Potion
-import scalangband.model.item.weapon.Weapon
 import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.location.Coordinates
-import scalangband.model.monster.Monster
 import scalangband.model.player.playerclass.PlayerClass
 import scalangband.model.player.race.Race
 import scalangband.model.util.DiceRoll
-import scalangband.model.{Creature, Game, GameCallback}
+import scalangband.model.{Creature, Game}
 
 import scala.util.Random
 
@@ -77,58 +73,23 @@ class Player(
     equipment.allEquipment.foreach(item => item.onNextTurn())
   }
 
-  def pickUp(item: Item): Unit = {
+  def addToInventory(item: Item): Unit = {
     inventory.addItem(item)
   }
 
-  def removeInventoryItem(item: Item): Unit = {
+  def removeFromInventory(item: Item): Unit = {
     inventory.removeItem(item)
   }
 
-  def equip(item: EquippableItem, fromInventory: Boolean = true): List[ActionResult] = {
-    var results: List[ActionResult] = List.empty
-
-    if (fromInventory) {
-      inventory.removeItem(item)
-    }
-
-    def equip(equip: Equipment => Option[EquippableItem], are: String, were: String): Unit = {
-      results = MessageResult(s"$are $item") :: results
-      equip(equipment) match {
-        case Some(item) =>
-          inventory.addItem(item)
-          results = MessageResult(s"$were $item") :: results
-        case None =>
-      }
-    }
-    
-    item match {
-      case w: Weapon      => equip(e => e.wield(w), "You are wielding", "You were wielding")
-      case l: LightSource => equip(e => e.wield(l), "Your light source is", "You were holding")
-      case b: BodyArmor   => equip(e => e.wear(b), "You are wearing", "You were wearing")
-    }
-
-    results
+  def equip(item: EquippableItem): Option[EquippableItem] = {
+    equipment.equip(item)
   }
 
-  def unequip(f: Equipment => Option[Item]): Option[Item] = {
-    f(equipment)
+  def unequip(unequipMethod: Equipment => Option[EquippableItem]): Option[EquippableItem] = {
+    unequipMethod(equipment)
   }
   
-  def takeOff(takeoff: Equipment => Option[Item]): List[ActionResult] = {
-    takeoff(equipment) match {
-      case Some(item) =>
-        inventory.addItem(item)
-        item match {
-          case w: Weapon      => List(MessageResult(s"You were wielding $item."))
-          case l: LightSource => List(MessageResult(s"You were holding $item."))
-          case a: Armor       => List(MessageResult(s"You were wearing $item."))
-        }
-      case None => List.empty
-    }
-  }
-
-  private def addExperience(xp: Int): List[ActionResult] = {
+  def addExperience(xp: Int): List[ActionResult] = {
     experience = experience + xp / level
     val newLevel = ExperienceTable.getLevel(race, experience.current)
     if (newLevel > level) {
@@ -143,53 +104,6 @@ class Player(
     } else {
       List.empty
     }
-  }
-
-  def attack(monster: Monster, callback: GameCallback): List[ActionResult] = {
-    if (hasEffect(Fear)) {
-      List(MessageResult(s"You are too afraid to attack the ${monster.displayName}!"))
-    } else {
-      Random.nextInt(20) + 1 match {
-        case 1  => handleMiss(monster)
-        case 20 => handleHit(monster, callback)
-        case _ =>
-          if (Random.nextInt(toHit) > monster.armorClass * 3 / 4) {
-            handleHit(monster, callback)
-          } else {
-            handleMiss(monster)
-          }
-      }
-    }
-  }
-
-  private def handleHit(monster: Monster, callback: GameCallback): List[ActionResult] = {
-    var results: List[ActionResult] = List.empty
-
-    val damageDice = equipment.weapon match {
-      case Some(weapon) => weapon.damage
-      case None         => DiceRoll("1d1")
-    }
-    val damage = Math.max(damageDice.roll() + toDamage, 1)
-    monster.health = monster.health - damage
-    monster.awake = true
-
-    results = MessageResult(s"You hit the ${monster.displayName}.") :: results
-    Player.Logger.info(s"Player hit ${monster.displayName} for $damage damage")
-    if (monster.health <= 0) {
-      Player.Logger.info(s"Player killed ${monster.displayName}")
-      results =
-        MessageResult(s"You have ${if (monster.alive) "slain" else "destroyed"} the ${monster.displayName}.") :: results
-      results = callback.killMonster(monster) ::: results
-
-      results = addExperience(monster.experience) ::: results
-    }
-
-    results
-  }
-
-  private def handleMiss(monster: Monster): List[ActionResult] = {
-    Player.Logger.info(s"Player killed ${monster.displayName}")
-    List(MessageResult(s"You miss the ${monster.displayName}."))
   }
 
   def takeDamage(damage: Int, maybeElement: Option[Element], maybeEffect: Option[Effect]): List[ActionResult] = {
@@ -316,17 +230,21 @@ object Player {
 }
 
 class PlayerAccessor(private val player: Player) {
-  def armorClass: Int = player.armorClass
-  def canSeeInvisible: Boolean = player.canSeeInvisible
   def coordinates: Coordinates = player.coordinates
+  def armorClass: Int = player.armorClass
+  def toHit: Int = player.toHit
+  def toDamage: Int = player.toDamage
+  def canSeeInvisible: Boolean = player.canSeeInvisible
   def hasEffect(effectType: EffectType): Boolean = player.hasEffect(effectType)
   def lightRadius: Int = player.lightRadius
   def satiety: Int = player.satiety
+  def equipment: EquipmentAccessor = player.equipment.accessor
 }
 
 class PlayerCallback(private val player: Player) {
-  def attack(monster: Monster, callback: GameCallback): List[ActionResult] = player.attack(monster, callback)
   def resetEnergy(): Unit = player.energy = player.speed
+
+  def addExperience(xp: Int): List[ActionResult] = player.addExperience(xp)
 
   def takeDamage(damage: Int, element: Option[Element] = None, effect: Option[Effect] = None): List[ActionResult] = {
     player.takeDamage(damage, element, effect)
@@ -337,12 +255,11 @@ class PlayerCallback(private val player: Player) {
 
   def addMoney(amount: Int): Unit = player.money = player.money + amount
 
-  def pickUp(item: Item): Unit = player.pickUp(item)
-  def removeInventoryItem(item: Item): Unit = player.removeInventoryItem(item)
+  def addToInventory(item: Item): Unit = player.addToInventory(item)
+  def removeFromInventory(item: Item): Unit = player.removeFromInventory(item)
 
-  def equip(item: EquippableItem): List[ActionResult] = player.equip(item)
-  def unequip(f: Equipment => Option[Item]): Option[Item] = player.unequip(f)
-  def takeOff(f: Equipment => Option[Item]): List[ActionResult] = player.takeOff(f)
+  def equip(item: EquippableItem): Option[EquippableItem] = player.equip(item)
+  def unequip(f: Equipment => Option[EquippableItem]): Option[EquippableItem] = player.unequip(f)
 
   def eat(food: Food): List[ActionResult] = player.eat(food)
   def quaff(potion: Potion, fromInventory: Boolean): List[ActionResult] = player.quaff(potion, fromInventory)

@@ -2,7 +2,7 @@ package scalangband.ui.gamepanel.overlay.equipment
 
 import scalangband.bridge.rendering.TextColors.{Black, White}
 import scalangband.model.Game
-import scalangband.model.item.Item
+import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.player.Equipment
 import scalangband.model.player.action.{DropEquipmentAction, PlayerAction}
 import scalangband.ui.gamepanel.overlay.inventory.{DropItemActionFactory, DropItemInventoryOverlay}
@@ -36,10 +36,14 @@ class DropEquipmentKeyHandler(overlay: DropEquipmentOverlay) extends KeyHandler 
     }
   }
 
-  private def actionOrOverlay(game: Game, get: Equipment => Option[Item], unequip: Equipment => Option[Item]): Either[Option[PlayerAction], GamePanelOverlay] = {
-   get(game.player.equipment) match {
-     case Some(item) => Left(Some(DropEquipmentAction(unequip)))
-     case None => Right(overlay)
+  private def actionOrOverlay(
+      game: Game,
+      get: Equipment => Option[EquippableItem],
+      unequip: Equipment => Option[EquippableItem]
+  ): Either[Option[PlayerAction], GamePanelOverlay] = {
+    get(game.player.equipment) match {
+      case Some(item) => Left(Some(DropEquipmentAction(unequip)))
+      case None       => Right(overlay)
     }
   }
 }
@@ -65,6 +69,3 @@ class DropEquipmentPane(game: Game) extends OverlayPane {
     }
   }
 }
-
-
-

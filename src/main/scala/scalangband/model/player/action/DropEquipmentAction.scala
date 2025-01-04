@@ -1,19 +1,17 @@
 package scalangband.model.player.action
 
 import scalangband.bridge.actionresult.{ActionResult, MessageResult}
-import scalangband.model.item.Item
+import scalangband.model.item.{EquippableItem, Item}
 import scalangband.model.item.armor.Armor
 import scalangband.model.item.lightsource.LightSource
 import scalangband.model.item.weapon.Weapon
 import scalangband.model.player.Equipment
 import scalangband.model.{GameAccessor, GameCallback}
 
-class DropEquipmentAction(unequip: Equipment => Option[Item]) extends PhysicalAction {
+class DropEquipmentAction(unequip: Equipment => Option[EquippableItem]) extends PhysicalAction {
   override def apply(accessor: GameAccessor, callback: GameCallback): List[ActionResult] = {
     callback.player.unequip(unequip) match {
       case Some(item) =>
-        println(item)
-
         var results: List[ActionResult] = List.empty
 
         val placeItemResult = callback.level.addItemToTile(accessor.player.coordinates, item)
@@ -25,9 +23,7 @@ class DropEquipmentAction(unequip: Equipment => Option[Item]) extends PhysicalAc
         }
 
         List(placeItemResult, MessageResult(s"You drop $item."), unequipResult)
-      case None =>
-        println("No item for some reason")
-        List.empty
+      case None => List.empty
     }
   }
 }
